@@ -45,25 +45,85 @@ class OfferService {
         }
     }
 
-    async getOfferById(offerId) {
+    async getOfferById(offerId, userId = null) {
         const pool = getPool();
         
         try {
             const result = await pool.query(
-                'SELECT * FROM offers WHERE id = $1 AND is_deleted = FALSE',
+                `SELECT o.*, t.opening_date, t.buyer_id 
+                 FROM offers o 
+                 JOIN tenders t ON o.tender_id = t.id 
+                 WHERE o.id = $1 AND o.is_deleted = FALSE`,
                 [offerId]
             );
             
-            return result.rows[0] || null;
+            if (result.rows.length === 0) {
+                return null;
+            }
+
+            const offer = result.rows[0];
+            const openingDate = new Date(offer.opening_date);
+            const currentDate = new Date();
+            const isBeforeOpening = currentDate < openingDate;
+            const isBuyer = userId && userId === offer.buyer_id;
+            const isSupplier = userId && userId === offer.supplier_id;
+
+            // إخفاء البيانات المالية قبل تاريخ الفتح (إلا للمورد صاحب العرض)
+            if (isBeforeOpening && isBuyer) {
+                return {
+                    id: offer.id,
+                    offer_number: offer.offer_number,
+                    status: offer.status,
+                    submitted_at: offer.submitted_at,
+                    is_sealed: true,
+                    message: 'Offer details are sealed until opening date'
+                };
+            }
+
+            return offer;
         } catch (error) {
             throw new Error(`Failed to get offer: ${error.message}`);
         }
     }
 
-    async getOffersByTender(tenderId) {
+    async getOffersByTender(tenderId, userId = null) {
         const pool = getPool();
         
         try {
+            // الحصول على تاريخ فتح المناقصة
+            const tenderResult = await pool.query(
+                'SELECT opening_date, buyer_id FROM tenders WHERE id = $1',
+                [tenderId]
+            );
+
+            if (tenderResult.rows.length === 0) {
+                throw new Error('Tender not found');
+            }
+
+            const tender = tenderResult.rows[0];
+            const openingDate = new Date(tender.opening_date);
+            const currentDate = new Date();
+            const isBeforeOpening = currentDate < openingDate;
+            const isBuyer = userId && userId === tender.buyer_id;
+
+            // إذا كان قبل تاريخ الفتح والمستخدم هو المشتري
+            if (isBeforeOpening && isBuyer) {
+                // إرجاع عدد العروض فقط
+                const countResult = await pool.query(
+                    `SELECT COUNT(*) as total_offers FROM offers 
+                     WHERE tender_id = $1 AND is_deleted = FALSE`,
+                    [tenderId]
+                );
+
+                return {
+                    is_sealed: true,
+                    total_offers: parseInt(countResult.rows[0].total_offers),
+                    opening_date: tender.opening_date,
+                    message: 'Offers are sealed until opening date'
+                };
+            }
+
+            // بعد تاريخ الفتح أو للموردين (يرون عروضهم فقط)
             const result = await pool.query(
                 `SELECT o.*, u.company_name, u.full_name 
                  FROM offers o 
@@ -73,7 +133,11 @@ class OfferService {
                 [tenderId]
             );
             
-            return result.rows;
+            return {
+                is_sealed: false,
+                total_offers: result.rows.length,
+                offers: result.rows
+            };
         } catch (error) {
             throw new Error(`Failed to get offers: ${error.message}`);
         }

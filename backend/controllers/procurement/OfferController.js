@@ -31,7 +31,7 @@ class OfferController {
     async getOffer(req, res) {
         try {
             const { id } = req.params;
-            const offer = await OfferService.getOfferById(id);
+            const offer = await OfferService.getOfferById(id, req.user?.userId);
 
             if (!offer) {
                 return res.status(404).json({ 
@@ -41,7 +41,8 @@ class OfferController {
 
             res.status(200).json({
                 success: true,
-                offer
+                offer,
+                is_sealed: offer.is_sealed || false
             });
         } catch (error) {
             res.status(500).json({ 
@@ -53,12 +54,28 @@ class OfferController {
     async getOffersByTender(req, res) {
         try {
             const { tenderId } = req.params;
-            const offers = await OfferService.getOffersByTender(tenderId);
+            const result = await OfferService.getOffersByTender(
+                tenderId, 
+                req.user?.userId
+            );
 
+            // إذا كانت العروض مختومة (قبل تاريخ الفتح)
+            if (result.is_sealed) {
+                return res.status(200).json({
+                    success: true,
+                    is_sealed: true,
+                    total_offers: result.total_offers,
+                    opening_date: result.opening_date,
+                    message: result.message
+                });
+            }
+
+            // بعد تاريخ الفتح
             res.status(200).json({
                 success: true,
-                count: offers.length,
-                offers
+                is_sealed: false,
+                count: result.total_offers,
+                offers: result.offers
             });
         } catch (error) {
             res.status(500).json({ 
