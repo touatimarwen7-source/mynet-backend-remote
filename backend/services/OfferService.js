@@ -1,13 +1,20 @@
 const { getPool } = require('../config/db');
 const Offer = require('../models/Offer');
+const crypto = require('crypto');
 
 class OfferService {
+    generateOfferNumber() {
+        const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+        const randomPart = crypto.randomBytes(4).toString('hex').toUpperCase();
+        return `OFF-${timestamp}-${randomPart}`;
+    }
+
     async createOffer(offerData, userId) {
         const pool = getPool();
         const offer = new Offer(offerData);
         
         try {
-            const offerNumber = `OFF-${Date.now()}`;
+            const offerNumber = this.generateOfferNumber();
             
             const result = await pool.query(
                 `INSERT INTO offers (tender_id, supplier_id, offer_number, total_amount, currency, 

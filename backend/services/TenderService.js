@@ -1,13 +1,20 @@
 const { getPool } = require('../config/db');
 const Tender = require('../models/Tender');
+const crypto = require('crypto');
 
 class TenderService {
+    generateTenderNumber() {
+        const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+        const randomPart = crypto.randomBytes(4).toString('hex').toUpperCase();
+        return `TND-${timestamp}-${randomPart}`;
+    }
+
     async createTender(tenderData, userId) {
         const pool = getPool();
         const tender = new Tender(tenderData);
         
         try {
-            const tenderNumber = `TND-${Date.now()}`;
+            const tenderNumber = this.generateTenderNumber();
             
             const result = await pool.query(
                 `INSERT INTO tenders (tender_number, title, description, category, budget_min, budget_max, 
