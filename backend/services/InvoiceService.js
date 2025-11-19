@@ -1,10 +1,10 @@
 
 const { getPool } = require('../config/db');
-const pool = getPool();
 const Invoice = require('../models/Invoice');
 
 class InvoiceService {
   async createInvoice(invoiceData) {
+    const pool = getPool();
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -50,6 +50,7 @@ class InvoiceService {
   }
 
   async getInvoicesBySupplier(supplierId) {
+    const pool = getPool();
     const result = await pool.query(
       `SELECT i.*, po.order_number, po.buyer_id 
        FROM invoices i 
@@ -62,6 +63,7 @@ class InvoiceService {
   }
 
   async markAsPaid(invoiceId, paymentDate) {
+    const pool = getPool();
     const result = await pool.query(
       `UPDATE invoices 
        SET status = 'paid', payment_date = $1, updated_at = CURRENT_TIMESTAMP 

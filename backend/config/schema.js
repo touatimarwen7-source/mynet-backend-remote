@@ -240,6 +240,42 @@ const schemaQueries = [
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );`,
 
+    `CREATE TABLE IF NOT EXISTS mfa_codes (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        code VARCHAR(6) NOT NULL,
+        purpose VARCHAR(50) NOT NULL,
+        expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        is_used BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(user_id, purpose, is_used)
+    );`,
+
+    `CREATE TABLE IF NOT EXISTS supplier_verifications (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER UNIQUE REFERENCES users(id),
+        company_registration VARCHAR(100) NOT NULL,
+        tax_id VARCHAR(50),
+        verification_document JSONB,
+        verification_status VARCHAR(20) DEFAULT 'pending',
+        verified_at TIMESTAMP WITH TIME ZONE,
+        verified_by INTEGER REFERENCES users(id),
+        notes TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );`,
+
+    `CREATE TABLE IF NOT EXISTS encryption_keys (
+        id SERIAL PRIMARY KEY,
+        key_id VARCHAR(255) UNIQUE NOT NULL,
+        encrypted_key TEXT NOT NULL,
+        key_type VARCHAR(50) NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        rotated_at TIMESTAMP WITH TIME ZONE,
+        expires_at TIMESTAMP WITH TIME ZONE,
+        is_active BOOLEAN DEFAULT TRUE
+    );`,
+
     `CREATE INDEX IF NOT EXISTS idx_tenders_status ON tenders(status);`,
     `CREATE INDEX IF NOT EXISTS idx_tenders_buyer ON tenders(buyer_id);`,
     `CREATE INDEX IF NOT EXISTS idx_offers_tender ON offers(tender_id);`,
@@ -252,7 +288,11 @@ const schemaQueries = [
     `CREATE INDEX IF NOT EXISTS idx_subscriptions_user ON user_subscriptions(user_id);`,
     `CREATE INDEX IF NOT EXISTS idx_tender_history_tender ON tender_history(tender_id);`,
     `CREATE INDEX IF NOT EXISTS idx_purchase_requests_buyer ON purchase_requests(buyer_id);`,
-    `CREATE INDEX IF NOT EXISTS idx_purchase_requests_supplier ON purchase_requests(supplier_id);`
+    `CREATE INDEX IF NOT EXISTS idx_purchase_requests_supplier ON purchase_requests(supplier_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_mfa_codes_user ON mfa_codes(user_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_supplier_verifications_user ON supplier_verifications(user_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_supplier_verifications_status ON supplier_verifications(verification_status);`,
+    `CREATE INDEX IF NOT EXISTS idx_encryption_keys_active ON encryption_keys(is_active);`
 ];
 
 async function initializeSchema(pool) {

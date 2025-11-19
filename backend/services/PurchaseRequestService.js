@@ -1,10 +1,10 @@
 
 const { getPool } = require('../config/db');
-const pool = getPool();
 const PurchaseRequest = require('../models/PurchaseRequest');
 
 class PurchaseRequestService {
   async createDirectPurchaseRequest(requestData) {
+    const pool = getPool();
     const purchaseRequest = new PurchaseRequest(requestData);
 
     const result = await pool.query(
@@ -22,6 +22,7 @@ class PurchaseRequestService {
   }
 
   async getRequestsByBuyer(buyerId) {
+    const pool = getPool();
     const result = await pool.query(
       `SELECT pr.*, u.full_name as supplier_name, u.company_name 
        FROM purchase_requests pr 
@@ -34,6 +35,7 @@ class PurchaseRequestService {
   }
 
   async updateRequestStatus(requestId, status, userId) {
+    const pool = getPool();
     const result = await pool.query(
       `UPDATE purchase_requests 
        SET status = $1, updated_at = CURRENT_TIMESTAMP 

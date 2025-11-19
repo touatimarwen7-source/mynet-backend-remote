@@ -1,10 +1,10 @@
 
 const { getPool } = require('../config/db');
-const pool = getPool();
 const Review = require('../models/Review');
 
 class ReviewService {
   async createReview(reviewData) {
+    const pool = getPool();
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -56,6 +56,7 @@ class ReviewService {
   }
 
   async getUserReviews(userId) {
+    const pool = getPool();
     const result = await pool.query(
       `SELECT r.*, u.full_name as reviewer_name 
        FROM reviews r 
@@ -68,6 +69,7 @@ class ReviewService {
   }
 
   async getUserRating(userId) {
+    const pool = getPool();
     const result = await pool.query(
       `SELECT AVG(rating)::numeric(3,2) as average_rating, COUNT(*) as total_reviews 
        FROM reviews 
