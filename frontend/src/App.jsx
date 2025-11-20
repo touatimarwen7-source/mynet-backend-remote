@@ -7,6 +7,9 @@ import CreateTender from './pages/CreateTender';
 import TenderDetail from './pages/TenderDetail';
 import MyOffers from './pages/MyOffers';
 import Profile from './pages/Profile';
+import AuditLog from './pages/AuditLog';
+import PartialAward from './pages/PartialAward';
+import { setupInactivityTimer } from './utils/security';
 import './App.css';
 
 function App() {
@@ -16,11 +19,23 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (token) {
-      const tokenData = JSON.parse(atob(token.split('.')[1]));
-      setUser(tokenData);
+      try {
+        const tokenData = JSON.parse(atob(token.split('.')[1]));
+        setUser(tokenData);
+      } catch (error) {
+        console.error('خطأ في فك تشفير التوكن:', error);
+        localStorage.removeItem('accessToken');
+      }
     }
     setLoading(false);
   }, []);
+
+  // إعداد مراقبة الخمول - تنبيه بعد 15 دقيقة من عدم النشاط
+  useEffect(() => {
+    if (!user) return;
+    const cleanup = setupInactivityTimer(15 * 60 * 1000);
+    return cleanup;
+  }, [user]);
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -47,6 +62,7 @@ function App() {
                   <a href="/tenders">المناقصات</a>
                   {user.role === 'buyer' && <a href="/create-tender">إنشاء مناقصة</a>}
                   {user.role === 'supplier' && <a href="/my-offers">عروضي</a>}
+                  {user.role === 'admin' && <a href="/admin">لوحة التحكم</a>}
                   <a href="/profile">الملف الشخصي</a>
                   <button onClick={handleLogout} className="btn-logout">تسجيل الخروج</button>
                 </>
@@ -62,14 +78,37 @@ function App() {
 
         <main className="main-content">
           <Routes>
+            {/* المصادقة */}
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/register" element={<Register />} />
+
+            {/* المناقصات */}
             <Route path="/tenders" element={<TenderList />} />
             <Route path="/tender/:id" element={<TenderDetail />} />
-            <Route path="/create-tender" element={user?.role === 'buyer' ? <CreateTender /> : <Navigate to="/tenders" />} />
-            <Route path="/my-offers" element={user?.role === 'supplier' ? <MyOffers /> : <Navigate to="/tenders" />} />
-            <Route path="/profile" element={user ? <Profile user={user} /> : <Navigate to="/login" />} />
+            <Route path="/tender/:id/audit-log" element={<AuditLog />} />
+            <Route path="/tender/:id/award" element={<PartialAward />} />
+
+            {/* الإنشاء */}
+            <Route 
+              path="/create-tender" 
+              element={user?.role === 'buyer' ? <CreateTender /> : <Navigate to="/tenders" />} 
+            />
+
+            {/* المشتري والمورد */}
+            <Route 
+              path="/my-offers" 
+              element={user?.role === 'supplier' ? <MyOffers /> : <Navigate to="/tenders" />} 
+            />
+
+            {/* الملف الشخصي */}
+            <Route 
+              path="/profile" 
+              element={user ? <Profile user={user} /> : <Navigate to="/login" />} 
+            />
+
+            {/* الافتراضي */}
             <Route path="/" element={<Navigate to="/tenders" />} />
+            <Route path="*" element={<Navigate to="/tenders" />} />
           </Routes>
         </main>
 
@@ -82,12 +121,3 @@ function App() {
 }
 
 export default App;
-
-// إضافة هذا في useEffect:
-import { setupInactivityTimer } from './utils/security';
-
-// في useEffect، أضف:
-useEffect(() => {
-  const cleanup = setupInactivityTimer(15 * 60 * 1000); // 15 دقيقة
-  return cleanup;
-}, []);
