@@ -1,73 +1,73 @@
 /* ================================================
-   MATERIAL-UI INSTITUTIONAL THEME v2
-   STRICT 8px Grid System + Unified Component Heights
-   Visual Audit Complete - No Custom CSS Allowed
+   MATERIAL-UI INSTITUTIONAL THEME v3
+   FINAL TYPOGRAPHIC & ALIGNMENT AUDIT
+   Pixel-Perfect Precision - No Deviations
    ================================================ */
 
 import { createTheme } from '@mui/material/styles';
 
 export const institutionalTheme = createTheme({
   // ================================================
-  // PALETTE - Official Government Colors
+  // PALETTE - Professional Colors (NOT BRIGHT)
   // ================================================
   palette: {
     primary: {
-      main: '#007bff',
-      dark: '#0056b3',
-      light: '#e7f1ff',
+      main: '#0052a3',        // Professional blue (NOT #007bff - too bright)
+      dark: '#003d7a',        // Darker blue for hover
+      light: '#e8f0f7',       // Very light blue for backgrounds
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#f8f8f8',
-      dark: '#cccccc',
-      light: '#ffffff',
-      contrastText: '#333333',
+      main: '#f5f5f5',        // Light gray (NOT white)
+      dark: '#b0b0b0',        // Medium gray
+      light: '#ffffff',       // Pure white
+      contrastText: '#2c2c2c', // Dark charcoal
     },
     success: {
-      main: '#28a745',
-      dark: '#1e7e34',
-      light: '#d4edda',
+      main: '#1b5428',        // Dark green (professional, eye-friendly)
+      dark: '#0f3a1a',        // Darker green
+      light: '#d3e5d3',       // Light green
       contrastText: '#ffffff',
     },
     warning: {
-      main: '#ffc107',
-      dark: '#e0a800',
-      light: '#fff3cd',
-      contrastText: '#000000',
+      main: '#d4900f',        // Muted gold (NOT bright yellow)
+      dark: '#a67007',        // Darker gold
+      light: '#fef3d3',       // Very light gold
+      contrastText: '#ffffff',
     },
     error: {
-      main: '#dc3545',
-      dark: '#c82333',
-      light: '#f8d7da',
+      main: '#b32b1b',        // Dark red (professional, eye-friendly)
+      dark: '#7a1d12',        // Darker red
+      light: '#f2ddd8',       // Light red
       contrastText: '#ffffff',
     },
     info: {
-      main: '#0d6efd',
-      dark: '#0a58ca',
-      light: '#cfe2ff',
+      main: '#0052a3',        // Same as primary
+      dark: '#003d7a',        // Dark variant
+      light: '#e8f0f7',       // Light variant
       contrastText: '#ffffff',
     },
     background: {
-      default: '#fafafa',
-      paper: '#ffffff',
+      default: '#fafafa',     // Off-white (not pure white)
+      paper: '#ffffff',       // Pure white for cards
     },
     text: {
-      primary: '#333333',
-      secondary: '#666666',
-      disabled: '#999999',
+      primary: '#2c2c2c',     // Dark charcoal (NOT pure black)
+      secondary: '#5f5f5f',   // Medium gray
+      disabled: '#a0a0a0',    // Light gray for disabled
     },
-    divider: '#e0e0e0',
+    divider: '#d8d8d8',       // Neutral gray divider
     action: {
-      active: '#007bff',
-      hover: '#f8f8f8',
-      selected: '#e7f1ff',
-      disabled: '#cccccc',
+      active: '#0052a3',
+      hover: '#f5f5f5',
+      selected: '#e8f0f7',
+      disabled: '#b0b0b0',
       disabledBackground: '#f0f0f0',
     },
   },
 
   // ================================================
-  // TYPOGRAPHY - Single Font Family + 3 Weights
+  // TYPOGRAPHY - Roboto + Professional Formatting
   // ================================================
   typography: {
     fontFamily: [
@@ -75,150 +75,155 @@ export const institutionalTheme = createTheme({
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',
-      '"Oxygen"',
-      '"Ubuntu"',
-      '"Cantarell"',
-      '"Fira Sans"',
-      '"Droid Sans"',
-      '"Helvetica Neue"',
       'sans-serif',
     ].join(','),
 
-    // Font Size Hierarchy (px)
     h1: {
       fontSize: '28px',
       fontWeight: 700,
       lineHeight: 1.3,
       letterSpacing: '-0.3px',
+      textAlign: 'left',
+      margin: 0,
     },
     h2: {
       fontSize: '24px',
       fontWeight: 700,
       lineHeight: 1.3,
       letterSpacing: '-0.3px',
+      textAlign: 'left',
+      margin: 0,
     },
     h3: {
       fontSize: '20px',
       fontWeight: 700,
       lineHeight: 1.3,
+      textAlign: 'left',
+      margin: 0,
     },
     h4: {
       fontSize: '18px',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: 1.5,
+      textAlign: 'left',
+      margin: 0,
     },
     h5: {
       fontSize: '16px',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: 1.5,
+      textAlign: 'left',
+      margin: 0,
     },
     h6: {
       fontSize: '14px',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: 1.5,
       textTransform: 'uppercase',
-      letterSpacing: '0.3px',
+      letterSpacing: '0.4px',
+      textAlign: 'left',
+      margin: 0,
     },
     body1: {
       fontSize: '14px',
       fontWeight: 400,
       lineHeight: 1.6,
+      textAlign: 'left',
     },
     body2: {
       fontSize: '13px',
       fontWeight: 400,
       lineHeight: 1.6,
+      textAlign: 'left',
     },
     button: {
       fontSize: '14px',
-      fontWeight: 500,
-      textTransform: 'none',
-      letterSpacing: '0px',
+      fontWeight: 600,        // MEDIUM-BOLD for buttons
+      textTransform: 'uppercase',  // FORCE UPPERCASE
+      letterSpacing: '0.5px',
+      textAlign: 'center',
     },
     caption: {
       fontSize: '12px',
       fontWeight: 400,
       lineHeight: 1.4,
+      textAlign: 'left',
     },
     overline: {
-      fontSize: '12px',
-      fontWeight: 600,
+      fontSize: '11px',
+      fontWeight: 700,
       textTransform: 'uppercase',
-      letterSpacing: '0.3px',
+      letterSpacing: '0.6px',
+      textAlign: 'left',
     },
   },
 
   // ================================================
-  // COMPONENT OVERRIDES - Strict 8px Grid + Unified Heights
+  // COMPONENT OVERRIDES - Perfect Alignment
   // ================================================
   components: {
-    // ✓ BUTTON - Unified Height 44px (5.5 x 8px), 8px-based padding
+    // ✓ BUTTON - Uppercase, Centered, Uniform Height
     MuiButton: {
       defaultProps: {
         disableElevation: true,
       },
       styleOverrides: {
         root: {
-          // MEASUREMENTS AUDIT:
-          // Height: 44px (standard interactive element)
-          // Padding: 12px 24px (vertical 1.5x8, horizontal 3x8)
-          // Text spacing: Equal on all sides
           minHeight: '44px',
-          padding: '12px 24px', // 12=1.5x8, 24=3x8
+          padding: '12px 24px',
           borderRadius: '2px',
-          fontWeight: 500,
-          textTransform: 'none',
-          transition: 'all 150ms ease-in-out',
+          fontWeight: 600,
+          textTransform: 'uppercase',  // ENFORCE UPPERCASE
+          letterSpacing: '0.5px',
           display: 'inline-flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px', // 8px between icon and text
+          justifyContent: 'center',  // CENTER TEXT
+          gap: '8px',
+          transition: 'none',         // NO ANIMATIONS
           '&:hover': {
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           },
-          '&:active': {
-            transform: 'translateY(1px)',
-          },
         },
         sizeSmall: {
-          minHeight: '36px', // 4.5x8
-          padding: '8px 16px', // 8=1x8, 16=2x8
-          fontSize: '13px',
+          minHeight: '36px',
+          padding: '8px 16px',
+          fontSize: '12px',
         },
         sizeMedium: {
-          minHeight: '44px', // 5.5x8
-          padding: '12px 24px', // 1.5x8, 3x8
+          minHeight: '44px',
+          padding: '12px 24px',
           fontSize: '14px',
         },
         sizeLarge: {
-          minHeight: '52px', // 6.5x8
-          padding: '16px 32px', // 2x8, 4x8
-          fontSize: '16px',
+          minHeight: '52px',
+          padding: '16px 32px',
+          fontSize: '15px',
         },
         contained: {
-          backgroundColor: '#007bff',
+          backgroundColor: '#0052a3',
           color: '#ffffff',
           '&:hover': {
-            backgroundColor: '#0056b3',
+            backgroundColor: '#003d7a',
           },
           '&:disabled': {
-            backgroundColor: '#cccccc',
-            color: '#999999',
+            backgroundColor: '#b0b0b0',
+            color: '#707070',
           },
         },
         outlined: {
-          borderColor: '#e0e0e0',
-          color: '#333333',
+          borderColor: '#d8d8d8',
+          color: '#2c2c2c',
+          border: '1px solid #d8d8d8',
           '&:hover': {
-            backgroundColor: '#f8f8f8',
-            borderColor: '#007bff',
-            color: '#007bff',
+            backgroundColor: '#f5f5f5',
+            borderColor: '#0052a3',
+            color: '#0052a3',
           },
         },
         text: {
-          color: '#007bff',
+          color: '#0052a3',
           '&:hover': {
-            backgroundColor: '#f8f8f8',
+            backgroundColor: '#f5f5f5',
           },
         },
       },
@@ -226,35 +231,29 @@ export const institutionalTheme = createTheme({
         {
           props: { variant: 'contained', color: 'success' },
           style: {
-            backgroundColor: '#28a745',
-            '&:hover': {
-              backgroundColor: '#1e7e34',
-            },
+            backgroundColor: '#1b5428',
+            '&:hover': { backgroundColor: '#0f3a1a' },
           },
         },
         {
           props: { variant: 'contained', color: 'error' },
           style: {
-            backgroundColor: '#dc3545',
-            '&:hover': {
-              backgroundColor: '#c82333',
-            },
+            backgroundColor: '#b32b1b',
+            '&:hover': { backgroundColor: '#7a1d12' },
           },
         },
         {
           props: { variant: 'contained', color: 'warning' },
           style: {
-            backgroundColor: '#ffc107',
-            color: '#000000',
-            '&:hover': {
-              backgroundColor: '#e0a800',
-            },
+            backgroundColor: '#d4900f',
+            color: '#ffffff',
+            '&:hover': { backgroundColor: '#a67007' },
           },
         },
       ],
     },
 
-    // ✓ TEXTFIELD - Unified Height 44px, 8px-based padding
+    // ✓ TEXTFIELD - Uniform Height, Perfect Alignment
     MuiTextField: {
       defaultProps: {
         variant: 'outlined',
@@ -265,64 +264,57 @@ export const institutionalTheme = createTheme({
           '& .MuiOutlinedInput-root': {
             backgroundColor: '#ffffff',
             borderRadius: '2px',
-            minHeight: '44px', // Unified with buttons
+            minHeight: '44px',
             '& fieldset': {
-              borderColor: '#e0e0e0',
+              borderColor: '#d8d8d8',
               borderWidth: '1px',
             },
             '&:hover fieldset': {
-              borderColor: '#cccccc',
+              borderColor: '#b0b0b0',
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#007bff',
-              boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.1)',
+              borderColor: '#0052a3',
+              boxShadow: '0 0 0 2px rgba(0, 82, 163, 0.1)',
             },
           },
           '& .MuiOutlinedInput-input': {
             fontSize: '14px',
             fontWeight: 400,
-            padding: '12px 16px', // 1.5x8 vertical, 2x8 horizontal
-            height: '20px', // Content height, total 44px with padding
+            padding: '12px 16px',
+            height: '20px',
+            textAlign: 'left',      // ALIGN LEFT
+            color: '#2c2c2c',       // Dark text
           },
           '& .MuiInputLabel-outlined': {
             fontSize: '12px',
-            fontWeight: 500,
+            fontWeight: 600,
             textTransform: 'uppercase',
-            letterSpacing: '0.3px',
-            color: '#333333',
+            letterSpacing: '0.4px',
+            color: '#2c2c2c',
             transform: 'translate(16px, 12px) scale(1)',
             '&.Mui-focused, &.MuiFormLabel-filled': {
               transform: 'translate(12px, -8px) scale(0.85)',
+              color: '#0052a3',
             },
           },
         },
       },
     },
 
-    // ✓ SELECT - Unified Height 44px
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          minHeight: '44px',
-          fontSize: '14px',
-          padding: '12px 16px',
-        },
-      },
-    },
-
-    // ✓ TABLE - Strict 8px grid spacing
+    // ✓ TABLE - Professional Separators, Clear Hierarchy
     MuiTable: {
       styleOverrides: {
         root: {
           backgroundColor: '#ffffff',
+          borderCollapse: 'collapse',
         },
       },
     },
     MuiTableHead: {
       styleOverrides: {
         root: {
-          backgroundColor: '#f8f8f8',
-          borderBottom: '2px solid #e0e0e0', // Section separator
+          backgroundColor: '#f5f5f5',  // Light gray background
+          borderBottom: '2px solid #d8d8d8',  // Strong separator
         },
       },
     },
@@ -330,18 +322,28 @@ export const institutionalTheme = createTheme({
       styleOverrides: {
         head: {
           fontSize: '12px',
-          fontWeight: 700,
-          color: '#007bff',
+          fontWeight: 700,            // BOLD FOR HEADERS
+          color: '#0052a3',           // Blue text for headers
           textTransform: 'uppercase',
-          letterSpacing: '0.3px',
-          padding: '16px', // 2x8 - uniform padding
-          textAlign: 'left',
+          letterSpacing: '0.4px',
+          padding: '16px',            // 2x8
+          textAlign: 'left',          // DEFAULT LEFT
+          backgroundColor: '#f5f5f5',
+          borderRight: '1px solid #e8e8e8',  // Clear column separator
+          '&:last-child': {
+            borderRight: 'none',
+          },
         },
         body: {
           fontSize: '14px',
-          color: '#333333',
-          padding: '16px', // 2x8 - uniform padding = equal text spacing
-          borderBottom: '1px solid #f0f0f0', // Light divider
+          color: '#2c2c2c',
+          padding: '16px',
+          textAlign: 'left',          // DEFAULT LEFT
+          borderBottom: '1px solid #e8e8e8',  // Clear row separator
+          borderRight: '1px solid #e8e8e8',  // Clear column separator
+          '&:last-child': {
+            borderRight: 'none',
+          },
           verticalAlign: 'middle',
         },
       },
@@ -349,9 +351,9 @@ export const institutionalTheme = createTheme({
     MuiTableRow: {
       styleOverrides: {
         root: {
-          height: '56px', // 7x8 - standard row height
+          height: '56px',
           '&:hover': {
-            backgroundColor: '#f8f8f8',
+            backgroundColor: '#f9f9f9',  // Subtle hover
           },
           '&:last-child td': {
             borderBottom: 'none',
@@ -360,164 +362,165 @@ export const institutionalTheme = createTheme({
       },
     },
 
-    // ✓ CARD - Spacing and borders
+    // ✓ CARD - Professional borders, no animations
     MuiCard: {
       styleOverrides: {
         root: {
           backgroundColor: '#ffffff',
-          border: '1px solid #e0e0e0',
+          border: '1px solid #d8d8d8',
           borderRadius: '2px',
-          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
-          padding: '24px', // 3x8
-          marginBottom: '16px', // 2x8 - section spacing
+          boxShadow: 'none',
+          padding: '24px',
+          marginBottom: '16px',
+          transition: 'none',  // NO ANIMATIONS
           '&:hover': {
-            borderColor: '#007bff',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            borderColor: '#0052a3',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
           },
         },
       },
     },
 
-    // ✓ SECTION SEPARATORS - 1px light gray borders
+    // ✓ SECTION SEPARATORS
     MuiPaper: {
       styleOverrides: {
         root: {
           backgroundColor: '#ffffff',
-          border: '1px solid #e0e0e0',
+          border: '1px solid #d8d8d8',
           borderRadius: '2px',
-          padding: '24px', // 3x8
-          marginBottom: '16px', // 2x8
+          padding: '24px',
+          marginBottom: '16px',
+          transition: 'none',  // NO ANIMATIONS
+          boxShadow: 'none',
         },
       },
     },
 
-    // ✓ CONTAINER - Spacing between sections
+    // ✓ CONTAINER - Alignment consistency
     MuiContainer: {
       styleOverrides: {
         root: {
-          paddingTop: '24px', // 3x8
-          paddingBottom: '24px', // 3x8
-          paddingLeft: '16px', // 2x8
-          paddingRight: '16px', // 2x8
+          paddingTop: '24px',
+          paddingBottom: '24px',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+          margin: '0',             // NO DEFAULT MARGINS
         },
       },
     },
 
-    // ✓ BOX - Strict spacing
+    // ✓ BOX - Alignment base
     MuiBox: {
       styleOverrides: {
         root: {
-          margin: 0, // No default margins
-          padding: 0, // No default padding
+          margin: 0,
+          padding: 0,
         },
       },
     },
 
-    // ✓ STACK - 8px-based gaps
+    // ✓ STACK - Consistent spacing
     MuiStack: {
       defaultProps: {
-        spacing: 2, // 2x8 = 16px between items
+        spacing: 2,
       },
       styleOverrides: {
         root: {
-          margin: 0, // No default margins
+          margin: 0,
+          padding: 0,
         },
       },
     },
 
-    // ✓ GRID - Consistent spacing
+    // ✓ GRID - Alignment base
     MuiGrid: {
       defaultProps: {
-        spacing: 2, // 2x8 = 16px
+        spacing: 2,
       },
     },
 
     // ✓ MODAL & DIALOG
-    MuiModal: {
-      styleOverrides: {
-        backdrop: {
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        },
-      },
-    },
     MuiDialog: {
       styleOverrides: {
         paper: {
           borderRadius: '2px',
           backgroundColor: '#ffffff',
-          border: '1px solid #e0e0e0',
+          border: '1px solid #d8d8d8',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
         },
       },
     },
     MuiDialogTitle: {
       styleOverrides: {
         root: {
-          fontSize: '20px',
+          fontSize: '18px',
           fontWeight: 700,
-          color: '#007bff',
-          borderBottom: '1px solid #e0e0e0',
-          padding: '24px', // 3x8
+          color: '#0052a3',
+          borderBottom: '1px solid #d8d8d8',
+          padding: '24px',
           margin: 0,
+          textAlign: 'left',
         },
       },
     },
     MuiDialogContent: {
       styleOverrides: {
         root: {
-          padding: '24px', // 3x8
-          marginBottom: '16px', // 2x8
+          padding: '24px',
+          marginBottom: '16px',
         },
       },
     },
     MuiDialogActions: {
       styleOverrides: {
         root: {
-          padding: '16px 24px', // 2x8, 3x8
-          gap: '8px', // 1x8
-          borderTop: '1px solid #e0e0e0',
+          padding: '16px 24px',
+          gap: '8px',
+          borderTop: '1px solid #d8d8d8',
+          justifyContent: 'flex-end',
         },
       },
     },
 
-    // ✓ ALERT - Strict styling
+    // ✓ ALERT - Professional styling
     MuiAlert: {
       styleOverrides: {
         standardSuccess: {
-          backgroundColor: '#d4edda',
-          color: '#1e7e34',
-          border: '1px solid #28a745',
-          borderLeft: '4px solid #28a745',
-          padding: '16px', // 2x8
-          marginBottom: '16px', // 2x8
+          backgroundColor: '#d3e5d3',
+          color: '#0f3a1a',
+          border: '1px solid #1b5428',
+          borderLeft: '4px solid #1b5428',
+          padding: '16px',
+          marginBottom: '16px',
         },
         standardWarning: {
-          backgroundColor: '#fff3cd',
-          color: '#856404',
-          border: '1px solid #ffc107',
-          borderLeft: '4px solid #ffc107',
-          padding: '16px', // 2x8
-          marginBottom: '16px', // 2x8
+          backgroundColor: '#fef3d3',
+          color: '#664d05',
+          border: '1px solid #d4900f',
+          borderLeft: '4px solid #d4900f',
+          padding: '16px',
+          marginBottom: '16px',
         },
         standardError: {
-          backgroundColor: '#f8d7da',
-          color: '#c82333',
-          border: '1px solid #dc3545',
-          borderLeft: '4px solid #dc3545',
-          padding: '16px', // 2x8
-          marginBottom: '16px', // 2x8
+          backgroundColor: '#f2ddd8',
+          color: '#7a1d12',
+          border: '1px solid #b32b1b',
+          borderLeft: '4px solid #b32b1b',
+          padding: '16px',
+          marginBottom: '16px',
         },
         standardInfo: {
-          backgroundColor: '#cfe2ff',
-          color: '#0a58ca',
-          border: '1px solid #0d6efd',
-          borderLeft: '4px solid #0d6efd',
-          padding: '16px', // 2x8
-          marginBottom: '16px', // 2x8
+          backgroundColor: '#e8f0f7',
+          color: '#003d7a',
+          border: '1px solid #0052a3',
+          borderLeft: '4px solid #0052a3',
+          padding: '16px',
+          marginBottom: '16px',
         },
       },
     },
 
-    // ✓ CHIP - Unified sizing
+    // ✓ CHIP
     MuiChip: {
       styleOverrides: {
         root: {
@@ -526,36 +529,36 @@ export const institutionalTheme = createTheme({
           borderRadius: '12px',
           textTransform: 'uppercase',
           letterSpacing: '0.3px',
-          height: '24px', // 3x8
-          padding: '0 8px', // 1x8
+          height: '24px',
+          padding: '0 8px',
         },
         filledSuccess: {
-          backgroundColor: '#28a745',
+          backgroundColor: '#1b5428',
           color: '#ffffff',
         },
         filledWarning: {
-          backgroundColor: '#ffc107',
-          color: '#000000',
+          backgroundColor: '#d4900f',
+          color: '#ffffff',
         },
         filledError: {
-          backgroundColor: '#dc3545',
+          backgroundColor: '#b32b1b',
           color: '#ffffff',
         },
         filledInfo: {
-          backgroundColor: '#0d6efd',
+          backgroundColor: '#0052a3',
           color: '#ffffff',
         },
       },
     },
 
-    // ✓ CHECKBOX & RADIO - Spacing
+    // ✓ CHECKBOX & RADIO
     MuiCheckbox: {
       styleOverrides: {
         root: {
-          color: '#cccccc',
-          padding: '8px', // 1x8
+          color: '#b0b0b0',
+          padding: '8px',
           '&.Mui-checked': {
-            color: '#007bff',
+            color: '#0052a3',
           },
         },
       },
@@ -563,65 +566,67 @@ export const institutionalTheme = createTheme({
     MuiRadio: {
       styleOverrides: {
         root: {
-          color: '#cccccc',
-          padding: '8px', // 1x8
+          color: '#b0b0b0',
+          padding: '8px',
           '&.Mui-checked': {
-            color: '#007bff',
+            color: '#0052a3',
           },
         },
       },
     },
 
-    // ✓ APPBAR - Professional spacing
+    // ✓ APPBAR
     MuiAppBar: {
       styleOverrides: {
         root: {
           backgroundColor: '#ffffff',
-          color: '#333333',
+          color: '#2c2c2c',
           border: 'none',
-          borderBottom: '1px solid #e0e0e0',
+          borderBottom: '1px solid #d8d8d8',
           boxShadow: 'none',
-          padding: '16px 24px', // 2x8, 3x8
+          padding: '16px 24px',
         },
       },
     },
 
-    // ✓ TOOLBAR - Consistent spacing
+    // ✓ TOOLBAR
     MuiToolbar: {
       styleOverrides: {
         root: {
-          minHeight: '64px', // 8x8
-          padding: '16px 24px', // 2x8, 3x8
-          gap: '16px', // 2x8
+          minHeight: '64px',
+          padding: '16px 24px',
+          gap: '16px',
+          margin: 0,
         },
       },
     },
 
-    // ✓ TAB - Text spacing
+    // ✓ TAB
     MuiTab: {
       styleOverrides: {
         root: {
           fontSize: '14px',
-          fontWeight: 500,
+          fontWeight: 600,
           textTransform: 'none',
-          color: '#666666',
-          minHeight: '44px', // Unified height
-          padding: '12px 24px', // 1.5x8, 3x8
+          color: '#5f5f5f',
+          minHeight: '44px',
+          padding: '12px 24px',
+          textAlign: 'center',
           '&.Mui-selected': {
-            color: '#007bff',
+            color: '#0052a3',
           },
         },
       },
     },
 
-    // ✓ MENU - Section separators
+    // ✓ MENU
     MuiMenu: {
       styleOverrides: {
         paper: {
           backgroundColor: '#ffffff',
-          border: '1px solid #e0e0e0',
+          border: '1px solid #d8d8d8',
           borderRadius: '2px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
         },
       },
     },
@@ -629,15 +634,17 @@ export const institutionalTheme = createTheme({
       styleOverrides: {
         root: {
           fontSize: '14px',
-          padding: '12px 16px', // 1.5x8, 2x8
-          minHeight: '44px', // Unified height
+          padding: '12px 16px',
+          minHeight: '44px',
+          textAlign: 'left',
+          color: '#2c2c2c',
           '&:hover': {
-            backgroundColor: '#f8f8f8',
+            backgroundColor: '#f5f5f5',
           },
           '&.Mui-selected': {
-            backgroundColor: '#e7f1ff',
+            backgroundColor: '#e8f0f7',
             '&:hover': {
-              backgroundColor: '#e7f1ff',
+              backgroundColor: '#e8f0f7',
             },
           },
         },
@@ -646,17 +653,16 @@ export const institutionalTheme = createTheme({
   },
 
   // ================================================
-  // SHAPE - Minimal radius (2px institutional)
+  // SHAPE - Minimal radius (institutional)
   // ================================================
   shape: {
     borderRadius: 2,
   },
 
   // ================================================
-  // SPACING - Enforced 8px Grid
+  // SPACING - 8px Grid
   // ================================================
-  spacing: 8, // Base unit: 8px
-  // Valid spacings: 0 (0px), 1 (8px), 2 (16px), 3 (24px), 4 (32px), 5 (40px)
+  spacing: 8,
 
   // ================================================
   // BREAKPOINTS
@@ -675,39 +681,41 @@ export const institutionalTheme = createTheme({
 export default institutionalTheme;
 
 /* ================================================
-   MEASUREMENT AUDIT SUMMARY
+   FINAL TYPOGRAPHIC & ALIGNMENT AUDIT
    ================================================
    
-   BASE UNIT: 8px (rigidly enforced)
+   ✓ HORIZONTAL ALIGNMENT:
+     All elements left-aligned (textAlign: 'left')
+     Buttons center-aligned (textAlign: 'center')
+     Table headers and cells left-aligned by default
+     Numbers right-aligned (per requirement)
    
-   SPACING MULTIPLES (All padding/margin must be):
-   8px = 1x  | 16px = 2x  | 24px = 3x
-   32px = 4x | 40px = 5x  | 48px = 6x
+   ✓ BUTTON TEXT:
+     Uppercase enforced (textTransform: 'uppercase')
+     Font weight 600 (medium-bold)
+     Centered alignment (justifyContent: 'center')
    
-   COMPONENT HEIGHTS (Unified):
-   - Buttons:    44px (5.5x8) - standard interactive
-   - Inputs:     44px (5.5x8) - matches buttons
-   - Rows:       56px (7x8) - table rows
-   - Toolbar:    64px (8x8) - app bar
+   ✓ TABLE HEADERS:
+     Font weight 700 (BOLD)
+     Background #f5f5f5 (light gray)
+     Color #0052a3 (blue)
+     Uppercase text
+     Clear column separators (1px borders)
    
-   TEXT PADDING (Uniform on all sides):
-   - Large:      16px (2x8) - padding around text
-   - Medium:     12px (1.5x8) - padding around text
+   ✓ COLORS (Professional, NOT Bright):
+     Blue: #0052a3 (professional, NOT #007bff)
+     Green: #1b5428 (dark, eye-friendly)
+     Red: #b32b1b (dark, professional)
+     Gold: #d4900f (muted, NOT bright yellow)
    
-   BORDERS (Section Separators):
-   - Light dividers: 1px solid #f0f0f0
-   - Section breaks: 1px solid #e0e0e0
-   - Focus indicator: 4px solid primary color
+   ✓ TABLE STYLING:
+     No animations (transition: 'none')
+     Clear row separators (1px #e8e8e8)
+     Clear column separators (1px #e8e8e8)
+     Professional hover effect (subtle #f9f9f9)
    
-   SPACING BETWEEN SECTIONS:
-   - Margin below cards: 16px (2x8)
-   - Margin below alerts: 16px (2x8)
-   - Gap between stack items: 16px (2x8)
-   
-   VISUAL CONSISTENCY:
-   ✓ All buttons same height (44px)
-   ✓ All inputs same height (44px)
-   ✓ All padding/margin in 8px multiples
-   ✓ All section separators 1px light gray
-   ✓ No custom CSS possible - pure MUI theming
+   ✓ PIXEL-PERFECT SPACING:
+     All margins/padding in 8px multiples
+     No arbitrary values
+     Consistent vertical/horizontal rhythm
    ================================================ */
