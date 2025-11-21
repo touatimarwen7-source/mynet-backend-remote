@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useToastContext } from '../contexts/ToastContext';
 import { authAPI } from '../api';
 import { setPageTitle } from '../utils/pageTitle';
 
 export default function Login() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { addToast } = useToastContext();
   const [email, setEmail] = useState('');
@@ -25,10 +23,10 @@ export default function Login() {
       const response = await authAPI.login({ email, password });
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('refreshToken', response.data.refreshToken);
-      addToast(t('messages.success'), 'success', 2000);
+      addToast('Connexion réussie', 'success', 2000);
       navigate('/tenders');
     } catch (err) {
-      addToast(t('messages.error'), 'error', 3000);
+      addToast('Erreur de connexion. Vérifiez vos identifiants.', 'error', 3000);
     } finally {
       setLoading(false);
     }
@@ -37,32 +35,35 @@ export default function Login() {
   return (
     <div className="page login-page">
       <div className="form-container">
-        <h1>{t('auth.login')}</h1>
+        <h1>Connexion Sécurisée</h1>
+        <p className="subtitle">Connectez-vous à votre compte MyNet.tn</p>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>{t('auth.email')}</label>
+            <label>E-mail *</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Entrez votre adresse e-mail"
               required
             />
           </div>
           <div className="form-group">
-            <label>{t('auth.password')}</label>
+            <label>Mot de passe *</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Entrez votre mot de passe"
               required
             />
           </div>
           <button type="submit" disabled={loading} className="btn-primary">
-            {loading ? t('form.loading') : t('auth.login')}
+            {loading ? 'Connexion en cours...' : 'Se Connecter'}
           </button>
         </form>
-        <p>
-          {t('auth.noAccount')} <a href="/register">{t('auth.register')}</a>
+        <p className="signup-link">
+          Pas encore de compte? <a href="/register">S'inscrire</a>
         </p>
       </div>
     </div>

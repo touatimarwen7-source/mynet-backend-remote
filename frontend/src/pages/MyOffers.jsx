@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { procurementAPI } from '../api';
+import { setPageTitle } from '../utils/pageTitle';
 
 export default function MyOffers() {
+  useEffect(() => {
+    setPageTitle('Mes Offres');
+  }, []);
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

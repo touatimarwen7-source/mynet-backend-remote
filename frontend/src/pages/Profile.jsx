@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { authAPI } from '../api';
+import { setPageTitle } from '../utils/pageTitle';
 
 export default function Profile({ user }) {
+  useEffect(() => {
+    setPageTitle('Mon Profil');
+  }, []);
   const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState({});
   const [editing, setEditing] = useState(false);
