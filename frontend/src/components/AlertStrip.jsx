@@ -6,25 +6,9 @@ export default function AlertStrip() {
   const [visibleAlerts, setVisibleAlerts] = useState(new Set());
 
   useEffect(() => {
-    // Simulate checking for critical alerts
-    const criticalAlerts = [
-      {
-        id: 1,
-        type: 'warning',
-        title: '⚠️ Renouvellement de Validité',
-        message: 'Votre certification expire dans 15 jours. Veuillez renouveler.'
-      },
-      {
-        id: 2,
-        type: 'info',
-        title: 'ℹ️ Mise à Jour Importante',
-        message: 'Une nouvelle version de la plateforme est disponible.'
-      }
-    ];
-
-    // Set all alerts as visible initially
-    setAlerts(criticalAlerts);
-    setVisibleAlerts(new Set(criticalAlerts.map(a => a.id)));
+    // No alerts to display
+    setAlerts([]);
+    setVisibleAlerts(new Set());
   }, []);
 
   const closeAlert = (id) => {
