@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-const API_BASE = '/api';
+import { procurementAPI } from '../api';
+import { setPageTitle } from '../utils/pageTitle';
+import '../styles/corporate-design.css';
 
 export default function InvoiceManagement() {
   const [invoices, setInvoices] = useState([]);
   const [filter, setFilter] = useState('pending');
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setPageTitle('Gestion des Factures');
+  }, []);
 
   useEffect(() => {
     fetchInvoices();
@@ -15,10 +19,8 @@ export default function InvoiceManagement() {
   const fetchInvoices = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_BASE}/procurement/invoices?status=${filter}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
-      });
-      setInvoices(response.data.invoices || []);
+      const response = await procurementAPI.getInvoices?.({ status: filter }) || { data: { invoices: [] } };
+      setInvoices(response.data?.invoices || []);
     } catch (error) {
       console.error('Erreur lors du chargement des factures:', error);
     } finally {

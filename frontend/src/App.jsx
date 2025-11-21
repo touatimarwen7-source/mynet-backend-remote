@@ -179,6 +179,42 @@ function App() {
               path="/invoices" 
               element={user?.role === 'buyer' ? <InvoiceManagement /> : <Navigate to="/tenders" />} 
             />
+            <Route 
+              path="/budgets" 
+              element={user?.role === 'buyer' ? <BuyerDashboard /> : <Navigate to="/tenders" />} 
+            />
+            <Route 
+              path="/financial-reports" 
+              element={user?.role === 'buyer' ? <BuyerDashboard /> : <Navigate to="/tenders" />} 
+            />
+            <Route 
+              path="/security" 
+              element={user ? <Profile /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/preferences" 
+              element={user ? <Profile /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/team-permissions" 
+              element={user?.role === 'buyer' ? <TeamManagement /> : <Navigate to="/tenders" />} 
+            />
+            <Route 
+              path="/supplier-reports" 
+              element={user?.role === 'supplier' ? <SupplierDashboard /> : <Navigate to="/tenders" />} 
+            />
+            <Route 
+              path="/supplier-products" 
+              element={user?.role === 'supplier' ? <SupplierCatalog /> : <Navigate to="/tenders" />} 
+            />
+            <Route 
+              path="/supplier-services" 
+              element={user?.role === 'supplier' ? <SupplierCatalog /> : <Navigate to="/tenders" />} 
+            />
+            <Route 
+              path="/supplier-payments" 
+              element={user?.role === 'supplier' ? <SupplierInvoices /> : <Navigate to="/tenders" />} 
+            />
 
             {/* Interface Fournisseur */}
             <Route 

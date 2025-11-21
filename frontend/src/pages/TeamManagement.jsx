@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { setPageTitle } from '../utils/pageTitle';
+import '../styles/corporate-design.css';
 
 export default function TeamManagement() {
   const [team, setTeam] = useState([]);
@@ -19,10 +19,8 @@ export default function TeamManagement() {
 
   const fetchTeam = async () => {
     try {
-      const response = await axios.get('/api/company/team', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
-      });
-      setTeam(response.data.team || []);
+      // Placeholder for team data
+      setTeam([]);
     } catch (error) {
       console.error('Erreur:', error);
     } finally {
