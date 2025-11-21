@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { setPageTitle } from '../utils/pageTitle';
-import '../styles/profile-modern.css';
 
 export default function TenderSecuritySettings() {
   const [settings, setSettings] = useState({

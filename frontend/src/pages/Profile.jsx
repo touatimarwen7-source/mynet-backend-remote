@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { authAPI } from '../api';
 import { setPageTitle } from '../utils/pageTitle';
-import '../styles/profile-modern.css';
 
 export default function Profile({ user }) {
   useEffect(() => {

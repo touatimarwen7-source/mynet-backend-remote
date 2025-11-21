@@ -1,4 +1,3 @@
-import '../styles/dashboardCards.css';
 
 export default function DashboardCards({ cards }) {
   return (

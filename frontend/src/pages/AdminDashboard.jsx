@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import { setPageTitle } from '../utils/pageTitle';
 import DashboardCards from '../components/DashboardCards';
-import '../styles/corporate-design.css';
-import '../styles/dashboard-header-corporate.css';
-import '../styles/dashboardCards-compact.css';
-import '../styles/dashboard-general-corporate.css';
-import '../styles/tables-dense.css';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({

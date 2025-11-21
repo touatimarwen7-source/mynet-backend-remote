@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useContext } from 'react';
 import { DarkModeContext } from '../contexts/DarkModeContext';
-import '../styles/languageSwitcher.css';
 
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation();

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { setPageTitle } from '../utils/pageTitle';
 
-import '../styles/pricingpage.css';
 
 export default function PricingPage() {
   setPageTitle('Tarification et Forfaits');

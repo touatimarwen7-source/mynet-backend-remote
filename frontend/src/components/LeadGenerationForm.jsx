@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import '../styles/leadform.css';
 
 export default function LeadGenerationForm() {
   const [formData, setFormData] = useState({

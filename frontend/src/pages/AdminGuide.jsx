@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { setPageTitle } from '../utils/pageTitle';
-import '../styles/adminGuide.css';
 
 export default function AdminGuide() {
   useEffect(() => {

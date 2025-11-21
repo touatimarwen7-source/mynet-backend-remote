@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { setPageTitle } from '../utils/pageTitle';
 
-import '../styles/aboutpage.css';
 
 export default function AboutPage() {
   setPageTitle('À Propos de MyNet.tn');

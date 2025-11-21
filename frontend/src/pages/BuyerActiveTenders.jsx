@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { procurementAPI } from '../api';
 import { formatDate, parseDate } from '../utils/dateFormatter';
 import { setPageTitle } from '../utils/pageTitle';
-import '../styles/corporate-design.css';
-import '../styles/tables-dense.css';
 
 export default function BuyerActiveTenders() {
   const navigate = useNavigate();

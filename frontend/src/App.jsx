@@ -66,7 +66,6 @@ import ToastContainer from './components/ToastContainer';
 import Sidebar from './components/Sidebar';
 import { ToastContext } from './contexts/ToastContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
-import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);

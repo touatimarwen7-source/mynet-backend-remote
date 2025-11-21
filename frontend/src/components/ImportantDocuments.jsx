@@ -1,4 +1,3 @@
-import '../styles/importantDocuments.css';
 
 export default function ImportantDocuments({ documents, title = 'Documents Importants' }) {
   if (!documents || documents.length === 0) {

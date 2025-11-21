@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import '../styles/advertisement.css';
 
 export default function DynamicAdvertisement() {
   const [advertisements] = useState([

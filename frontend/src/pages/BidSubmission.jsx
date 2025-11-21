@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { procurementAPI } from '../api';
 import { setPageTitle } from '../utils/pageTitle';
-import '../styles/corporate-design.css';
 
 export default function BidSubmission() {
   const { tenderId } = useParams();

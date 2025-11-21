@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/hero-search.css';
 
 export default function HeroSearch() {
   const navigate = useNavigate();

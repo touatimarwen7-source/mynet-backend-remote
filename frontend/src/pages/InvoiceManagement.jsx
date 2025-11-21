@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { procurementAPI } from '../api';
 import { setPageTitle } from '../utils/pageTitle';
-import '../styles/corporate-design.css';
 
 export default function InvoiceManagement() {
   const [invoices, setInvoices] = useState([]);

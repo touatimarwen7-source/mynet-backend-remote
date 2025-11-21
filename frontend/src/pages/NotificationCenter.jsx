@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { setPageTitle } from '../utils/pageTitle';
-import '../styles/corporate-design.css';
 
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getNextTierInfo, UPGRADE_VALUES, SERVICE_DESCRIPTIONS } from '../utils/subscriptionTiers';
-import '../styles/upgradeModal.css';
 
 export default function UpgradeModal({ isOpen, onClose, currentTier, featureKey }) {
   const navigate = useNavigate();

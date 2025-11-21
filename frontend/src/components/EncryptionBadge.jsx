@@ -1,5 +1,4 @@
 import Tooltip from './Tooltip';
-import '../styles/badges.css';
 
 export default function EncryptionBadge({ size = 'md', level = 'AES-256' }) {
   const sizes = {

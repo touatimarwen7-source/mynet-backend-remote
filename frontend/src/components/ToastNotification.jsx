@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import '../styles/toasts.css';
 
 export default function ToastNotification({ id, message, type = 'info', duration = 4000, onClose }) {
   useEffect(() => {

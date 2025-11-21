@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import '../styles/alert-strip.css';
 
 export default function AlertStrip() {
   const [alerts, setAlerts] = useState([]);

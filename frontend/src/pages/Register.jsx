@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authAPI } from '../api';
 import { setPageTitle } from '../utils/pageTitle';
-import '../styles/register-custom.css';
 
 export default function Register() {
   const [searchParams] = useSearchParams();

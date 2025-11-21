@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/advanced-search.css';
 
 export default function AdvancedSearch() {
   const [category, setCategory] = useState('tous');

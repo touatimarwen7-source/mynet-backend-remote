@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { setPageTitle } from '../utils/pageTitle';
 import { formatDate } from '../utils/dateFormatter';
-import '../styles/corporate-design.css';
 
 export default function DeliveryManagement() {
   const [deliveries, setDeliveries] = useState([

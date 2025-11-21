@@ -1,4 +1,3 @@
-import '../styles/howitworks.css';
 
 export default function HowItWorks() {
   const buyerSteps = [

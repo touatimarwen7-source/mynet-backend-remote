@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import Tooltip from './Tooltip';
-import '../styles/tables.css';
 
 export default function EnhancedTable({
   data = [],

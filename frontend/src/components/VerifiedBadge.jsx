@@ -1,5 +1,4 @@
 import Tooltip from './Tooltip';
-import '../styles/badges.css';
 
 export default function VerifiedBadge({ size = 'md', showText = true }) {
   const sizes = {

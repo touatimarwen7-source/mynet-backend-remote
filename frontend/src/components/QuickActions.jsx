@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import '../styles/quickActions.css';
 
 export default function QuickActions({ actions }) {
   const navigate = useNavigate();

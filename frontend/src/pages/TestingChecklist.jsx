@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import '../styles/corporate-design.css';
 
 export default function TestingChecklist() {
   const [checks, setChecks] = useState([

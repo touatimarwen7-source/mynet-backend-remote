@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { setPageTitle } from '../utils/pageTitle';
 
-import '../styles/featurespage.css';
 
 export default function FeaturesPage() {
   setPageTitle('Solutions et Fonctionnalités');

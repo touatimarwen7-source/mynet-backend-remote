@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { setPageTitle } from '../utils/pageTitle';
 
-import '../styles/contactpage.css';
 
 export default function ContactPage() {
   setPageTitle('Contact et Support');

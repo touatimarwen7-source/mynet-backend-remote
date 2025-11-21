@@ -6,8 +6,6 @@ import DynamicAdvertisement from '../components/DynamicAdvertisement';
 import HowItWorks from '../components/HowItWorks';
 import LeadGenerationForm from '../components/LeadGenerationForm';
 import HeroSearch from '../components/HeroSearch';
-import '../styles/hero-section-search-only.css';
-import '../styles/homepage.css';
 
 export default function HomePage() {
   setPageTitle('Accueil');
