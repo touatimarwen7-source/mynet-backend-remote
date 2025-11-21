@@ -56,9 +56,9 @@ export default function CreateOffer() {
           technical_response: ''
         }))
       }));
-      addToast('تم تحميل المناقصة بنجاح', 'success', 2000);
+      addToast('L'appel d'offres a été chargé avec succès', 'success', 2000);
     } catch (err) {
-      const errorMessage = 'خطأ في تحميل المناقصة: ' + err.message;
+      const errorMessage = 'Erreur lors du chargement de l'appel d'offres: ' + err.message;
       setError(errorMessage);
       addToast(errorMessage, 'error', 4000);
     } finally {
@@ -71,7 +71,7 @@ export default function CreateOffer() {
       const response = await procurementAPI.getMyOffers(); // محاكاة الكتالوج
       setCatalogProducts(response.data.offers || []);
     } catch (err) {
-      console.error('خطأ في جلب الكتالوج:', err);
+      console.error('Erreur lors de la récupération du catalogue:', err);
     }
   };
 
@@ -163,15 +163,15 @@ export default function CreateOffer() {
 
       await procurementAPI.createOffer(formData);
       setSuccess(true);
-      addToast('✅ تم إرسال عرضك بنجاح وتشفيره بأمان!', 'success', 2000);
+      addToast('✅ Votre offre a été envoyée avec succès et chiffrée en toute sécurité!', 'success', 2000);
       
       setTimeout(() => {
         navigate('/my-offers');
       }, 2500);
     } catch (err) {
       const errorMsg = err.response?.data?.error || err.message;
-      setError('❌ خطأ في إرسال العرض: ' + errorMsg);
-      addToast('❌ خطأ في إرسال العرض', 'error', 4000);
+      setError('❌ Erreur lors de l'envoi de l'offre: ' + errorMsg);
+      addToast('❌ Erreur lors de l'envoi de l'offre', 'error', 4000);
     } finally {
       setSubmitting(false);
     }
@@ -186,7 +186,7 @@ export default function CreateOffer() {
         ← رجوع
       </button>
 
-      {/* رسالة الخطأ الكبيرة للمناقصات المنتهية */}
+      {/* Message d'erreur pour les appels d'offres expirés */}
       {isDeadlinePassed && (
         <div style={{
           marginTop: '1rem',
@@ -206,7 +206,7 @@ export default function CreateOffer() {
       {error && <div className="alert alert-error" style={{ marginTop: '1rem' }}>{error}</div>}
       {success && (
         <div className="alert alert-success" style={{ marginTop: '1rem' }}>
-          ✅ تم إرسال عرضك بنجاح وتشفيره بأمان! Redirection vers mes offres...
+          ✅ Votre offre a été envoyée avec succès et chiffrée en toute sécurité! Redirection vers mes offres...
         </div>
       )}
 
@@ -435,7 +435,7 @@ export default function CreateOffer() {
 
               <div style={{ padding: '1rem', backgroundColor: '#fff3cd', border: '1px solid #ffc107', borderRadius: '4px', color: '#856404' }}>
                 <strong>🔒 تنبيه أمان:</strong>
-                <p>سيتم تشفير جميع بيانات عرضك المالية بتقنية AES-256. فقط المشتري يمكنه فك التشفير والاطلاع على التفاصيل المالية.</p>
+                <p>Toutes les données financières de votre offre seront chiffrées avec AES-256. Seul l'acheteur pourra déchiffrer et accéder aux détails financiers.</p>
               </div>
 
               <div style={{ padding: '1rem', backgroundColor: '#d4edda', border: '1px solid #c3e6cb', borderRadius: '4px', color: '#155724' }}>
@@ -447,9 +447,9 @@ export default function CreateOffer() {
                     style={{ marginTop: '0.25rem' }}
                   />
                   <span>
-                    <strong>✓ تعهد الإرسال</strong>
+                    <strong>✓ Engagement d'envoi</strong>
                     <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>
-                      أؤكد أنني قرأت وفهمت جميع شروط وبنود المناقصة، وأن هذا العرض سارٍ للفترة المحددة أعلاه.
+                      Je confirme que j'ai lu et compris tous les termes et conditions de l'appel d'offres, et que cette offre est valable pour la période indiquée ci-dessus.
                     </p>
                   </span>
                 </label>
@@ -463,7 +463,7 @@ export default function CreateOffer() {
                   style={{ padding: '0.75rem 1.5rem' }}
                   disabled={submitting || isDeadlinePassed}
                 >
-                  ← العودة لتعديل البنود
+                  ← Retour à la modification des articles
                 </button>
                 <button
                   type="submit"
@@ -477,7 +477,7 @@ export default function CreateOffer() {
                     opacity: submitting || !offerData.commitment ? 0.6 : 1
                   }}
                 >
-                  {submitting ? '⏳ Chiffrement et envoi de l'offre en cours...' : '🔐 تشفير وإرسال العرض الآن'}
+                  {submitting ? '⏳ Chiffrement et envoi de l'offre en cours...' : '🔐 Chiffrer et envoyer l'offre maintenant'}
                 </button>
               </div>
             </div>
@@ -485,7 +485,7 @@ export default function CreateOffer() {
         </form>
       </div>
 
-      {/* نافذة الكتالوج */}
+      {/* Fenêtre du catalogue */}
       {showCatalogModal && (
         <div style={{
           position: 'fixed',
