@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import HomePage from './pages/HomePage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import TenderList from './pages/TenderList';
@@ -128,6 +129,9 @@ function App() {
 
         <main className="main-content">
           <Routes>
+            {/* Page d'Accueil */}
+            <Route path="/" element={!user ? <HomePage /> : <Navigate to="/tenders" />} />
+
             {/* Authentification */}
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/register" element={<Register />} />
@@ -232,7 +236,6 @@ function App() {
             />
 
             {/* Par défaut */}
-            <Route path="/" element={<Navigate to="/tenders" />} />
             <Route path="*" element={<Navigate to="/tenders" />} />
           </Routes>
         </main>
