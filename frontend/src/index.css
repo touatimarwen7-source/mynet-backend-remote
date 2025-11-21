@@ -18,9 +18,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   direction: ltr;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  background-attachment: fixed;
-  color: var(--color-grey-dark);
+  background: #fafafa;
+  color: #333333;
   min-height: 100vh;
 }
 
