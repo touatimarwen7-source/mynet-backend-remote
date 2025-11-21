@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { setPageTitle } from '../utils/pageTitle';
 
 export default function SubscriptionTiers() {
   const [tiers, setTiers] = useState([]);
@@ -14,12 +15,13 @@ export default function SubscriptionTiers() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setPageTitle('Gestion des Forfaits');
     fetchTiers();
   }, []);
 
   const fetchTiers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/subscription-tiers', {
+      const response = await axios.get('http://localhost:3000/api/admin/subscription-tiers', {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
       setTiers(response.data.tiers || []);
@@ -33,28 +35,28 @@ export default function SubscriptionTiers() {
   const handleCreateTier = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/admin/subscription-tiers', newTier, {
+      await axios.post('http://localhost:3000/api/admin/subscription-tiers', newTier, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      alert('تم إنشاء الباقة بنجاح');
+      alert('Forfait créé avec succès');
       setNewTier({ name: '', price: 0, description: '', max_users: 10, features: [] });
       setShowForm(false);
       fetchTiers();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error);
+      alert('Erreur: ' + error.response?.data?.error);
     }
   };
 
   const handleDeleteTier = async (tierId) => {
-    if (!confirm('هل تأكد من حذف هذه الباقة؟')) return;
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce forfait?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/subscription-tiers/${tierId}`, {
+      await axios.delete(`http://localhost:3000/api/admin/subscription-tiers/${tierId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      alert('تم حذف الباقة بنجاح');
+      alert('Forfait supprimé');
       fetchTiers();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error);
+      alert('Erreur: ' + error.response?.data?.error);
     }
   };
 
@@ -62,27 +64,27 @@ export default function SubscriptionTiers() {
 
   return (
     <div className="subscription-tiers">
-      <h1>إدارة الباقات</h1>
+      <h1>💳 Gestion des Forfaits</h1>
 
       <button 
         className="btn btn-primary add-tier-btn"
         onClick={() => setShowForm(!showForm)}
       >
-        {showForm ? 'إلغاء' : '+ إضافة باقة جديدة'}
+        {showForm ? 'Annuler' : '➕ Ajouter un Forfait'}
       </button>
 
       {showForm && (
         <form onSubmit={handleCreateTier} className="tier-form">
-          <h2>إنشاء باقة جديدة</h2>
+          <h2>Créer un Nouveau Forfait</h2>
 
           <div className="form-group">
-            <label>اسم الباقة:</label>
+            <label>Nom du Forfait:</label>
             <select 
               value={newTier.name}
               onChange={(e) => setNewTier({...newTier, name: e.target.value})}
               required
             >
-              <option value="">اختر الباقة</option>
+              <option value="">Sélectionner un forfait</option>
               <option value="Silver">Silver</option>
               <option value="Gold">Gold</option>
               <option value="Platinum">Platinum</option>
@@ -91,7 +93,7 @@ export default function SubscriptionTiers() {
 
           <div className="form-row">
             <div className="form-group">
-              <label>السعر الشهري:</label>
+              <label>Prix Mensuel (TND):</label>
               <input 
                 type="number" 
                 value={newTier.price}
@@ -102,7 +104,7 @@ export default function SubscriptionTiers() {
             </div>
 
             <div className="form-group">
-              <label>أقصى عدد مستخدمين:</label>
+              <label>Nombre Max d'Utilisateurs:</label>
               <input 
                 type="number" 
                 value={newTier.max_users}
@@ -113,7 +115,7 @@ export default function SubscriptionTiers() {
           </div>
 
           <div className="form-group">
-            <label>الوصف:</label>
+            <label>Description:</label>
             <textarea 
               value={newTier.description}
               onChange={(e) => setNewTier({...newTier, description: e.target.value})}
@@ -121,37 +123,37 @@ export default function SubscriptionTiers() {
             />
           </div>
 
-          <button type="submit" className="btn btn-success">إنشاء الباقة</button>
+          <button type="submit" className="btn btn-success">✓ Créer le Forfait</button>
         </form>
       )}
 
-      {/* قائمة الباقات */}
       <div className="tiers-grid">
-        {tiers.length === 0 ? (
-          <p className="empty-state">لا توجد باقات</p>
-        ) : (
-          tiers.map(tier => (
-            <div key={tier.id} className="tier-card">
-              <h3>{tier.name}</h3>
-              <p className="price">{tier.price} د.ت<span>/شهرياً</span></p>
-              <p>{tier.description}</p>
-              <div className="tier-details">
-                <p>👥 حتى {tier.max_users} مستخدم</p>
-                <ul className="features-list">
-                  {tier.features.map((feature, idx) => (
-                    <li key={idx}>✓ {feature}</li>
+        {tiers.map((tier) => (
+          <div key={tier.id} className="tier-card">
+            <h3>{tier.name}</h3>
+            <p className="price">{tier.price} TND/mois</p>
+            <p className="description">{tier.description}</p>
+            <p><strong>Max Utilisateurs:</strong> {tier.max_users}</p>
+            
+            {tier.features && tier.features.length > 0 && (
+              <div className="features-list">
+                <h4>Fonctionnalités:</h4>
+                <ul>
+                  {tier.features.map((f, idx) => (
+                    <li key={idx}>✓ {f}</li>
                   ))}
                 </ul>
               </div>
-              <button 
-                className="btn-delete"
-                onClick={() => handleDeleteTier(tier.id)}
-              >
-                حذف
-              </button>
-            </div>
-          ))
-        )}
+            )}
+
+            <button 
+              className="btn btn-danger"
+              onClick={() => handleDeleteTier(tier.id)}
+            >
+              🗑️ Supprimer
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

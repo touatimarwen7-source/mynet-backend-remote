@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { setPageTitle } from '../utils/pageTitle';
 
 export default function SupplierProfile() {
   const [profile, setProfile] = useState(null);
@@ -7,17 +8,21 @@ export default function SupplierProfile() {
   const [categories, setCategories] = useState([]);
   const [showPublicProfile, setShowPublicProfile] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [editData, setEditData] = useState({});
 
   useEffect(() => {
+    setPageTitle('Profil du Fournisseur');
     fetchProfile();
   }, []);
 
   const fetchProfile = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/supplier/profile', {
+      const response = await axios.get('http://localhost:3000/api/supplier/profile', {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
       setProfile(response.data.profile);
+      setEditData(response.data.profile);
       setDocuments(response.data.documents || []);
       setCategories(response.data.categories || []);
     } catch (error) {
@@ -36,16 +41,42 @@ export default function SupplierProfile() {
     formData.append('type', 'ISO');
 
     try {
-      await axios.post('http://localhost:5000/api/supplier/documents', formData, {
+      await axios.post('http://localhost:3000/api/supplier/documents', formData, {
         headers: { 
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           'Content-Type': 'multipart/form-data'
         }
       });
-      alert('تم رفع الوثيقة بنجاح');
+      alert('Document uploadé avec succès');
       fetchProfile();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error);
+      alert('Erreur: ' + error.response?.data?.error);
+    }
+  };
+
+  const handleDeleteDocument = async (docId) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce document?')) return;
+    try {
+      await axios.delete(`http://localhost:3000/api/supplier/documents/${docId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      });
+      alert('Document supprimé');
+      fetchProfile();
+    } catch (error) {
+      alert('Erreur: ' + error.response?.data?.error);
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      await axios.put('http://localhost:3000/api/supplier/profile', editData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      });
+      setProfile(editData);
+      setEditing(false);
+      alert('Profil mis à jour avec succès');
+    } catch (error) {
+      alert('Erreur: ' + error.response?.data?.error);
     }
   };
 
@@ -53,54 +84,83 @@ export default function SupplierProfile() {
 
   return (
     <div className="supplier-profile">
-      <h1>ملف التعريف</h1>
+      <h1>🏢 Profil du Fournisseur</h1>
 
       <div className="profile-layout">
-        {/* معلومات الشركة */}
+        {/* Données de l'Entreprise */}
         <div className="profile-section">
-          <h2>بيانات الشركة</h2>
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+            <h2>📋 Données de l'Entreprise</h2>
+            {!editing && <button className="btn btn-primary" onClick={() => setEditing(true)}>✏️ Modifier</button>}
+          </div>
+
           {profile && (
             <div className="company-info">
-              <div className="info-row">
-                <label>اسم الشركة:</label>
-                <p>{profile.company_name}</p>
-              </div>
-              <div className="info-row">
-                <label>الرقم التجاري:</label>
-                <p>{profile.commercial_number}</p>
-              </div>
-              <div className="info-row">
-                <label>المقر:</label>
-                <p>{profile.location}</p>
-              </div>
-              <div className="info-row">
-                <label>الهاتف:</label>
-                <p>{profile.phone}</p>
-              </div>
+              {editing ? (
+                <div>
+                  <div className="form-group">
+                    <label>Nom de l'Entreprise:</label>
+                    <input type="text" value={editData.company_name || ''} onChange={(e) => setEditData({...editData, company_name: e.target.value})} />
+                  </div>
+                  <div className="form-group">
+                    <label>Numéro Commercial:</label>
+                    <input type="text" value={editData.commercial_number || ''} onChange={(e) => setEditData({...editData, commercial_number: e.target.value})} />
+                  </div>
+                  <div className="form-group">
+                    <label>Siège Social:</label>
+                    <input type="text" value={editData.location || ''} onChange={(e) => setEditData({...editData, location: e.target.value})} />
+                  </div>
+                  <div className="form-group">
+                    <label>Téléphone:</label>
+                    <input type="tel" value={editData.phone || ''} onChange={(e) => setEditData({...editData, phone: e.target.value})} />
+                  </div>
+                  <button className="btn btn-success" onClick={handleSaveProfile}>💾 Sauvegarder</button>
+                  <button className="btn btn-secondary" onClick={() => setEditing(false)}>Annuler</button>
+                </div>
+              ) : (
+                <div>
+                  <div className="info-row">
+                    <label>Nom de l'Entreprise:</label>
+                    <p>{profile.company_name}</p>
+                  </div>
+                  <div className="info-row">
+                    <label>Numéro Commercial:</label>
+                    <p>{profile.commercial_number}</p>
+                  </div>
+                  <div className="info-row">
+                    <label>Siège Social:</label>
+                    <p>{profile.location}</p>
+                  </div>
+                  <div className="info-row">
+                    <label>Téléphone:</label>
+                    <p>{profile.phone}</p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        {/* مجالات الخبرة */}
+        {/* Domaines d'Expertise */}
         <div className="profile-section">
-          <h2>مجالات الخبرة</h2>
+          <h2>🎯 Domaines d'Expertise</h2>
           <div className="categories-tags">
             {categories.length === 0 ? (
-              <p className="empty-state">لم تحدد مجالات خبرة بعد</p>
+              <p className="empty-state">Aucun domaine défini</p>
             ) : (
               categories.map((cat, idx) => (
-                <span key={idx} className="tag">{cat}</span>
+                <span key={idx} className="tag badge">{cat}</span>
               ))
             )}
           </div>
         </div>
 
-        {/* الوثائق والشهادات */}
+        {/* Documents et Certificats */}
         <div className="profile-section">
-          <h2>الوثائق والشهادات</h2>
+          <h2>📄 Documents et Certificats</h2>
           
           <div className="document-upload">
-            <label>رفع وثيقة جديدة:</label>
+            <label>Télécharger un Document:</label>
             <input 
               type="file" 
               onChange={handleDocumentUpload}
@@ -110,40 +170,58 @@ export default function SupplierProfile() {
 
           <div className="documents-list">
             {documents.length === 0 ? (
-              <p className="empty-state">لم تقم برفع أي وثائق بعد</p>
+              <p className="empty-state">Aucun document uploadé</p>
             ) : (
-              documents.map((doc, idx) => (
-                <div key={idx} className="document-item">
-                  <div className="doc-info">
-                    <h4>{doc.type}</h4>
-                    <p>تاريخ الرفع: {new Date(doc.uploaded_at).toLocaleDateString('fr-FR')}</p>
-                    <p>تاريخ الانتهاء: {new Date(doc.expiry_date).toLocaleDateString('fr-FR')}</p>
-                  </div>
-                  <div className={`expiry-status ${doc.days_left < 30 ? 'warning' : 'ok'}`}>
-                    {doc.days_left < 30 ? `⚠️ ${doc.days_left} يوم متبقي` : '✓ صحيح'}
-                  </div>
-                </div>
-              ))
+              <table style={{width: '100%', marginTop: '1rem'}}>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Date d'Upload</th>
+                    <th>Date d'Expiration</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {documents.map((doc, idx) => (
+                    <tr key={idx}>
+                      <td>{doc.type}</td>
+                      <td>{new Date(doc.uploaded_at).toLocaleDateString('fr-FR')}</td>
+                      <td>{new Date(doc.expiry_date).toLocaleDateString('fr-FR')}</td>
+                      <td>
+                        {doc.days_left < 30 ? (
+                          <span className="badge badge-warning">⚠️ {doc.days_left} jours</span>
+                        ) : (
+                          <span className="badge badge-success">✓ Valide</span>
+                        )}
+                      </td>
+                      <td>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleDeleteDocument(doc.id)}>🗑️</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </div>
         </div>
 
-        {/* الملف العام */}
+        {/* Profil Public */}
         <div className="profile-section">
-          <h2>الملف العام</h2>
+          <h2>🌐 Profil Public</h2>
           <button 
             className="btn btn-primary"
             onClick={() => setShowPublicProfile(!showPublicProfile)}
           >
-            {showPublicProfile ? 'إخفاء الملف العام' : 'عرض الملف العام'}
+            {showPublicProfile ? '🔒 Masquer le Profil Public' : '👁️ Afficher le Profil Public'}
           </button>
 
-          {showPublicProfile && (
-            <div className="public-profile-preview">
-              <h3>{profile?.company_name}</h3>
-              <p><strong>Localisation:</strong> {profile?.location}</p>
-              <p><strong>مجالات الخبرة:</strong> {categories.join(', ')}</p>
-              <p><strong>التقييم:</strong> ⭐ {profile?.average_rating || 0}/5</p>
+          {showPublicProfile && profile && (
+            <div className="public-profile-preview" style={{marginTop: '1rem', padding: '1rem', backgroundColor: '#f5f5f5', borderRadius: '8px'}}>
+              <h3>{profile.company_name}</h3>
+              <p><strong>Localisation:</strong> {profile.location}</p>
+              <p><strong>Domaines:</strong> {categories.join(', ')}</p>
+              <p><strong>Note:</strong> ⭐ {profile.average_rating || 0}/5</p>
             </div>
           )}
         </div>
