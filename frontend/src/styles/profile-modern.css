@@ -493,10 +493,20 @@
 .add-interest-form {
   display: flex;
   gap: var(--space-2);
+  align-items: stretch;
 }
 
 .add-interest-form .form-input {
   flex: 1;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4) !important;
+}
+
+.add-interest-form .btn {
+  height: 44px;
+  padding: var(--space-3) var(--space-4) !important;
+  font-size: var(--fs-sm) !important;
+  white-space: nowrap;
 }
 
 /* Tools Grid */
@@ -705,4 +715,36 @@
   .activity-icon {
     font-size: 1.25rem;
   }
+}
+
+/* Professional Emoji Replacements */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Ensure consistent button and input heights in forms */
+.form-group .form-input,
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group select {
+  min-height: 44px;
+}
+
+.btn-sm {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Professional card design */
+.tool-card {
+  border: 1px solid var(--neutral-300) !important;
+  background: white !important;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, rgba(0, 168, 232, 0.05), rgba(0, 212, 255, 0.02)) !important;
 }

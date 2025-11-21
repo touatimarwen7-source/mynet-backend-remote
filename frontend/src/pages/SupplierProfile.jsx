@@ -113,7 +113,7 @@ export default function SupplierProfile() {
     <div className="page-container">
       {/* Page Header */}
       <div className="page-header animate-slide-down">
-        <h1 className="page-title">🏢 ملف الFournisseur</h1>
+        <h1 className="page-title">🏢 Profil du Fournisseur</h1>
         <p className="page-subtitle">Gérez votre profil professionnel, vos documents et domaines de spécialisation</p>
       </div>
 
@@ -237,7 +237,7 @@ export default function SupplierProfile() {
                     <p className="info-value">{stats.submissions || 0}</p>
                   </div>
                   <div className="info-item">
-                    <label className="info-label">🏆 الPrix</label>
+                    <label className="info-label">🎖️ الPrix</label>
                     <p className="info-value">{stats.awards || 0}</p>
                   </div>
                 </div>
@@ -247,15 +247,15 @@ export default function SupplierProfile() {
 
           {/* Statistics Section */}
           <div className="profile-section animate-slide-up">
-            <h3 className="section-title">📊 Statistiques de l'Entreprise</h3>
+            <h3 className="section-title">📈 Statistiques de l'Entreprise</h3>
             <div className="stats-grid">
               <div className="stat-card">
-                <div className="stat-icon">📝</div>
+                <div className="stat-icon">📄</div>
                 <div className="stat-number">{stats.total_tenders || 0}</div>
                 <div className="stat-label">المناقصات</div>
               </div>
               <div className="stat-card">
-                <div className="stat-icon">🏆</div>
+                <div className="stat-icon">🎖️</div>
                 <div className="stat-number">{stats.won_awards || 0}</div>
                 <div className="stat-label">Prix Gagnés</div>
               </div>
@@ -282,7 +282,7 @@ export default function SupplierProfile() {
                 {activity.slice(0, 5).map((item, idx) => (
                   <div key={idx} className="activity-item">
                     <div className="activity-icon">
-                      {item.type === 'bid' ? '📤' : item.type === 'award' ? '🏆' : item.type === 'review' ? '⭐' : '📌'}
+                      {item.type === 'bid' ? '📤' : item.type === 'award' ? '🎖️' : item.type === 'review' ? '⭐' : '🎯'}
                     </div>
                     <div className="activity-content">
                       <p className="activity-title">{item.description || item.type}</p>
@@ -393,7 +393,7 @@ export default function SupplierProfile() {
                 <div className="preview-content">
                   <p><strong>Domaines:</strong> {categories.join(', ') || '—'}</p>
                   <p><strong>التقييم:</strong> ⭐ {profile.average_rating || 0}/5</p>
-                  <p><strong>Prix Gagnés:</strong> 🏆 {stats.won_awards || 0}</p>
+                  <p><strong>Prix Gagnés:</strong> 🎖️ {stats.won_awards || 0}</p>
                 </div>
               </div>
             )}

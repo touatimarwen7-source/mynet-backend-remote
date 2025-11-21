@@ -211,7 +211,7 @@ export default function Profile({ user }) {
 
             {/* Activity Section */}
             <div className="profile-section animate-slide-up">
-              <h3 className="section-title">📊 Activité Récente</h3>
+              <h3 className="section-title">📈 Activité Récente</h3>
               {activity.length === 0 ? (
                 <div className="empty-state">Aucune activité pour le moment</div>
               ) : (
@@ -219,7 +219,7 @@ export default function Profile({ user }) {
                   {activity.slice(0, 5).map((item, idx) => (
                     <div key={idx} className="activity-item">
                       <div className="activity-icon">
-                        {item.type === 'login' ? '🔓' : item.type === 'update' ? '✏️' : item.type === 'tender' ? '📝' : '📌'}
+                        {item.type === 'login' ? '📥' : item.type === 'update' ? '📝' : item.type === 'tender' ? '📄' : '🎯'}
                       </div>
                       <div className="activity-content">
                         <p className="activity-title">{item.description || item.type}</p>
@@ -233,7 +233,7 @@ export default function Profile({ user }) {
 
             {/* Interests Section */}
             <div className="profile-section animate-slide-up">
-              <h3 className="section-title">❤️ Intérêts et Préférences</h3>
+              <h3 className="section-title">🎯 Intérêts et Préférences</h3>
               <div className="interests-container">
                 <div className="interests-list">
                   {interests.length === 0 ? (
@@ -266,7 +266,7 @@ export default function Profile({ user }) {
                     onClick={addInterest}
                     className="btn btn-primary btn-sm"
                   >
-                    ➕ إضافة
+                    Ajouter
                   </button>
                 </div>
               </div>
@@ -274,7 +274,7 @@ export default function Profile({ user }) {
 
             {/* Search Tools Section */}
             <div className="profile-section animate-slide-up">
-              <h3 className="section-title">🔍 Outils de Recherche Avancée</h3>
+              <h3 className="section-title">⚙️ Outils de Recherche Avancée</h3>
               <div className="tools-grid">
                 <div className="tool-card">
                   <div className="tool-icon">📋</div>
@@ -296,7 +296,7 @@ export default function Profile({ user }) {
                 </div>
                 <div className="tool-card">
                   <div className="tool-icon">⭐</div>
-                  <h4>التوصيات</h4>
+                  <h4>Recommandations</h4>
                   <p>Obtenez des recommandations personnalisées basées sur vos préférences</p>
                   <button className="btn btn-outline btn-sm">Utiliser</button>
                 </div>
@@ -359,7 +359,7 @@ export default function Profile({ user }) {
                     <div key={alert.id} className="alert-item">
                       <div className="alert-content">
                         <p className="alert-type">
-                          {alert.type === 'tender' ? `📝 Appels d'Offres` : 
+                          {alert.type === 'tender' ? `📄 Appels d'Offres` : 
                            alert.type === 'award' ? `🏆 Prix` :
                            alert.type === 'supplier' ? `🏢 Fournisseurs` : `📊 Marché`}
                         </p>
@@ -384,7 +384,7 @@ export default function Profile({ user }) {
                 className="btn btn-primary btn-lg hover-lift"
                 onClick={() => setEditing(true)}
               >
-                ✏️ Modifier le Profil
+                📝 Modifier le Profil
               </button>
             </div>
           </>
