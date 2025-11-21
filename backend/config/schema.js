@@ -402,7 +402,13 @@ const schemaQueries = [
     `CREATE INDEX IF NOT EXISTS idx_tenders_archived ON tenders(is_archived);`,
     `CREATE INDEX IF NOT EXISTS idx_offers_archived ON offers(is_archived);`,
     `CREATE INDEX IF NOT EXISTS idx_po_archived ON purchase_orders(is_archived);`,
-    `CREATE INDEX IF NOT EXISTS idx_invoices_archived ON invoices(is_archived);`
+    `CREATE INDEX IF NOT EXISTS idx_invoices_archived ON invoices(is_archived);`,
+
+    // Alter statements to ensure all columns exist
+    `ALTER TABLE messages ADD COLUMN IF NOT EXISTS related_entity_type VARCHAR(50);`,
+    `ALTER TABLE messages ADD COLUMN IF NOT EXISTS related_entity_id INTEGER;`,
+    `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS related_entity_type VARCHAR(50);`,
+    `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS related_entity_id INTEGER;`
 ];
 
 async function initializeSchema(pool) {
