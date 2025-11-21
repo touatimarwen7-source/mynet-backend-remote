@@ -8,8 +8,6 @@ export default function UnifiedHeader() {
   const [userRole, setUserRole] = useState(null);
   const [userName, setUserName] = useState('Utilisateur');
   const [searchQuery, setSearchQuery] = useState('');
-  const [language, setLanguage] = useState('fr');
-  const [notifications, setNotifications] = useState(3);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -41,9 +39,9 @@ export default function UnifiedHeader() {
   ];
 
   const authenticatedLinks = [
-    { label: '📊 Tableau de Bord', href: '/dashboard' },
-    { label: '📋 Appels d\'Offres', href: '/tenders' },
-    { label: '💼 Mon Profil', href: '/profile' }
+    { label: 'Tableau de Bord', href: '/dashboard' },
+    { label: 'Appels d\'Offres', href: '/tenders' },
+    { label: 'Mon Profil', href: '/profile' }
   ];
 
   const handleSearch = (e) => {
@@ -110,7 +108,6 @@ export default function UnifiedHeader() {
         {/* CENTER SECTION: Global Search */}
         {isAuthenticated && (
           <form className="header-search" onSubmit={handleSearch}>
-            <span className="search-icon">🔍</span>
             <input
               type="text"
               placeholder="Rechercher appels d'offres..."
@@ -118,6 +115,9 @@ export default function UnifiedHeader() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            <button type="submit" className="search-btn" aria-label="Rechercher">
+              ↵
+            </button>
           </form>
         )}
 
@@ -125,49 +125,29 @@ export default function UnifiedHeader() {
         <div className="header-right">
           {isAuthenticated ? (
             <>
-              {/* Notifications */}
-              <button className="icon-btn notification-btn" title="Notifications">
-                <span className="icon">🔔</span>
-                {notifications > 0 && (
-                  <span className="badge">{notifications}</span>
-                )}
-              </button>
-
-              {/* Language Switcher */}
-              <select
-                className="language-switcher"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                title="Changer la langue"
-              >
-                <option value="fr">🇫🇷 FR</option>
-                <option value="en">🇬🇧 EN</option>
-                <option value="ar">🇹🇳 AR</option>
-              </select>
-
               {/* Profile Menu */}
               <div className="profile-menu">
-                <span className="profile-avatar">👤</span>
+                <span className="profile-avatar">{userName.charAt(0).toUpperCase()}</span>
                 <div className="profile-info">
                   <span className="profile-name">{userName}</span>
                   <span className="profile-role">
-                    {userRole === 'buyer' ? '🏢 Acheteur' : '🏭 Fournisseur'}
+                    {userRole === 'buyer' ? 'Acheteur' : 'Fournisseur'}
                   </span>
                 </div>
               </div>
 
               {/* Logout Button */}
               <button className="btn-logout" onClick={handleLogout} title="Déconnexion">
-                🚪
+                Déconnexion
               </button>
             </>
           ) : (
             <>
               <a href="/login" className="btn-login">
-                🔐 Connexion
+                Connexion
               </a>
               <a href="/register" className="btn-register">
-                ✍️ Inscription
+                Inscription
               </a>
             </>
           )}
@@ -188,19 +168,6 @@ export default function UnifiedHeader() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="mobile-menu">
-          {isAuthenticated && (
-            <form className="mobile-search" onSubmit={handleSearch}>
-              <span className="search-icon">🔍</span>
-              <input
-                type="text"
-                placeholder="Rechercher..."
-                className="search-input"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
-          )}
-
           <nav className="mobile-nav">
             {isPublicPage || !isAuthenticated ? (
               <>
@@ -239,30 +206,25 @@ export default function UnifiedHeader() {
             {isAuthenticated ? (
               <>
                 <div className="mobile-profile">
-                  <span className="profile-avatar">👤</span>
+                  <span className="profile-avatar">{userName.charAt(0).toUpperCase()}</span>
                   <div>
                     <div className="profile-name">{userName}</div>
                     <div className="profile-role">
-                      {userRole === 'buyer' ? '🏢 Acheteur' : '🏭 Fournisseur'}
+                      {userRole === 'buyer' ? 'Acheteur' : 'Fournisseur'}
                     </div>
                   </div>
                 </div>
-                <select className="language-switcher" value={language} onChange={(e) => setLanguage(e.target.value)}>
-                  <option value="fr">🇫🇷 Français</option>
-                  <option value="en">🇬🇧 English</option>
-                  <option value="ar">🇹🇳 العربية</option>
-                </select>
                 <button className="btn-logout" onClick={handleLogout}>
-                  🚪 Déconnexion
+                  Déconnexion
                 </button>
               </>
             ) : (
               <>
                 <a href="/login" className="btn-login">
-                  🔐 Connexion
+                  Connexion
                 </a>
                 <a href="/register" className="btn-register">
-                  ✍️ Inscription
+                  Inscription
                 </a>
               </>
             )}
