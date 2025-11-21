@@ -1,6 +1,9 @@
-/* Import Design System */
+/* Import Design System & Enhancements */
 @import './styles/colors.css';
 @import './styles/designSystem.css';
+@import './styles/micro-interactions.css';
+@import './styles/typography-premium.css';
+@import './styles/z-index-system.css';
 
 /* Legacy Overrides & Custom App Styles */
 
