@@ -50,7 +50,7 @@ export default function TenderChat({ tenderId }) {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
 
   return (
     <div className="tender-chat">

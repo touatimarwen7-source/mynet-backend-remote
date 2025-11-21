@@ -118,7 +118,7 @@ export default function CreateTender() {
 
         <div style={{ display: 'flex', gap: '1rem' }}>
           <button className="btn btn-primary" disabled={loading}>
-            {loading ? 'جاري الحفظ...' : 'إنشاء المناقصة'}
+            {loading ? 'Sauvegarde en cours...' : 'إنشاء المناقصة'}
           </button>
           <button 
             type="button" 

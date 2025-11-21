@@ -116,7 +116,7 @@ export default function Register() {
           />
         </div>
         <button className="btn btn-primary" disabled={loading}>
-          {loading ? 'جاري التحميل...' : 'إنشاء حساب'}
+          {loading ? 'Chargement en cours...' : 'إنشاء حساب'}
         </button>
       </form>
     </div>

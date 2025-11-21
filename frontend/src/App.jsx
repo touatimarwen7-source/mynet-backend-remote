@@ -35,7 +35,6 @@ import { useToast } from './components/ToastContainer';
 import ToastContainer from './components/ToastContainer';
 import { ToastContext } from './contexts/ToastContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
-import LanguageSwitcher from './components/LanguageSwitcher';
 import './App.css';
 
 function App() {
@@ -71,7 +70,7 @@ function App() {
   };
 
   if (loading) {
-    return <div className="loading">جاري التحميل...</div>;
+    return <div className="loading">Chargement en cours...</div>;
   }
 
   return (
@@ -84,26 +83,25 @@ function App() {
           <div className="nav-container">
             <div className="nav-brand">
               <h1>MyNet.tn</h1>
-              <span>نظام المناقصات والمشتريات</span>
+              <span>Système de Gestion des Appels d'Offres</span>
             </div>
-            <LanguageSwitcher />
             <div className="nav-links">
               {user ? (
                 <>
-                  <a href="/tenders">المناقصات</a>
-                  {user.role === 'buyer' && <a href="/buyer-dashboard">لوحتي</a>}
-                  {user.role === 'buyer' && <a href="/create-tender">إنشاء مناقصة</a>}
-                  {user.role === 'supplier' && <a href="/supplier-search">البحث</a>}
-                  {user.role === 'supplier' && <a href="/notifications">إشعاراتي</a>}
-                  {user.role === 'supplier' && <a href="/supplier-catalog">منتجاتي</a>}
-                  {user.role === 'admin' && <a href="/admin">لوحة التحكم</a>}
-                  <a href="/profile">الملف الشخصي</a>
-                  <button onClick={handleLogout} className="btn-logout">تسجيل الخروج</button>
+                  <a href="/tenders">Appels d'offres</a>
+                  {user.role === 'buyer' && <a href="/buyer-dashboard">Mon tableau de bord</a>}
+                  {user.role === 'buyer' && <a href="/create-tender">Créer un appel d'offres</a>}
+                  {user.role === 'supplier' && <a href="/supplier-search">Rechercher</a>}
+                  {user.role === 'supplier' && <a href="/notifications">Notifications</a>}
+                  {user.role === 'supplier' && <a href="/supplier-catalog">Mon catalogue</a>}
+                  {user.role === 'admin' && <a href="/admin">Tableau de contrôle</a>}
+                  <a href="/profile">Profil</a>
+                  <button onClick={handleLogout} className="btn-logout">Déconnexion</button>
                 </>
               ) : (
                 <>
-                  <a href="/login">تسجيل الدخول</a>
-                  <a href="/register">التسجيل</a>
+                  <a href="/login">Connexion</a>
+                  <a href="/register">Inscription</a>
                 </>
               )}
             </div>
@@ -222,7 +220,7 @@ function App() {
         </main>
 
         <footer className="footer">
-          <p>&copy; 2025 MyNet.tn - نظام إدارة المناقصات والمشتريات</p>
+          <p>&copy; 2025 MyNet.tn - Système de Gestion des Appels d'Offres et des Achats</p>
         </footer>
         </div>
       </Router>

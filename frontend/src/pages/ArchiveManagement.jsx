@@ -71,7 +71,7 @@ export default function ArchiveManagement() {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
 
   return (
     <div className="archive-management">
@@ -149,7 +149,7 @@ export default function ArchiveManagement() {
                 </div>
                 <div className="job-info">
                   <p><strong>التاريخ:</strong> {new Date(job.created_at).toLocaleDateString('ar-TN')}</p>
-                  <p><strong>الملفات:</strong> {job.files_count}</p>
+                  <p><strong>Fichiers:</strong> {job.files_count}</p>
                   <p><strong>الحجم:</strong> {(job.size_mb).toFixed(2)} MB</p>
                 </div>
 

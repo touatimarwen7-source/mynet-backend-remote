@@ -56,7 +56,7 @@ export default function AuditLogViewer() {
     </div>
   );
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
 
   return (
     <div className="audit-log-viewer">

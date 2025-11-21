@@ -47,7 +47,7 @@ export default function MyOffers() {
       {error && <div className="alert alert-error">{error}</div>}
 
       {loading ? (
-        <div className="loading">جاري التحميل...</div>
+        <div className="loading">Chargement en cours...</div>
       ) : filteredOffers.length === 0 ? (
         <div className="alert alert-info">لا توجد عروض</div>
       ) : (

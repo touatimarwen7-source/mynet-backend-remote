@@ -202,7 +202,7 @@ export default function SubmitBid() {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
 
   const totalBidValue = bidData.lineItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
   const timeWarning = timeRemaining.includes('انتهت') || timeRemaining.startsWith('0س');

@@ -4,17 +4,26 @@ import frCommon from './locales/fr/common.json';
 import arCommon from './locales/ar/common.json';
 import enCommon from './locales/en/common.json';
 
-i18n.use(initReactI18next).init({
-  resources: {
-    fr: { translation: frCommon },
-    ar: { translation: arCommon },
-    en: { translation: enCommon }
-  },
-  lng: 'fr',
-  fallbackLng: 'fr',
-  interpolation: {
-    escapeValue: false
-  }
-});
+if (!i18n.isInitialized) {
+  i18n
+    .use(initReactI18next)
+    .init({
+      resources: {
+        fr: { translation: frCommon },
+        ar: { translation: arCommon },
+        en: { translation: enCommon }
+      },
+      lng: 'fr',
+      fallbackLng: 'fr',
+      ns: 'translation',
+      defaultNS: 'translation',
+      interpolation: {
+        escapeValue: false
+      },
+      react: {
+        useSuspense: false
+      }
+    });
+}
 
 export default i18n;

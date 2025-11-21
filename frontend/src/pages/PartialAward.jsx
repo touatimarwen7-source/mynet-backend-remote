@@ -63,7 +63,7 @@ export default function PartialAward() {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
   if (!tender) return <div className="alert alert-error">لم يتم العثور على المناقصة</div>;
 
   return (

@@ -41,7 +41,7 @@ export default function HealthMonitoring() {
     return '#dc3545';
   };
 
-  if (!health) return <div className="loading">جاري التحميل...</div>;
+  if (!health) return <div className="loading">Chargement en cours...</div>;
 
   return (
     <div className="health-monitoring">

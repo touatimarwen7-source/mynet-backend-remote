@@ -48,7 +48,7 @@ export default function BuyerDashboard() {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
 
   const getStatus = (savings) => {
     if (savings >= 20) return 'excellent';
@@ -58,17 +58,17 @@ export default function BuyerDashboard() {
 
   return (
     <div className="buyer-dashboard">
-      <h1>لوحة التحكم - المشتري</h1>
+      <h1>Tableau de Bord - Acheteur</h1>
 
       {/* KPIs Grid */}
       <div className="kpis-grid">
         <div className="kpi-card">
           <div className="kpi-header">
-            <h3>المناقصات النشطة</h3>
+            <h3>Appels d'offres Actifs</h3>
             <span className="traffic-light green"></span>
           </div>
           <p className="kpi-value">{stats.activeTenders}</p>
-          <p className="kpi-label">مناقصة جارية</p>
+          <p className="kpi-label">Appel d'offre en cours</p>
         </div>
 
         <div className="kpi-card">
@@ -101,7 +101,7 @@ export default function BuyerDashboard() {
 
       {/* Recent Tenders */}
       <div className="recent-section">
-        <h2>المناقصات الأخيرة</h2>
+        <h2>Appels d'offres Récents</h2>
         {recentTenders.length === 0 ? (
           <p className="empty-state">لا توجد مناقصات حالياً</p>
         ) : (

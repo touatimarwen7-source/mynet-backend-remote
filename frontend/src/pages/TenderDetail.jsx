@@ -46,7 +46,7 @@ export default function TenderDetail() {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
   if (error) return <div className="alert alert-error">{error}</div>;
   if (!tender) return <div className="alert alert-error">المناقصة غير موجودة</div>;
 

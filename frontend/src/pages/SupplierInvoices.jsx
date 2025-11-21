@@ -24,7 +24,7 @@ export default function SupplierInvoices() {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
 
   return (
     <div className="supplier-invoices">

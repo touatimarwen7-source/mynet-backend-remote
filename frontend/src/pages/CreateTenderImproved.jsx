@@ -39,7 +39,7 @@ export default function CreateTenderImproved() {
 
   const saveDraft = async () => {
     try {
-      setAutoSaveStatus('جاري الحفظ...');
+      setAutoSaveStatus('Sauvegarde en cours...');
       await axios.post('http://localhost:5000/api/procurement/tender-draft', tenderData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
@@ -319,7 +319,7 @@ export default function CreateTenderImproved() {
             </div>
 
             <div className="form-group">
-              <label>نظام التنبيهات</label>
+              <label>Système de Notifications</label>
               <select name="alertSystem" value={tenderData.alertSystem} onChange={handleInputChange}>
                 <option value="24">تنبيه قبل 24 ساعة</option>
                 <option value="48">تنبيه قبل 48 ساعة</option>
@@ -399,7 +399,7 @@ export default function CreateTenderImproved() {
           {errors.items && <span className="error">{errors.items}</span>}
 
           <div className="weighting-section">
-            <h3>نظام ترجيح معايير التقييم</h3>
+            <h3>Système de Pondération des Critères d'Évaluation</h3>
             <p>تحديد الأوزان (يجب أن تساوي 100%):</p>
             <div className="form-row">
               <div className="form-group">

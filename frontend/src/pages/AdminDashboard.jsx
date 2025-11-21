@@ -47,11 +47,11 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
 
   return (
     <div className="admin-dashboard">
-      <h1>لوحة تحكم المنصة</h1>
+      <h1>Tableau de Contrôle de la Plateforme</h1>
 
       {/* حالة الصحة */}
       {health && (
@@ -59,7 +59,7 @@ export default function AdminDashboard() {
           <h2>حالة الخادم</h2>
           <div className="health-metrics">
             <div className="metric">
-              <span>حالة النظام:</span>
+              <span>État du Système:</span>
               <strong className={`status-${health.status}`}>{health.status}</strong>
             </div>
             <div className="metric">

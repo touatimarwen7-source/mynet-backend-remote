@@ -177,7 +177,7 @@ export default function CreateOffer() {
     }
   };
 
-  if (loading) return <div className="loading">جاري تحميل المناقصة...</div>;
+  if (loading) return <div className="loading">Chargement de l'appel d'offres...</div>;
   if (!tender) return <div className="alert alert-error">المناقصة غير موجودة</div>;
 
   return (
@@ -206,7 +206,7 @@ export default function CreateOffer() {
       {error && <div className="alert alert-error" style={{ marginTop: '1rem' }}>{error}</div>}
       {success && (
         <div className="alert alert-success" style={{ marginTop: '1rem' }}>
-          ✅ تم إرسال عرضك بنجاح وتشفيره بأمان! جاري التحويل إلى صفحة عروضي...
+          ✅ تم إرسال عرضك بنجاح وتشفيره بأمان! Redirection vers mes offres...
         </div>
       )}
 
@@ -305,7 +305,7 @@ export default function CreateOffer() {
                 />
                 {offerData.attachments.length > 0 && (
                   <div style={{ marginTop: '1rem' }}>
-                    <p><strong>الملفات المرفوعة:</strong></p>
+                    <p><strong>Fichiers Téléchargés:</strong></p>
                     <ul style={{ paddingRight: '1.5rem' }}>
                       {offerData.attachments.map((file, idx) => (
                         <li key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
@@ -429,7 +429,7 @@ export default function CreateOffer() {
                   <p style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#007bff' }}>
                     💰 الإجمالي المالي: {getTotalBidAmount()} {tender.currency}
                   </p>
-                  <p><strong>الملفات المرفوعة:</strong> {offerData.attachments.length} ملف</p>
+                  <p><strong>Fichiers Téléchargés:</strong> {offerData.attachments.length} ملف</p>
                 </div>
               </div>
 
@@ -477,7 +477,7 @@ export default function CreateOffer() {
                     opacity: submitting || !offerData.commitment ? 0.6 : 1
                   }}
                 >
-                  {submitting ? '⏳ جاري تشفير وإرسال العرض...' : '🔐 تشفير وإرسال العرض الآن'}
+                  {submitting ? '⏳ Chiffrement et envoi de l'offre en cours...' : '🔐 تشفير وإرسال العرض الآن'}
                 </button>
               </div>
             </div>

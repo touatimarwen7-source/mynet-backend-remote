@@ -25,7 +25,7 @@ export default function OfferAnalysis() {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
 
   // حساب الإحصائيات
   const prices = offers.map(o => o.total_amount || 0);

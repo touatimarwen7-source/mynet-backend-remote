@@ -49,7 +49,7 @@ export default function Profile({ user }) {
     }
   };
 
-  if (loading) return <div className="loading">جاري التحميل...</div>;
+  if (loading) return <div className="loading">Chargement en cours...</div>;
   if (!profile) return <div className="alert alert-error">لم يتم العثور على الملف الشخصي</div>;
 
   return (
@@ -126,7 +126,7 @@ export default function Profile({ user }) {
 
           <div style={{ display: 'flex', gap: '1rem' }}>
             <button className="btn btn-primary" disabled={loading}>
-              {loading ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+              {loading ? 'Sauvegarde en cours...' : 'حفظ التغييرات'}
             </button>
             <button 
               type="button" 
