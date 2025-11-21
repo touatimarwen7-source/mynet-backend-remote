@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { setPageTitle } from '../utils/pageTitle';
 
+const API_BASE = '/api';
+
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState({ role: '', status: '' });
@@ -17,7 +19,7 @@ export default function UserManagement() {
   const fetchUsers = async () => {
     try {
       const queryParams = new URLSearchParams(Object.entries(filter).filter(([_, v]) => v));
-      const response = await axios.get(`http://localhost:3000/api/admin/users?${queryParams}`, {
+      const response = await axios.get(`${API_BASE}/admin/users?${queryParams}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
       setUsers(response.data.users || []);
@@ -31,41 +33,42 @@ export default function UserManagement() {
   const handleCreateUser = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/api/auth/register', newUser, {
+      await axios.post(`${API_BASE}/auth/register`, newUser, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
       setNewUser({ email: '', password: '', role: 'buyer', full_name: '' });
       setShowModal(false);
       fetchUsers();
-      alert('Utilisateur créé avec succès');
+      console.log('Utilisateur créé avec succès');
     } catch (error) {
-      alert('Erreur: ' + error.response?.data?.error);
+      console.error('Erreur:', error.response?.data?.error);
     }
   };
 
   const handleToggleStatus = async (userId, enabled) => {
     try {
       await axios.put(
-        `http://localhost:3000/api/admin/users/${userId}/status`,
+        `${API_BASE}/admin/users/${userId}/status`,
         { enabled },
         { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` } }
       );
       fetchUsers();
     } catch (error) {
-      alert('Erreur: ' + error.response?.data?.error);
+      console.error('Erreur:', error.response?.data?.error);
     }
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur?')) return;
+    const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur?');
+    if (!confirmed) return;
     try {
-      await axios.delete(`http://localhost:3000/api/admin/users/${userId}`, {
+      await axios.delete(`${API_BASE}/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
       fetchUsers();
-      alert('Utilisateur supprimé');
+      console.log('Utilisateur supprimé');
     } catch (error) {
-      alert('Erreur: ' + error.response?.data?.error);
+      console.error('Erreur:', error.response?.data?.error);
     }
   };
 

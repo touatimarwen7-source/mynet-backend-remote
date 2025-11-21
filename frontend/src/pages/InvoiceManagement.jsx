@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const API_BASE = '/api';
+
 export default function InvoiceManagement() {
   const [invoices, setInvoices] = useState([]);
   const [filter, setFilter] = useState('pending');
@@ -13,7 +15,7 @@ export default function InvoiceManagement() {
   const fetchInvoices = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/procurement/invoices?status=${filter}`, {
+      const response = await axios.get(`${API_BASE}/procurement/invoices?status=${filter}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
       setInvoices(response.data.invoices || []);
@@ -26,37 +28,37 @@ export default function InvoiceManagement() {
 
   const handleApprove = async (invoiceId) => {
     try {
-      await axios.put(`http://localhost:5000/api/procurement/invoices/${invoiceId}/approve`, {}, {
+      await axios.put(`${API_BASE}/procurement/invoices/${invoiceId}/approve`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      alert('تم الApprouver على الفاتورة');
+      console.log('تم الموافقة على الفاتورة');
       fetchInvoices();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error);
+      console.error('خطأ:', error.response?.data?.error);
     }
   };
 
   const handleReject = async (invoiceId) => {
     try {
-      await axios.put(`http://localhost:5000/api/procurement/invoices/${invoiceId}/reject`, {}, {
+      await axios.put(`${API_BASE}/procurement/invoices/${invoiceId}/reject`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      alert('تم Rejeter الفاتورة');
+      console.log('تم رفض الفاتورة');
       fetchInvoices();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error);
+      console.error('خطأ:', error.response?.data?.error);
     }
   };
 
   const handlePushToERP = async (invoiceId) => {
     try {
-      await axios.post(`http://localhost:5000/api/procurement/invoices/${invoiceId}/push-to-erp`, {}, {
+      await axios.post(`${API_BASE}/procurement/invoices/${invoiceId}/push-to-erp`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      alert('تم الإرسال إلى نظام ERP بنجاح');
+      console.log('تم الإرسال إلى نظام ERP بنجاح');
       fetchInvoices();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error);
+      console.error('خطأ:', error.response?.data?.error);
     }
   };
 

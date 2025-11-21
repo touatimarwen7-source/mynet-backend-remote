@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const API_BASE = '/api';
+
 export default function SupplierCatalog() {
   const [products, setProducts] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -19,7 +21,7 @@ export default function SupplierCatalog() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/supplier/products', {
+      const response = await axios.get(`${API_BASE}/supplier/products`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
       setProducts(response.data.products || []);
@@ -33,28 +35,29 @@ export default function SupplierCatalog() {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/supplier/products', newProduct, {
+      await axios.post(`${API_BASE}/supplier/products`, newProduct, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      alert('تم إضافة المنتج بنجاح');
+      console.log('تم إضافة المنتج بنجاح');
       setNewProduct({ name: '', category: '', description: '', specifications: '', price: 0 });
       setShowForm(false);
       fetchProducts();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error);
+      console.error('خطأ:', error.response?.data?.error);
     }
   };
 
   const handleDeleteProduct = async (productId) => {
-    if (!confirm('هل تأكد من الحذف؟')) return;
+    const confirmed = window.confirm('هل تأكد من الحذف؟');
+    if (!confirmed) return;
     try {
-      await axios.delete(`http://localhost:5000/api/supplier/products/${productId}`, {
+      await axios.delete(`${API_BASE}/supplier/products/${productId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      alert('تم حذف المنتج بنجاح');
+      console.log('تم حذف المنتج بنجاح');
       fetchProducts();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error || 'قد يكون المنتج مرتبطاً بعرض نشط');
+      console.error('خطأ:', error.response?.data?.error || 'قد يكون المنتج مرتبطاً بعرض نشط');
     }
   };
 

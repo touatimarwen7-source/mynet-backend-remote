@@ -52,7 +52,7 @@ const PDFExport = ({
       const response = await axios.get(endpoint, {
         responseType: 'blob',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
       });
 
@@ -82,7 +82,7 @@ const PDFExport = ({
       const response = await axios.get(endpoint, {
         responseType: 'blob',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
       });
 
