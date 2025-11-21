@@ -1,5 +1,6 @@
 const UserService = require('../services/UserService');
 const KeyManagementService = require('../security/KeyManagementService');
+const SimpleAuthService = require('../services/SimpleAuthService');
 
 class AuthController {
     async register(req, res) {
@@ -45,7 +46,14 @@ class AuthController {
                 });
             }
 
-            const authData = await UserService.authenticateUser(email, password);
+            let authData;
+            try {
+                // Try database authentication first
+                authData = await UserService.authenticateUser(email, password);
+            } catch (dbError) {
+                // Fallback to simple auth service
+                authData = await SimpleAuthService.authenticate(email, password);
+            }
 
             res.status(200).json({
                 success: true,
