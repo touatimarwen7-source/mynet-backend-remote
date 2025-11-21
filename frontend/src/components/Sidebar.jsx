@@ -28,10 +28,10 @@ export default function Sidebar({ user, onLogout }) {
       label: 'Appels d\'Offres',
       icon: '📋',
       subItems: [
-        { label: 'Actifs', path: '/tenders?status=active', featureKey: 'browsetenders' },
+        { label: 'Actifs', path: '/buyer-active-tenders', featureKey: 'browsetenders' },
         { label: 'Créer un Appel', path: '/create-tender', featureKey: 'createtender' },
-        { label: 'Archivés', path: '/tenders?status=archived', featureKey: 'browsetenders' },
-        { label: 'Évaluation', path: '/tender-analysis', featureKey: 'analytics' }
+        { label: 'Évaluation', path: '/tender-evaluation', featureKey: 'analytics' },
+        { label: 'Attribution', path: '/tender-awarding', featureKey: 'analytics' }
       ]
     },
     {
@@ -41,7 +41,7 @@ export default function Sidebar({ user, onLogout }) {
       subItems: [
         { label: 'Factures', path: '/invoices', featureKey: 'invoices' },
         { label: 'Budgets', path: '/budgets', featureKey: 'budgets' },
-        { label: 'Rapports', path: '/financial-reports', featureKey: 'customreports' }
+        { label: 'Rapports Financiers', path: '/financial-reports', featureKey: 'customreports' }
       ]
     },
     {
@@ -50,7 +50,8 @@ export default function Sidebar({ user, onLogout }) {
       icon: '👥',
       subItems: [
         { label: 'Gestion d\'équipe', path: '/team-management', featureKey: 'teammanagement' },
-        { label: 'Permissions', path: '/team-permissions', featureKey: 'teammanagement' }
+        { label: 'Permissions', path: '/team-permissions', featureKey: 'teammanagement' },
+        { label: 'Rôles', path: '/team-roles', featureKey: 'teammanagement' }
       ]
     },
     {
@@ -99,9 +100,9 @@ export default function Sidebar({ user, onLogout }) {
       label: 'Catalogue',
       icon: '📦',
       subItems: [
-        { label: 'Mon Catalogue', path: '/supplier-catalog', featureKey: 'catalog' },
-        { label: 'Produits', path: '/supplier-products', featureKey: 'catalog' },
-        { label: 'Services', path: '/supplier-services', featureKey: 'catalog' }
+        { label: 'Gestion Produits', path: '/supplier-products', featureKey: 'catalog' },
+        { label: 'Gestion Services', path: '/supplier-services', featureKey: 'catalog' },
+        { label: 'Visibilité', path: '/supplier-catalog', featureKey: 'catalog' }
       ]
     },
     {
