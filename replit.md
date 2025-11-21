@@ -8,7 +8,7 @@ MyNet.tn is a comprehensive B2B e-tendering platform designed specifically for t
 
 **🎉 PROJECT COMPLETE & PRODUCTION READY 🎉**
 
-Full implementation with professional design system, secure offer submission workflow, advanced UX/UI, global platform support (Dark Mode, RTL/LTR, i18n), and enterprise-grade security.
+Full implementation with professional design system, secure offer submission workflow, advanced UX/UI, global platform support (Dark Mode, RTL/LTR, i18n - French as primary with Arabic and English options), and enterprise-grade security.
 
 ## Recent Changes (Final Implementation - Global Platform Ready)
 
@@ -52,7 +52,7 @@ Preferred communication style: Simple, everyday language.
 
 **Key Architectural Decisions**:
 - **Single Page Application (SPA)**: React Router v6 for client-side routing with role-based page access
-- **i18n System**: react-i18next with localStorage persistence, auto language detection
+- **i18n System**: react-i18next with simplified configuration, French as default language
 - **RTL-First Design**: Full Right-to-Left layout support for Arabic language users with LTR fallback
 - **Dark Mode Support**: Context-based theme switching with CSS variables
 - **Component Organization**: 30+ pages organized by user role (auth, buyer, supplier, admin, shared)
@@ -61,7 +61,7 @@ Preferred communication style: Simple, everyday language.
 - **Design System**: Centralized CSS variables and design tokens for consistency
 - **UX Components**: Toast notifications, tooltips, enhanced tables, micro-interactions, verified badges
 
-**Rationale**: i18next is industry-standard for React i18n. localStorage persistence ensures remembered preferences. RTL/Dark mode essential for global markets. Toast system reduces complexity vs. browser alerts. Verified badges enhance trust. Micro-interactions enhance user delight.
+**Rationale**: i18next is industry-standard for React i18n. French as primary language aligns with Tunisian market. RTL/Dark mode essential for global markets. Toast system reduces complexity vs. browser alerts. Verified badges enhance trust. Micro-interactions enhance user delight.
 
 ### Backend Architecture
 
@@ -97,7 +97,7 @@ Preferred communication style: Simple, everyday language.
 frontend/
 ├── src/
 │   ├── locales/
-│   │   ├── fr/common.json          (French translations)
+│   │   ├── fr/common.json          (French translations - PRIMARY)
 │   │   ├── ar/common.json          (Arabic translations)
 │   │   └── en/common.json          (English translations)
 │   ├── pages/
@@ -122,7 +122,7 @@ frontend/
 │   │   ├── toasts.css             (Toast notifications)
 │   │   └── [other styles]
 │   ├── i18n.js                     (i18next configuration)
-│   ├── main.jsx                    (App entry with i18n init)
+│   ├── main.jsx                    (App entry)
 │   └── App.jsx                     (Router + Dark Mode + LanguageSwitcher)
 │
 backend/
@@ -140,29 +140,30 @@ backend/
 ## Internationalization (i18n) Features
 
 ### Supported Languages
-- **French (fr)** - Primary language
+- **French (fr)** - Primary language (default)
 - **Arabic (ar)** - Full RTL support
 - **English (en)** - Full LTR support
 
-### Translation Keys (100+ total)
+### Translation Coverage
 - Navigation and UI elements
 - Form labels and placeholders
 - Status messages and alerts
-- Role descriptions
+- Role descriptions (Buyer, Supplier, Admin, etc.)
 - Tender and offer related terms
+- Authentication pages
 
-### Language Switching
-- **Menu Location**: Top navigation bar
-- **Visual Indicator**: 🌐 globe icon with flag display
-- **Persistence**: Remembered in localStorage
-- **RTL Support**: Automatic direction change (RTL for Arabic, LTR for others)
-- **Smooth Integration**: All pages re-render instantly without page reload
+### Language Switching Experience
+- **Menu Location**: Top navigation bar (🌐 globe icon)
+- **Visual Indicator**: Flag display for each language
+- **Instant Switching**: No page reload required
+- **RTL Auto-Adjustment**: Direction changes automatically for Arabic
+- **Persistence**: User preference saved in browser storage
 
-### Implementation Details
-- Uses **react-i18next** with i18next
-- Browser language detection as fallback
-- Namespace pattern for scalable translation management
-- Ready for additional language expansion
+### Technical Implementation
+- Uses **react-i18next** with simplified configuration
+- French as default fallback language
+- Direct translation imports from JSON files
+- Namespace pattern for scalable management
 
 ## Deployment Status
 
@@ -175,12 +176,13 @@ All systems are **production-ready** and can be deployed immediately via Replit 
 ## Performance Optimizations
 
 - CSS variables for instant theme switching (no page reloads)
-- i18n caching for minimal API calls
+- i18n configuration optimized for small bundle size
 - Lazy loading components via React Router
 - Memoized table operations for large datasets
 - Debounced API calls in search and filtering
 - Connection pooling on backend (30 max connections)
 - Indexed database queries on all common filters
+- CDN-ready asset structure
 
 ## Security Features
 

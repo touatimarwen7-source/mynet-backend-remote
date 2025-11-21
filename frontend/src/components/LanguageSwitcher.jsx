@@ -5,7 +5,6 @@ import '../styles/languageSwitcher.css';
 
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
-  const { isDarkMode } = useContext(DarkModeContext);
 
   const languages = [
     { code: 'fr', name: 'Français', flag: '🇫🇷' },
