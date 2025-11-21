@@ -7,7 +7,7 @@
   align-items: center;
   padding: 6rem 4rem;
   gap: 5rem;
-  background: linear-gradient(135deg, #1a2b4d 0%, #2d4a7b 50%, #1a2b4d 100%);
+  background: linear-gradient(135deg, #00a8e8 0%, #00d4ff 50%, #00a8e8 100%);
   color: white;
   margin: 0;
   min-height: 700px;
@@ -172,7 +172,7 @@
 .filter-label {
   display: block;
   font-weight: 700;
-  color: #1a2b4d;
+  color: #00a8e8;
   margin-bottom: 1rem;
   font-size: 12px;
   text-transform: uppercase;
@@ -203,7 +203,7 @@
   cursor: pointer;
   width: 18px;
   height: 18px;
-  accent-color: #1a2b4d;
+  accent-color: #00a8e8;
   flex-shrink: 0;
 }
 
@@ -217,7 +217,7 @@
 }
 
 .radio-option input[type="radio"]:checked + label {
-  color: #1a2b4d;
+  color: #00a8e8;
   font-weight: 600;
 }
 
@@ -236,7 +236,7 @@
 
 .field-label {
   font-weight: 700;
-  color: #1a2b4d;
+  color: #00a8e8;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
@@ -265,7 +265,7 @@
 .search-input:focus,
 .search-select:focus {
   outline: none;
-  border-color: #1a2b4d;
+  border-color: #00a8e8;
   box-shadow: 0 0 0 4px rgba(26, 43, 77, 0.08);
   background-color: #fafbfc;
 }
@@ -288,7 +288,7 @@
 .search-button {
   width: 100%;
   padding: 1.15rem;
-  background: linear-gradient(135deg, #1a2b4d 0%, #2d4a7b 100%);
+  background: linear-gradient(135deg, #00a8e8 0%, #00d4ff 100%);
   color: white;
   border: none;
   border-radius: 6px;
@@ -370,7 +370,7 @@
 
 .cta-button.primary {
   background: white;
-  color: #1a2b4d;
+  color: #00a8e8;
   box-shadow: 0 8px 24px rgba(255, 255, 255, 0.35);
 }
 
