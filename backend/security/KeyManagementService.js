@@ -6,8 +6,8 @@ class KeyManagementService {
     constructor() {
         this.JWT_SECRET = process.env.JWT_SECRET || this.generateSecret();
         this.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || this.generateSecret();
-        this.TOKEN_EXPIRY = '1h';
-        this.REFRESH_TOKEN_EXPIRY = '7d';
+        this.TOKEN_EXPIRY = '24h';
+        this.REFRESH_TOKEN_EXPIRY = '30d';
         this.algorithm = 'aes-256-gcm';
         this.masterKey = process.env.MASTER_ENCRYPTION_KEY || this.generateMasterKey();
         this.keyRotationDays = 90; // Rotate keys every 90 days
