@@ -264,7 +264,7 @@ export default function Profile({ user }) {
                   />
                   <button 
                     onClick={addInterest}
-                    className="btn btn-primary btn-sm"
+                    className="interest-add-btn"
                   >
                     Ajouter
                   </button>
