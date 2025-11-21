@@ -1,7 +1,28 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+  Stack,
+  Paper,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import SecurityIcon from '@mui/icons-material/Security';
+import ThunderStormIcon from '@mui/icons-material/ThunderstormSharp';
+import PeopleIcon from '@mui/icons-material/People';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import LanguageIcon from '@mui/icons-material/Language';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import { setPageTitle } from '../utils/pageTitle';
-
 import DynamicAdvertisement from '../components/DynamicAdvertisement';
 import HowItWorks from '../components/HowItWorks';
 import LeadGenerationForm from '../components/LeadGenerationForm';
@@ -17,203 +38,487 @@ export default function HomePage() {
     setTimeout(() => navigate(`/register?role=${role}`), 300);
   };
 
-  const handleFreeTrialClick = () => {
-    navigate('/register?role=buyer');
-  };
+  // Stats Data
+  const stats = [
+    { number: '50M+', label: 'Dinars', description: 'Montants d\'appels d\'offres traités' },
+    { number: '1,200+', label: 'Organisations', description: 'Acheteurs et fournisseurs' },
+    { number: '15,000+', label: 'Appels d\'Offres', description: 'Publiés avec succès' },
+    { number: '99.9%', label: 'Disponibilité', description: 'Infrastructure sécurisée' },
+  ];
 
-  const handleLearnMoreClick = () => {
-    navigate('/about');
-  };
+  // Testimonials Data
+  const testimonials = [
+    {
+      text: 'MyNet.tn a révolutionné notre processus d\'achat. Plus de transparence, moins de papiers, et une meilleure gestion des fournisseurs.',
+      author: '— Directeur des Achats, Entreprise Manufacturière',
+    },
+    {
+      text: 'Accès à plus d\'opportunités commerciales. La plateforme est facile à utiliser et les outils d\'offres sont complets.',
+      author: '— Responsable Commercial, PME de Fournitures',
+    },
+    {
+      text: 'La sécurité et la conformité des données sont au cœur de MyNet.tn. Nous recommandons vivement cette plateforme.',
+      author: '— Directeur Financier, Grande Entreprise',
+    },
+  ];
+
+  // Features Data
+  const features = [
+    {
+      icon: <SecurityIcon sx={{ fontSize: 32, color: '#1565c0' }} />,
+      title: 'Sécurité Entreprise',
+      description: 'Chiffrement AES-256, authentification 2FA, et audit complet',
+    },
+    {
+      icon: <ThunderStormIcon sx={{ fontSize: 32, color: '#1565c0' }} />,
+      title: 'Performant',
+      description: 'Infrastructure cloud scalable avec 99.9% d\'uptime',
+    },
+    {
+      icon: <PeopleIcon sx={{ fontSize: 32, color: '#1565c0' }} />,
+      title: 'Support Premium',
+      description: 'Équipe d\'experts disponible 24/7',
+    },
+    {
+      icon: <TrendingUpIcon sx={{ fontSize: 32, color: '#1565c0' }} />,
+      title: 'Analytics Avancées',
+      description: 'Tableaux de bord détaillés et rapports en temps réel',
+    },
+    {
+      icon: <LanguageIcon sx={{ fontSize: 32, color: '#1565c0' }} />,
+      title: 'Multi-Devises',
+      description: 'Support dinars, euros et autres devises',
+    },
+    {
+      icon: <PhoneAndroidIcon sx={{ fontSize: 32, color: '#1565c0' }} />,
+      title: 'Mobile Ready',
+      description: 'Interface responsive pour tous les appareils',
+    },
+  ];
+
+  // Role Cards Data
+  const roles = [
+    {
+      id: 'buyer',
+      title: 'Je suis Acheteur',
+      description: 'Publiez vos appels d\'offres, recevez les meilleures propositions, évaluez les fournisseurs et finalisez vos contrats en toute confiance.',
+      features: [
+        'Créer des appels d\'offres',
+        'Gérer les soumissions',
+        'Analyser les offres',
+        'Émettre des bons de commande',
+        'Gérer l\'équipe d\'achat',
+      ],
+    },
+    {
+      id: 'supplier',
+      title: 'Je suis Fournisseur',
+      description: 'Découvrez les opportunités de marché, soumettez vos offres compétitives, et développez votre activité avec des clients de confiance.',
+      features: [
+        'Parcourir les appels d\'offres',
+        'Soumettre des offres',
+        'Gérer votre catalogue',
+        'Suivre les évaluations',
+        'Recevoir les commandes',
+      ],
+    },
+  ];
 
   return (
-    <>
-      
-      <div className="homepage">
-      {/* Hero Section - Search Only */}
-      <section className="hero-section-search">
+    <Box sx={{ backgroundColor: '#fafafa' }}>
+      {/* Hero Section */}
+      <Box sx={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e0e0e0', paddingBottom: '40px' }}>
         <HeroSearch />
-      </section>
+      </Box>
 
-      {/* Dynamic Advertisement Section */}
-      <DynamicAdvertisement />
+      {/* Advertisement Section */}
+      <Box sx={{ backgroundColor: '#f5f5f5', borderBottom: '1px solid #e0e0e0' }}>
+        <DynamicAdvertisement />
+      </Box>
 
-      {/* Rôles Section */}
-      <section className="roles-section">
-        <h2>Choisissez Votre Rôle</h2>
-        <p className="section-subtitle">Deux expériences optimisées, une plateforme unifiée</p>
+      {/* Roles Section */}
+      <Container maxWidth="lg" sx={{ paddingY: '60px' }}>
+        <Box sx={{ textAlign: 'center', marginBottom: '48px' }}>
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: '32px',
+              fontWeight: 500,
+              color: '#212121',
+              marginBottom: '12px',
+            }}
+          >
+            Choisissez Votre Rôle
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              fontSize: '16px',
+              color: '#616161',
+            }}
+          >
+            Deux expériences optimisées, une plateforme unifiée
+          </Typography>
+        </Box>
 
-        <div className="roles-grid">
-          {/* Acheteur Card */}
-          <div className={`role-card role-buyer ${selectedRole === 'buyer' ? 'selected' : ''}`}>
-            <h3>Je suis Acheteur</h3>
-            <p className="role-description">
-              Publiez vos appels d'offres, recevez les meilleures propositions, évaluez les fournisseurs et finalisez vos contrats en toute confiance.
-            </p>
-            <ul className="role-features">
-              <li>Créer des appels d'offres</li>
-              <li>Gérer les soumissions</li>
-              <li>Analyser les offres</li>
-              <li>Émettre des bons de commande</li>
-              <li>Gérer l'équipe d'achat</li>
-            </ul>
-            <button 
-              className="role-button"
-              onClick={() => handleStartTrial('buyer')}
-            >
-              Commencer Essai Gratuit
-            </button>
-          </div>
+        <Grid container spacing={3}>
+          {roles.map((role) => (
+            <Grid item xs={12} md={6} key={role.id}>
+              <Card
+                sx={{
+                  height: '100%',
+                  border: selectedRole === role.id ? '2px solid #1565c0' : '1px solid #e0e0e0',
+                  borderRadius: '8px',
+                  boxShadow: selectedRole === role.id ? '0 8px 16px rgba(21, 101, 192, 0.15)' : '0 1px 3px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 300ms ease-in-out',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    borderColor: '#1565c0',
+                    boxShadow: '0 8px 16px rgba(21, 101, 192, 0.15)',
+                  },
+                }}
+                onClick={() => setSelectedRole(role.id)}
+              >
+                <CardContent sx={{ padding: '32px' }}>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontSize: '24px',
+                      fontWeight: 500,
+                      color: '#1565c0',
+                      marginBottom: '16px',
+                    }}
+                  >
+                    {role.title}
+                  </Typography>
 
-          {/* Fournisseur Card */}
-          <div className={`role-card role-supplier ${selectedRole === 'supplier' ? 'selected' : ''}`}>
-            <h3>Je suis Fournisseur</h3>
-            <p className="role-description">
-              Découvrez les opportunités de marché, soumettez vos offres compétitives, et développez votre activité avec des clients de confiance.
-            </p>
-            <ul className="role-features">
-              <li>Parcourir les appels d'offres</li>
-              <li>Soumettre des offres</li>
-              <li>Gérer votre catalogue</li>
-              <li>Suivre les évaluations</li>
-              <li>Recevoir les commandes</li>
-            </ul>
-            <button 
-              className="role-button"
-              onClick={() => handleStartTrial('supplier')}
-            >
-              Commencer Essai Gratuit
-            </button>
-          </div>
-        </div>
-      </section>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: '#616161',
+                      marginBottom: '24px',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {role.description}
+                  </Typography>
+
+                  <List sx={{ marginBottom: '24px' }}>
+                    {role.features.map((feature, idx) => (
+                      <ListItem key={idx} sx={{ paddingLeft: 0, paddingTop: '6px', paddingBottom: '6px' }}>
+                        <ListItemIcon sx={{ minWidth: 32, color: '#2e7d32' }}>
+                          <CheckCircleIcon sx={{ fontSize: 18 }} />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={feature}
+                          sx={{
+                            '& .MuiTypography-root': {
+                              fontSize: '14px',
+                              color: '#212121',
+                              fontWeight: 400,
+                            },
+                          }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    onClick={() => handleStartTrial(role.id)}
+                    sx={{
+                      backgroundColor: '#1565c0',
+                      textTransform: 'none',
+                      fontWeight: 500,
+                      padding: '12px 24px',
+                      minHeight: '44px',
+                      '&:hover': {
+                        backgroundColor: '#0d47a1',
+                      },
+                    }}
+                  >
+                    Commencer Essai Gratuit
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
 
       {/* Social Proof Section */}
-      <section className="social-proof-section">
-        <h2>Faites Confiance à MyNet.tn</h2>
-        
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-number">50M+</div>
-            <div className="stat-label">Dinars en Transactions</div>
-            <p className="stat-description">Montants d'appels d'offres traités</p>
-          </div>
+      <Box sx={{ backgroundColor: '#ffffff', borderTop: '1px solid #e0e0e0', borderBottom: '1px solid #e0e0e0', paddingY: '60px' }}>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: '32px',
+              fontWeight: 500,
+              color: '#212121',
+              textAlign: 'center',
+              marginBottom: '48px',
+            }}
+          >
+            Faites Confiance à MyNet.tn
+          </Typography>
 
-          <div className="stat-card">
-            <div className="stat-number">1,200+</div>
-            <div className="stat-label">Organisations Actives</div>
-            <p className="stat-description">Acheteurs et fournisseurs inscrits</p>
-          </div>
+          {/* Stats Grid */}
+          <Grid container spacing={3} sx={{ marginBottom: '48px' }}>
+            {stats.map((stat, idx) => (
+              <Grid item xs={12} sm={6} md={3} key={idx}>
+                <Paper
+                  sx={{
+                    padding: '32px 24px',
+                    textAlign: 'center',
+                    backgroundColor: '#f5f5f5',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '8px',
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: '32px',
+                      fontWeight: 600,
+                      color: '#1565c0',
+                      marginBottom: '8px',
+                    }}
+                  >
+                    {stat.number}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#212121',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    {stat.label}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: '12px',
+                      color: '#616161',
+                    }}
+                  >
+                    {stat.description}
+                  </Typography>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
 
-          <div className="stat-card">
-            <div className="stat-number">15,000+</div>
-            <div className="stat-label">Appels d'Offres</div>
-            <p className="stat-description">Publiés et gérés avec succès</p>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-number">99.9%</div>
-            <div className="stat-label">Disponibilité</div>
-            <p className="stat-description">Infrastructure hautement sécurisée</p>
-          </div>
-        </div>
-
-        <div className="testimonials">
-          <h3>Ce que Disent nos Utilisateurs</h3>
-          <div className="testimonial-cards">
-            <div className="testimonial-card">
-              <p className="testimonial-text">
-                "MyNet.tn a révolutionné notre processus d'achat. Plus de transparence, moins de papiers, et une meilleure gestion des fournisseurs."
-              </p>
-              <p className="testimonial-author">— Directeur des Achats, Entreprise Manufacturière</p>
-            </div>
-
-            <div className="testimonial-card">
-              <p className="testimonial-text">
-                "Accès à plus d'opportunités commerciales. La plateforme est facile à utiliser et les outils d'offres sont complets."
-              </p>
-              <p className="testimonial-author">— Responsable Commercial, PME de Fournitures</p>
-            </div>
-
-            <div className="testimonial-card">
-              <p className="testimonial-text">
-                "La sécurité et la conformité des données sont au cœur de MyNet.tn. Nous recommandons vivement cette plateforme."
-              </p>
-              <p className="testimonial-author">— Directeur Financier, Grande Entreprise</p>
-            </div>
-          </div>
-        </div>
-      </section>
+          {/* Testimonials */}
+          <Box>
+            <Typography
+              variant="h4"
+              sx={{
+                fontSize: '20px',
+                fontWeight: 600,
+                color: '#212121',
+                marginBottom: '24px',
+              }}
+            >
+              Ce que Disent nos Utilisateurs
+            </Typography>
+            <Grid container spacing={3}>
+              {testimonials.map((testimonial, idx) => (
+                <Grid item xs={12} md={4} key={idx}>
+                  <Paper
+                    sx={{
+                      padding: '24px',
+                      backgroundColor: '#f5f5f5',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '8px',
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: '14px',
+                        color: '#212121',
+                        marginBottom: '12px',
+                        flex: 1,
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      "{testimonial.text}"
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: '12px',
+                        color: '#616161',
+                        fontStyle: 'italic',
+                      }}
+                    >
+                      {testimonial.author}
+                    </Typography>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Container>
+      </Box>
 
       {/* Features Section */}
-      <section className="features-section">
-        <h2>Pourquoi Choisir MyNet.tn?</h2>
-        
-        <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">🔒</div>
-            <h4>Sécurité Entreprise</h4>
-            <p>Chiffrement AES-256, authentification 2FA, et audit complet de toutes les transactions</p>
-          </div>
+      <Container maxWidth="lg" sx={{ paddingY: '60px' }}>
+        <Typography
+          variant="h2"
+          sx={{
+            fontSize: '32px',
+            fontWeight: 500,
+            color: '#212121',
+            textAlign: 'center',
+            marginBottom: '48px',
+          }}
+        >
+          Pourquoi Choisir MyNet.tn?
+        </Typography>
 
-          <div className="feature-card">
-            <div className="feature-icon">⚡</div>
-            <h4>Performant</h4>
-            <p>Infrastructure cloud scalable avec 99.9% d'uptime et latence ultra-faible</p>
-          </div>
+        <Grid container spacing={3}>
+          {features.map((feature, idx) => (
+            <Grid item xs={12} md={4} key={idx}>
+              <Card
+                sx={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '8px',
+                  padding: '32px 24px',
+                  textAlign: 'center',
+                  transition: 'all 200ms ease-in-out',
+                  '&:hover': {
+                    borderColor: '#1565c0',
+                    boxShadow: '0 8px 16px rgba(21, 101, 192, 0.1)',
+                    transform: 'translateY(-4px)',
+                  },
+                }}
+              >
+                <Box sx={{ marginBottom: '16px' }}>
+                  {feature.icon}
+                </Box>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontSize: '18px',
+                    fontWeight: 600,
+                    color: '#212121',
+                    marginBottom: '12px',
+                  }}
+                >
+                  {feature.title}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: '14px',
+                    color: '#616161',
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {feature.description}
+                </Typography>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
 
-          <div className="feature-card">
-            <div className="feature-icon">👥</div>
-            <h4>Support Premium</h4>
-            <p>Équipe d'experts disponible 24/7 pour vous accompagner dans votre succès</p>
-          </div>
+      {/* How It Works */}
+      <Box sx={{ backgroundColor: '#f5f5f5', borderTop: '1px solid #e0e0e0', borderBottom: '1px solid #e0e0e0', paddingY: '60px' }}>
+        <HowItWorks />
+      </Box>
 
-          <div className="feature-card">
-            <div className="feature-icon">📊</div>
-            <h4>Analytics Avancées</h4>
-            <p>Tableaux de bord détaillés, rapports en temps réel, et insights prédictifs</p>
-          </div>
+      {/* Lead Generation */}
+      <Box sx={{ backgroundColor: '#ffffff', paddingY: '60px' }}>
+        <LeadGenerationForm />
+      </Box>
 
-          <div className="feature-card">
-            <div className="feature-icon">🌍</div>
-            <h4>Multi-Devises</h4>
-            <p>Support complet des dinars tunisiens, euros et autres devises principales</p>
-          </div>
+      {/* Final CTA Section */}
+      <Box
+        sx={{
+          backgroundColor: '#1565c0',
+          color: '#ffffff',
+          paddingY: '80px',
+          backgroundImage: 'linear-gradient(135deg, #1565c0 0%, #0d47a1 100%)',
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: '36px',
+                fontWeight: 500,
+                marginBottom: '16px',
+              }}
+            >
+              Prêt à Transformer Votre Processus d'Achat?
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontSize: '18px',
+                marginBottom: '40px',
+                opacity: 0.9,
+              }}
+            >
+              Rejoignez plus de 1,200 organisations qui font confiance à MyNet.tn
+            </Typography>
 
-          <div className="feature-card">
-            <div className="feature-icon">📱</div>
-            <h4>Mobile Ready</h4>
-            <p>Interface responsive optimisée pour tous les appareils et tous les navigateurs</p>
-          </div>
-        </div>
-      </section>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'center', marginBottom: '24px' }}>
+              <Button
+                variant="contained"
+                onClick={() => navigate('/register')}
+                sx={{
+                  backgroundColor: '#ffffff',
+                  color: '#1565c0',
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  padding: '14px 32px',
+                  minHeight: '48px',
+                  fontSize: '16px',
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              >
+                🚀 Demander une Démonstration
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => navigate('/login')}
+                sx={{
+                  borderColor: '#ffffff',
+                  color: '#ffffff',
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  padding: '14px 32px',
+                  minHeight: '48px',
+                  fontSize: '16px',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    borderColor: '#ffffff',
+                  },
+                }}
+              >
+                Déjà Inscrit? Se Connecter →
+              </Button>
+            </Stack>
 
-      {/* How It Works Section */}
-      <HowItWorks />
-
-      {/* Lead Generation Section */}
-      <LeadGenerationForm />
-
-      {/* CTA Section */}
-      <section className="final-cta-section">
-        <div className="cta-container">
-          <h2>Prêt à Transformer Votre Processus d'Achat?</h2>
-          <p>Rejoignez plus de 1,200 organisations qui font confiance à MyNet.tn</p>
-          
-          <div className="cta-buttons">
-            <button className="btn btn-primary-large" onClick={() => navigate('/register')}>
-              🚀 Demander une Démonstration
-            </button>
-            <button className="btn btn-secondary-large" onClick={() => navigate('/login')}>
-              Déjà Inscrit? Se Connecter →
-            </button>
-          </div>
-
-          <p className="cta-footer">
-            Pas de carte bancaire requise • Accès gratuit pendant 30 jours • Support dédié inclus
-          </p>
-        </div>
-      </section>
-    </div>
-    </>
+            <Typography
+              sx={{
+                fontSize: '13px',
+                opacity: 0.85,
+              }}
+            >
+              Pas de carte bancaire requise • Accès gratuit pendant 30 jours • Support dédié inclus
+            </Typography>
+          </Box>
+        </Container>
+      </Box>
+    </Box>
   );
 }
