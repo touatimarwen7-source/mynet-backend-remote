@@ -5,9 +5,10 @@ import { setPageTitle } from '../utils/pageTitle';
 import DashboardCards from '../components/DashboardCards';
 import QuickActions from '../components/QuickActions';
 import ImportantDocuments from '../components/ImportantDocuments';
-import '../styles/dashboard-header.css';
-import '../styles/dashboardCards.css';
-import '../styles/dashboard-general.css';
+import '../styles/corporate-design.css';
+import '../styles/dashboard-header-corporate.css';
+import '../styles/dashboardCards-corporate.css';
+import '../styles/dashboard-general-corporate.css';
 
 export default function SupplierDashboard() {
   const navigate = useNavigate();

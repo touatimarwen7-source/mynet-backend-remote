@@ -5,9 +5,11 @@ import DashboardCards from '../components/DashboardCards';
 import QuickActions from '../components/QuickActions';
 import ImportantDocuments from '../components/ImportantDocuments';
 import PaymentOrders from '../components/PaymentOrders';
-import '../styles/dashboard-header.css';
-import '../styles/dashboardCards.css';
-import '../styles/dashboard-general.css';
+import '../styles/corporate-design.css';
+import '../styles/dashboard-header-corporate.css';
+import '../styles/dashboardCards-corporate.css';
+import '../styles/dashboard-general-corporate.css';
+import '../styles/payment-orders-corporate.css';
 
 export default function BuyerDashboard() {
   const [stats, setStats] = useState({

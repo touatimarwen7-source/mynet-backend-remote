@@ -1,0 +1,120 @@
+/* Corporate Design System - Navy Blue & Minimalist */
+
+:root {
+  /* Primary Colors */
+  --color-navy: #1a2b4d;
+  --color-navy-light: #253458;
+  --color-navy-dark: #0f1a2e;
+  
+  /* Neutral Colors */
+  --color-white: #ffffff;
+  --color-off-white: #f9f9fa;
+  --color-light-gray: #e8e9eb;
+  --color-gray-border: #d1d3d8;
+  --color-gray-text: #5a5d64;
+  --color-dark-gray: #2c2e33;
+  
+  /* Semantic Colors (Minimal saturation) */
+  --color-success: #1e5c3c;
+  --color-warning: #7d5a2b;
+  --color-danger: #8b3a3a;
+  --color-info: #1a3d5c;
+  
+  /* Typography */
+  --font-primary: 'Roboto', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* Border Radius */
+  --border-radius-xs: 2px;
+  --border-radius-sm: 3px;
+  --border-radius-md: 4px;
+  
+  /* Borders */
+  --border-default: 1px solid var(--color-gray-border);
+  --border-light: 1px solid var(--color-light-gray);
+}
+
+/* Global Font Setup */
+* {
+  font-family: var(--font-primary);
+}
+
+body {
+  background-color: var(--color-off-white);
+  color: var(--color-dark-gray);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+}
+
+body.dark-mode {
+  background-color: var(--color-navy-dark);
+  color: #e8e9eb;
+}
+
+/* Typography Standards */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: var(--color-white);
+}
+
+h1 { font-size: 32px; }
+h2 { font-size: 24px; }
+h3 { font-size: 20px; }
+h4 { font-size: 18px; }
+
+p {
+  margin: 0;
+  font-weight: var(--font-weight-regular);
+}
+
+/* Links */
+a {
+  color: var(--color-navy);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-navy-light);
+}
+
+body.dark-mode a {
+  color: #64b5f6;
+}
+
+/* Buttons */
+button, .btn {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--border-radius-md);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
