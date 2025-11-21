@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { procurementAPI } from '../api';
+import { useToastContext } from '../contexts/ToastContext';
 
 export default function CreateOffer() {
   const { tenderId } = useParams();
   const navigate = useNavigate();
+  const { addToast } = useToastContext();
   const [tender, setTender] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -54,8 +56,11 @@ export default function CreateOffer() {
           technical_response: ''
         }))
       }));
+      addToast('تم تحميل المناقصة بنجاح', 'success', 2000);
     } catch (err) {
-      setError('خطأ في تحميل المناقصة: ' + err.message);
+      const errorMessage = 'خطأ في تحميل المناقصة: ' + err.message;
+      setError(errorMessage);
+      addToast(errorMessage, 'error', 4000);
     } finally {
       setLoading(false);
     }
@@ -158,12 +163,15 @@ export default function CreateOffer() {
 
       await procurementAPI.createOffer(formData);
       setSuccess(true);
+      addToast('✅ تم إرسال عرضك بنجاح وتشفيره بأمان!', 'success', 2000);
       
       setTimeout(() => {
         navigate('/my-offers');
       }, 2500);
     } catch (err) {
-      setError('❌ خطأ في إرسال العرض: ' + (err.response?.data?.error || err.message));
+      const errorMsg = err.response?.data?.error || err.message;
+      setError('❌ خطأ في إرسال العرض: ' + errorMsg);
+      addToast('❌ خطأ في إرسال العرض', 'error', 4000);
     } finally {
       setSubmitting(false);
     }
