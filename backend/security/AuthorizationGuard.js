@@ -33,7 +33,7 @@ class AuthorizationGuard {
 
             if (!hasPermission(req.user.role, permission)) {
                 return res.status(403).json({ 
-                    error: 'Vous n'''avez pas la permission d'''effectuer cette action.' 
+                    error: 'Vous n\'avez pas la permission d\'effectuer cette action.' 
                 });
             }
 
@@ -51,7 +51,7 @@ class AuthorizationGuard {
 
             if (!allowedRoles.includes(req.user.role)) {
                 return res.status(403).json({ 
-                    error: 'Vous n'''avez pas accès à cette ressource.' 
+                    error: 'Vous n\'avez pas accès à cette ressource.' 
                 });
             }
 

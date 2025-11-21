@@ -33,7 +33,6 @@ import SubscriptionTiers from './pages/SubscriptionTiers';
 import FeatureControl from './pages/FeatureControl';
 import UserManagement from './pages/UserManagement';
 import { setupInactivityTimer } from './utils/security';
-import { useToast } from './components/ToastContainer';
 import ToastContainer from './components/ToastContainer';
 import { ToastContext } from './contexts/ToastContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
@@ -42,7 +41,17 @@ import './App.css';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { toasts, addToast, removeToast } = useToast();
+  const [toasts, setToasts] = useState([]);
+  
+  const addToast = (message, type = 'success') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => removeToast(id), 3000);
+  };
+  
+  const removeToast = (id) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');

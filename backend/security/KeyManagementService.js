@@ -41,7 +41,7 @@ class KeyManagementService {
         try {
             return jwt.verify(token, this.JWT_SECRET);
         } catch (error) {
-            throw new Error('Jeton d'''accès invalide ou expiré');
+            throw new Error('Jeton d\'accès invalide ou expiré');
         }
     }
 
@@ -49,7 +49,7 @@ class KeyManagementService {
         try {
             return jwt.verify(token, this.JWT_REFRESH_SECRET);
         } catch (error) {
-            throw new Error('Jeton d'''actualisation invalide ou expiré');
+            throw new Error('Jeton d\'actualisation invalide ou expiré');
         }
     }
 
