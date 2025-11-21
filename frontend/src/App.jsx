@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import institutionalTheme from './theme/muiTheme';
 import AlertStrip from './components/AlertStrip';
 import UnifiedHeader from './components/UnifiedHeader';
 import HomePage from './pages/HomePage';
@@ -63,29 +66,6 @@ import ToastContainer from './components/ToastContainer';
 import Sidebar from './components/Sidebar';
 import { ToastContext } from './contexts/ToastContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
-import './styles/colors.css';
-import './styles/typography-system.css';
-import './styles/government-theme.css';
-import './styles/components-institutional.css';
-import './styles/strict-grid-system.css';
-import './styles/grid-layout-pages.css';
-import './styles/data-table-standards.css';
-import './styles/formal-government.css';
-import './styles/modern-professional.css';
-import './styles/components-premium.css';
-import './styles/forms-modern.css';
-import './styles/pages-modern.css';
-import './styles/animations-modern.css';
-import './styles/responsive-modern.css';
-import './styles/professional-formatting.css';
-import './styles/financial-corporate.css';
-import './styles/unified-theme.css';
-import './styles/buyer-active-tenders.css';
-import './styles/financial-reports.css';
-import './styles/budget-management.css';
-import './styles/tender-lifecycle.css';
-import './styles/unified-header.css';
-import './styles/tables-formal.css';
 import './App.css';
 
 function App() {
@@ -150,13 +130,15 @@ function App() {
   }
 
   return (
-    <DarkModeProvider>
-      <ToastContext.Provider value={{ addToast }}>
-        <Router>
-        <div className="app">
-        <AlertStrip />
-        <UnifiedHeader />
-        <ToastContainer toasts={toasts} removeToast={removeToast} />
+    <ThemeProvider theme={institutionalTheme}>
+      <CssBaseline />
+      <DarkModeProvider>
+        <ToastContext.Provider value={{ addToast }}>
+          <Router>
+          <div className="app">
+          <AlertStrip />
+          <UnifiedHeader />
+          <ToastContainer toasts={toasts} removeToast={removeToast} />
         
         {/* Sidebar Navigation - Only for authenticated users */}
         {user && <Sidebar user={user} onLogout={handleLogout} />}
