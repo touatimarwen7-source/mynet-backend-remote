@@ -13,10 +13,11 @@
 
 /* Hero Search - Simplified formal design */
 .hero-search-container {
-  background: linear-gradient(180deg, #f0f5f9 0%, #ffffff 100%);
+  background: var(--color-bg-primary);
   padding: 2rem;
   border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-primary);
 }
 
 .search-tabs {
@@ -30,10 +31,10 @@
 
 .search-tab {
   padding: 0.75rem 1.5rem;
-  background: #ffffff;
-  border: 1px solid #cccccc;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
   border-radius: 2px;
-  color: #333333;
+  color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -42,24 +43,24 @@
 }
 
 .search-tab:hover {
-  border-color: #003d7a;
-  color: #003d7a;
-  background: #f0f5f9;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-bg-secondary);
 }
 
 .search-tab.active {
-  background: #003d7a;
-  border-color: #003d7a;
-  color: #ffffff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
   box-shadow: none;
 }
 
 .hero-search-form {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
   border-radius: 2px;
   padding: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 /* Dashboard Cards - Clean minimal design */
@@ -72,11 +73,11 @@
 
 .dashboard-card {
   padding: 1.5rem;
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
   border-radius: 2px;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .dashboard-card::before,
@@ -85,8 +86,8 @@
 }
 
 .dashboard-card:hover {
-  border-color: #003d7a;
-  box-shadow: 0 2px 6px rgba(0, 61, 122, 0.12);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-lg);
   transform: none;
 }
 
@@ -99,7 +100,7 @@
 
 .card-label {
   font-size: 12px;
-  color: #666666;
+  color: var(--color-text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -108,7 +109,7 @@
 .card-value {
   font-size: 32px;
   font-weight: 700;
-  color: #003d7a;
+  color: var(--color-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -120,7 +121,7 @@
 .quick-actions-title {
   font-size: 12px;
   font-weight: 600;
-  color: #003d7a;
+  color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 0.3px;
   margin-bottom: 1rem;
@@ -134,10 +135,10 @@
 
 .quick-action-btn {
   padding: 1rem 1rem;
-  background: #ffffff;
-  border: 1px solid #cccccc;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
   border-radius: 2px;
-  color: #333333;
+  color: var(--color-text-primary);
   font-weight: 500;
   font-size: 13px;
   cursor: pointer;
@@ -156,10 +157,10 @@
 }
 
 .quick-action-btn:hover {
-  background: #f0f5f9;
-  border-color: #003d7a;
-  color: #003d7a;
-  box-shadow: 0 2px 4px rgba(0, 61, 122, 0.1);
+  background: var(--color-bg-secondary);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-md);
   transform: none;
 }
 
@@ -236,8 +237,8 @@
 }
 
 .role-button {
-  background: #003d7a;
-  color: #ffffff;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 2px;
@@ -250,8 +251,8 @@
 }
 
 .role-button:hover {
-  background: #1e3a5f;
-  box-shadow: 0 2px 6px rgba(0, 61, 122, 0.2);
+  background: var(--color-primary-dark);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Forms - Formal styling */

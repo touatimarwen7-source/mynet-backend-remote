@@ -63,6 +63,8 @@ import ToastContainer from './components/ToastContainer';
 import Sidebar from './components/Sidebar';
 import { ToastContext } from './contexts/ToastContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
+import './styles/colors.css';
+import './styles/government-theme.css';
 import './styles/strict-grid-system.css';
 import './styles/grid-layout-pages.css';
 import './styles/data-table-standards.css';
