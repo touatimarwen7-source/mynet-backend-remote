@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { setPageTitle } from '../utils/pageTitle';
 
 export default function TeamManagement() {
   const [team, setTeam] = useState([]);
@@ -12,12 +13,13 @@ export default function TeamManagement() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setPageTitle('Gestion de l\'Équipe');
     fetchTeam();
   }, []);
 
   const fetchTeam = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/company/team', {
+      const response = await axios.get('http://localhost:3000/api/company/team', {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
       setTeam(response.data.team || []);
@@ -31,103 +33,105 @@ export default function TeamManagement() {
   const handleAddMember = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/company/team', newMember, {
+      await axios.post('http://localhost:3000/api/company/team', newMember, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      alert('تم إضافة العضو بنجاح');
+      alert('Membre ajouté avec succès');
       setNewMember({ email: '', role: 'procurement-officer', name: '' });
       setShowForm(false);
       fetchTeam();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error);
+      alert('Erreur: ' + error.response?.data?.error);
     }
   };
 
   const handleRemoveMember = async (memberId) => {
-    if (!confirm('هل تأكد من حذف العضو؟')) return;
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce membre?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/company/team/${memberId}`, {
+      await axios.delete(`http://localhost:3000/api/company/team/${memberId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      alert('تم حذف العضو بنجاح');
+      alert('Membre supprimé avec succès');
       fetchTeam();
     } catch (error) {
-      alert('خطأ: ' + error.response?.data?.error);
+      alert('Erreur: ' + error.response?.data?.error);
     }
   };
 
   if (loading) return <div className="loading">Chargement en cours...</div>;
 
   const roles = {
-    'procurement-officer': 'مسؤول المشتريات',
-    'director': 'المدير',
-    'accountant': 'محاسب',
-    'viewer': 'مشاهد'
+    'procurement-officer': 'Responsable Achats',
+    'director': 'Directeur',
+    'accountant': 'Comptable',
+    'viewer': 'Spectateur'
   };
 
   return (
     <div className="team-management">
-      <h1>إدارة الفريق</h1>
+      <h1>👥 Gestion de l'Équipe</h1>
 
       <button 
         className="btn btn-primary add-member-btn"
         onClick={() => setShowForm(!showForm)}
       >
-        {showForm ? 'إلغاء' : '+ إضافة عضو جديد'}
+        {showForm ? 'Annuler' : '➕ Ajouter un Membre'}
       </button>
 
       {showForm && (
         <form onSubmit={handleAddMember} className="member-form">
-          <h2>إضافة عضو جديد</h2>
+          <h2>Ajouter un Nouveau Membre</h2>
 
           <div className="form-group">
-            <label>الاسم:</label>
+            <label>Nom Complet:</label>
             <input 
               type="text"
               value={newMember.name}
               onChange={(e) => setNewMember({...newMember, name: e.target.value})}
+              placeholder="Entrez le nom du membre"
               required
             />
           </div>
 
           <div className="form-group">
-            <label>البريد الإلكتروني:</label>
+            <label>Email:</label>
             <input 
               type="email"
               value={newMember.email}
               onChange={(e) => setNewMember({...newMember, email: e.target.value})}
+              placeholder="exemple@email.com"
               required
             />
           </div>
 
           <div className="form-group">
-            <label>الدور:</label>
+            <label>Rôle:</label>
             <select 
               value={newMember.role}
               onChange={(e) => setNewMember({...newMember, role: e.target.value})}
             >
-              <option value="procurement-officer">مسؤول المشتريات</option>
-              <option value="director">المدير</option>
-              <option value="accountant">محاسب</option>
-              <option value="viewer">مشاهد</option>
+              <option value="procurement-officer">Responsable Achats</option>
+              <option value="director">Directeur</option>
+              <option value="accountant">Comptable</option>
+              <option value="viewer">Spectateur</option>
             </select>
           </div>
 
-          <button type="submit" className="btn btn-success">إضافة العضو</button>
+          <button type="submit" className="btn btn-success">✓ Ajouter le Membre</button>
         </form>
       )}
 
-      {/* قائمة الفريق */}
+      {/* Liste du Fériqu */}
       <div className="team-list">
         {team.length === 0 ? (
-          <p className="empty-state">لا يوجد أعضاء في الفريق</p>
+          <p className="empty-state">Aucun membre dans l'équipe</p>
         ) : (
           <table className="team-table">
             <thead>
               <tr>
-                <th>الاسم</th>
-                <th>البريد الإلكتروني</th>
-                <th>الدور</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Rôle</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -136,13 +140,13 @@ export default function TeamManagement() {
                 <tr key={member.id}>
                   <td>{member.name}</td>
                   <td>{member.email}</td>
-                  <td>{roles[member.role] || member.role}</td>
+                  <td><span className="role-badge">{roles[member.role] || member.role}</span></td>
                   <td>
                     <button 
-                      className="btn-delete"
+                      className="btn btn-danger btn-sm"
                       onClick={() => handleRemoveMember(member.id)}
                     >
-                      حذف
+                      🗑️ Supprimer
                     </button>
                   </td>
                 </tr>
