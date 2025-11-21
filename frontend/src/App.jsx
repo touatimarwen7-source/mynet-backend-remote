@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import AlertStrip from './components/AlertStrip';
 import UnifiedHeader from './components/UnifiedHeader';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
@@ -111,26 +112,12 @@ function App() {
       <ToastContext.Provider value={{ addToast }}>
         <Router>
         <div className="app">
+        <AlertStrip />
+        <UnifiedHeader />
         <ToastContainer toasts={toasts} removeToast={removeToast} />
         
         {/* Sidebar Navigation - Only for authenticated users */}
         {user && <Sidebar user={user} onLogout={handleLogout} />}
-
-        {/* Top Navbar - For unauthenticated users and mobile */}
-        {!user && (
-          <nav className="navbar">
-            <div className="nav-container">
-              <div className="nav-brand">
-                <h1>MyNet.tn</h1>
-                <span>Système de Gestion des Appels d'Offres</span>
-              </div>
-              <div className="nav-links">
-                <a href="/login">Connexion</a>
-                <a href="/register">Inscription</a>
-              </div>
-            </div>
-          </nav>
-        )}
 
         <main className="main-content">
           <Routes>

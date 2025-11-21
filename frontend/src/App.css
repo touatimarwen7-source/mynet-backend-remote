@@ -13,6 +13,12 @@
   flex-direction: column;
 }
 
+/* Adjust main content for unified header and alert strip */
+.main-content {
+  margin-top: 0;
+  padding-top: 1rem;
+}
+
 .navbar {
   background: rgba(13, 40, 73, 0.8);
   backdrop-filter: blur(30px);
