@@ -5,6 +5,7 @@ import { setPageTitle } from '../utils/pageTitle';
 import DashboardCards from '../components/DashboardCards';
 import QuickActions from '../components/QuickActions';
 import ImportantDocuments from '../components/ImportantDocuments';
+import '../styles/dashboard-header.css';
 
 export default function SupplierDashboard() {
   const navigate = useNavigate();
@@ -145,26 +146,36 @@ export default function SupplierDashboard() {
 
   return (
     <div className="supplier-dashboard">
-      <h1>Tableau de Bord - Fournisseur</h1>
+      {/* Professional Dashboard Header */}
+      <div className="dashboard-header">
+        <div className="header-content">
+          <h1>Tableau de Bord Fournisseur</h1>
+          <p className="header-subtitle">Trouvez et répondez aux appels d'offres</p>
+        </div>
+        <div className="header-meta">
+          <span className="meta-item">Appels Disponibles: <strong>{stats.activeTenders}</strong></span>
+          <span className="meta-item">Mes Offres: <strong>{stats.myOffers}</strong></span>
+        </div>
+      </div>
 
       {/* Summary Cards */}
-      <DashboardCards cards={summaryCards} />
+      <div className="dashboard-section">
+        <h2>Vue d'ensemble</h2>
+        <DashboardCards cards={summaryCards} />
+      </div>
 
       {/* Quick Actions */}
-      <QuickActions actions={quickActions} />
+      <div className="dashboard-section">
+        <h2>Actions Rapides</h2>
+        <QuickActions actions={quickActions} />
+      </div>
 
       {/* Important Documents - Eligibility & Certifications */}
-      <ImportantDocuments 
-        documents={importantDocs} 
-        title="Documents d'Éligibilité & Certifications" 
-      />
-
-      {/* Recent Activity Section */}
-      <div className="recent-activity-section">
-        <h2>Activité Récente</h2>
-        <div className="activity-card">
-          <p>Aucune activité récente</p>
-        </div>
+      <div className="dashboard-section">
+        <ImportantDocuments 
+          documents={importantDocs} 
+          title="Documents d'Éligibilité & Certifications" 
+        />
       </div>
     </div>
   );

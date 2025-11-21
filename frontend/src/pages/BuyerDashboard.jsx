@@ -4,6 +4,7 @@ import { setPageTitle } from '../utils/pageTitle';
 import DashboardCards from '../components/DashboardCards';
 import QuickActions from '../components/QuickActions';
 import ImportantDocuments from '../components/ImportantDocuments';
+import '../styles/dashboard-header.css';
 
 export default function BuyerDashboard() {
   const [stats, setStats] = useState({
@@ -159,16 +160,34 @@ export default function BuyerDashboard() {
 
   return (
     <div className="buyer-dashboard">
-      <h1>Tableau de Bord - Acheteur</h1>
+      {/* Professional Dashboard Header */}
+      <div className="dashboard-header">
+        <div className="header-content">
+          <h1>Tableau de Bord Acheteur</h1>
+          <p className="header-subtitle">Gérez vos appels d'offres et vos achats</p>
+        </div>
+        <div className="header-meta">
+          <span className="meta-item">Appels Actifs: <strong>{stats.activeTenders}</strong></span>
+          <span className="meta-item">Offres Reçues: <strong>{stats.totalBids}</strong></span>
+        </div>
+      </div>
 
       {/* Summary Cards */}
-      <DashboardCards cards={summaryCards} />
+      <div className="dashboard-section">
+        <h2>Vue d'ensemble</h2>
+        <DashboardCards cards={summaryCards} />
+      </div>
 
       {/* Quick Actions */}
-      <QuickActions actions={quickActions} />
+      <div className="dashboard-section">
+        <h2>Actions Rapides</h2>
+        <QuickActions actions={quickActions} />
+      </div>
 
       {/* Important Documents */}
-      <ImportantDocuments documents={importantDocs} title="Documents Importants" />
+      <div className="dashboard-section">
+        <ImportantDocuments documents={importantDocs} title="Documents Importants" />
+      </div>
 
       {/* KPIs Grid - Legacy */}
       <div className="kpis-grid">
