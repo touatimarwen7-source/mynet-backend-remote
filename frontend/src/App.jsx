@@ -36,14 +36,12 @@ import ToastContainer from './components/ToastContainer';
 import { ToastContext } from './contexts/ToastContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import { useTranslation } from 'react-i18next';
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const { toasts, addToast, removeToast } = useToast();
-  const { i18n } = useTranslation();
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
