@@ -85,6 +85,7 @@ const SupplierReviews = lazy(() => import('./pages/SupplierReviews'));
 const Inbox = lazy(() => import('./pages/Inbox'));
 const Compose = lazy(() => import('./pages/Compose'));
 const MessageDetail = lazy(() => import('./pages/MessageDetail'));
+const PurchaseOrders = lazy(() => import('./pages/PurchaseOrders'));
 
 const LoadingFallback = () => (
   <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
@@ -451,6 +452,10 @@ function App() {
               <Route 
               path="/message/:messageId" 
               element={user ? <MessageDetail /> : <Navigate to="/login" />} 
+            />
+              <Route 
+              path="/purchase-orders" 
+              element={user ? <PurchaseOrders /> : <Navigate to="/login" />} 
             />
               <Route 
               path="/mfa-setup" 

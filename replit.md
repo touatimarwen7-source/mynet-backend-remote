@@ -28,19 +28,47 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
 - **Reviews & Ratings System**: Comprehensive review, rating, and feedback functionality with 5-star ratings, average rating calculation, and review management.
 - **Direct Supply Request**: Buyers can send direct supply requests to verified suppliers using a 4-step wizard.
 
-### Feature Specifications
-- **Admin Dashboards**: Separate Super Admin and Admin Dashboards with granular access control.
-- **Company Profiles**: Dynamic supplier profiles with filtering, service listings, and contact information.
-- **Core Functionality**: Tender management, offer management, company profiles, advanced supplier search, user authentication, role-based access control.
-- **User Pages**: 60 pages with full content and functionality (e.g., MyOffers, NotificationCenter, InvoiceManagement).
-- **Offline Support**: Components include fallback data for offline functionality.
+## Recent Changes (November 22, 2025)
 
-### System Design Choices
-- **Separated Dashboards**: Distinct `SuperAdminDashboard.jsx` and `AdminDashboard.jsx`.
-- **Token Management**: Robust `tokenManager.js` for persistent and secure token handling.
-- **Database Schema**: 22 tables initialized for users, tenders, offers, company profiles, etc.
-- **Database Optimization**: Extensive use of performance indexes for user profiles, roles, status, full-text search (French), and JSONB fields.
-- **API Endpoints**: Comprehensive RESTful API for all platform functionalities including company profiles, messaging, reviews, and direct supply requests.
+### Purchase Orders System - PO management
+- Backend API: 5 endpoints for PO lifecycle
+- Frontend page: `PurchaseOrders.jsx` with status filtering
+- Create PO from offers, track status (pending/confirmed/delivered)
+
+### Audit Logs System - Compliance tracking
+- Backend API: Admin audit log viewing
+- Middleware for auto-logging actions
+- Track user activities, entity changes, IP addresses
+
+### Subscription Plans System - Monetization ready
+- Backend API: Plan management and user subscriptions
+- Support for multiple subscription tiers
+- Active subscription tracking
+
+### Messaging System - Complete user-to-user communication
+- 3 Frontend Pages: Inbox, Compose, MessageDetail
+- 7 Backend Endpoints for messaging operations
+- User search/autocomplete for recipients
+- Mark-as-read, pagination, search functionality
+- Related entity linking support
+
+### Reviews & Ratings System - Supplier feedback
+- Frontend: `SupplierReviews.jsx` with rating statistics
+- 6 Backend Endpoints for reviews
+- 5-star rating system with distribution charts
+- Auto-update average ratings
+- Edit/delete own reviews
+
+### Direct Supply Request System - Direct procurement
+- 3 Frontend Pages: Create, View Sent, View Received
+- 5 Backend Endpoints for supply requests
+- 4-step wizard for creating requests
+- Accept/reject supplier requests
+- Real-time status updates
+
+## Database Structure (22 tables)
+- **Active**: users, tenders, offers, invoices, user_profiles, notifications, purchase_requests, supplier_verifications, mfa_codes, reviews, messages, purchase_orders
+- **Available**: audit_logs, subscription_plans, user_subscriptions, supplier_features, tender_history, tender_award_line_items, archive_policies, encryption_keys, feature_flags, feature_flag_audits
 
 ## External Dependencies
 - **Database**: PostgreSQL (Neon).
