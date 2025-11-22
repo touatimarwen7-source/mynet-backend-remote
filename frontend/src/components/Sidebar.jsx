@@ -192,37 +192,36 @@ export default function Sidebar({ user, onLogout }) {
   const adminMenu = [
     {
       id: 'dashboard',
-      label: 'Tableau de Contrôle',
+      label: 'لوحة التحكم',
       path: '/admin',
       subItems: []
     },
     {
       id: 'users',
-      label: 'Utilisateurs',
+      label: '👥 المستخدمين والأمان',
       subItems: [
-        { label: 'Affichage', path: '/admin/users' },
-        { label: 'Statistiques', path: '/admin/health' }
+        { label: 'إدارة المستخدمين', path: '/admin/users' }
       ]
     },
     {
-      id: 'tenders',
-      label: 'Appels d\'Offres',
+      id: 'analytics',
+      label: '📊 الإحصائيات',
       subItems: [
-        { label: 'Tous', path: '/admin/tenders' },
-        { label: 'Archivage', path: '/admin/archive' }
+        { label: 'عرض الإحصائيات', path: '/admin/health' }
       ]
     },
     {
       id: 'profile',
-      label: 'Profil Admin',
+      label: 'الملف الشخصي',
       subItems: [
-        { label: 'Paramètres', path: '/profile' },
-        { label: 'Sécurité', path: '/security' }
+        { label: 'الإعدادات', path: '/profile' },
+        { label: 'الأمان', path: '/security' }
       ]
     }
   ];
 
   // 👑 Super Admin Menu - صلاحيات التحكم الشامل (Total Control Hub)
+  // تتطابق مع الـ 4 tabs في SuperAdminDashboard
   const superAdminMenu = [
     {
       id: 'dashboard',
@@ -232,48 +231,38 @@ export default function Sidebar({ user, onLogout }) {
     },
     {
       id: 'users',
-      label: '👥 إدارة المستخدمين',
+      label: '👥 إدارة المستخدمين والأمان',
       subItems: [
-        { label: 'إدارة الحسابات', path: '/super-admin/users' },
-        { label: 'الأدوار والأذونات', path: '/super-admin/permissions' },
-        { label: 'الحسابات المحظورة', path: '/super-admin/blocked-users' }
+        { label: 'عرض Dashboard', path: '/super-admin' }
       ]
     },
     {
       id: 'content',
-      label: '📄 إدارة المحتوى',
+      label: '📄 إدارة المحتوى الديناميكي',
       subItems: [
-        { label: 'الصفحات الثابتة', path: '/super-admin/content' },
-        { label: 'الملفات والصور', path: '/super-admin/assets' },
-        { label: 'الوثائق', path: '/super-admin/documents' }
+        { label: 'عرض Dashboard', path: '/super-admin' }
       ]
     },
     {
       id: 'system',
       label: '⚙️ إعدادات النظام',
       subItems: [
-        { label: 'وضع الصيانة', path: '/super-admin/maintenance' },
-        { label: 'Feature Toggles', path: '/super-admin/features' },
-        { label: 'Rate Limits', path: '/super-admin/rate-limits' },
-        { label: 'إعدادات الكاش', path: '/super-admin/cache' }
+        { label: 'عرض Dashboard', path: '/super-admin' }
       ]
     },
     {
       id: 'monitoring',
       label: '📊 المراقبة والتحليلات',
       subItems: [
-        { label: 'الصحة', path: '/super-admin/health' },
-        { label: 'سجلات النشاط', path: '/super-admin/audit-logs' },
-        { label: 'الإحصائيات', path: '/super-admin/analytics' },
-        { label: 'النسخ الاحتياطية', path: '/super-admin/backup' }
+        { label: 'عرض Dashboard', path: '/super-admin' }
       ]
     },
     {
       id: 'profile',
-      label: 'Profil Super Admin',
+      label: 'الملف الشخصي',
       subItems: [
-        { label: 'Paramètres', path: '/profile' },
-        { label: 'Sécurité', path: '/security' }
+        { label: 'الإعدادات', path: '/profile' },
+        { label: 'الأمان', path: '/security' }
       ]
     }
   ];
