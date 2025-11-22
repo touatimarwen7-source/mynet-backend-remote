@@ -27,6 +27,8 @@ const ContactPage = lazy(() => import('./pages/ContactPage'));
 const TenderList = lazy(() => import('./pages/TenderList'));
 const CreateTender = lazy(() => import('./pages/CreateTender'));
 const CreateBid = lazy(() => import('./pages/CreateBid'));
+const CreateSupplyRequest = lazy(() => import('./pages/CreateSupplyRequest'));
+const CreateInvoice = lazy(() => import('./pages/CreateInvoice'));
 const TenderDetail = lazy(() => import('./pages/TenderDetail'));
 const MyOffers = lazy(() => import('./pages/MyOffers'));
 const Profile = lazy(() => import('./pages/Profile'));
@@ -203,6 +205,14 @@ function App() {
               <Route 
                 path="/tender/:tenderId/bid" 
                 element={user?.role === 'supplier' ? <CreateBid /> : <Navigate to="/tenders" />} 
+              />
+              <Route 
+                path="/offer/:offerId/supply-request" 
+                element={user?.role === 'supplier' ? <CreateSupplyRequest /> : <Navigate to="/tenders" />} 
+              />
+              <Route 
+                path="/supply-request/:supplyRequestId/invoice" 
+                element={user?.role === 'supplier' ? <CreateInvoice /> : <Navigate to="/tenders" />} 
               />
 
               {/* Interface Acheteur */}

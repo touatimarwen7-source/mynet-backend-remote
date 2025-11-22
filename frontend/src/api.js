@@ -31,7 +31,21 @@ export const procurementAPI = {
   createOffer: (data) => axiosInstance.post('/procurement/offers', data),
   evaluateOffer: (id, data) => axiosInstance.post(`/procurement/offers/${id}/evaluate`, data),
   selectWinner: (id) => axiosInstance.post(`/procurement/offers/${id}/select-winner`),
-  rejectOffer: (id) => axiosInstance.post(`/procurement/offers/${id}/reject`)
+  rejectOffer: (id) => axiosInstance.post(`/procurement/offers/${id}/reject`),
+  
+  // Supply Request endpoints
+  getSupplyRequests: (filters) => axiosInstance.get('/procurement/supply-requests', { params: filters }),
+  getSupplyRequest: (id) => axiosInstance.get(`/procurement/supply-requests/${id}`),
+  createSupplyRequest: (data) => axiosInstance.post('/procurement/supply-requests', data),
+  updateSupplyRequest: (id, data) => axiosInstance.put(`/procurement/supply-requests/${id}`, data),
+  getMySupplyRequests: () => axiosInstance.get('/procurement/my-supply-requests'),
+  
+  // Invoice endpoints
+  getInvoices: (filters) => axiosInstance.get('/procurement/invoices', { params: filters }),
+  getInvoice: (id) => axiosInstance.get(`/procurement/invoices/${id}`),
+  createInvoice: (data) => axiosInstance.post('/procurement/invoices', data),
+  updateInvoice: (id, data) => axiosInstance.put(`/procurement/invoices/${id}`, data),
+  getMyInvoices: () => axiosInstance.get('/procurement/my-invoices')
 };
 
 export const searchAPI = {
