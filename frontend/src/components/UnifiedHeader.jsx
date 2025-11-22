@@ -21,6 +21,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import LogoutIcon from '@mui/icons-material/Logout';
 import TokenManager from '../services/tokenManager';
+import NotificationCenter from './NotificationCenter';
 
 export default function UnifiedHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -183,6 +184,9 @@ export default function UnifiedHeader() {
         <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: '16px' }}>
           {isAuthenticated ? (
             <>
+              {/* Notification Center - Real-time Updates */}
+              <NotificationCenter />
+
               <Box
                 onClick={handleProfileMenuOpen}
                 sx={{
