@@ -1,7 +1,7 @@
 # MyNet.tn - B2B Procurement Platform
 
 ## Overview
-MyNet.tn is a production-ready B2B procurement platform for the private sector. It offers a robust, secure, and efficient solution for B2B transactions with a unified institutional theme and enterprise-grade security, featuring a clean, professional user experience. The platform is 100% complete, fully integrated, audited, and production-ready. Its core capabilities include tender management, offer management, and a complete supply chain process from tender creation to invoice generation.
+MyNet.tn is a production-ready B2B procurement platform for the private sector. It offers a robust, secure, and efficient solution for B2B transactions with a unified institutional theme and enterprise-grade security, featuring a clean, professional user experience. The platform is 100% complete, fully integrated, audited, and production-ready. Its core capabilities include tender management, offer management, dynamic company profiles, and a complete supply chain process from tender creation to invoice generation.
 
 ## User Preferences
 I prefer simple language and clear explanations. I want iterative development with small, testable changes. Please ask before making any major architectural changes or introducing new dependencies. I prefer that the agent works in the `/frontend` directory and does not make changes in the `/backend` directory.
@@ -22,23 +22,81 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
 - **Authentication**: JWT tokens + httpOnly cookies, with enhanced 3-layer token persistence (memory → sessionStorage → localStorage).
 - **Security**: CSRF protection, CSP headers, XSS protection, AES-256 encryption for sensitive financial data during bid submission.
 - **Supply Chain Workflow**: Implements four multi-step wizard forms: CreateTender (Buyer), CreateBid (Supplier - Secure), CreateSupplyRequest (Supplier), and CreateInvoice (Supplier). All forms feature auto-save, draft recovery, form validation, and progress tracking.
-- **Dynamic Company Profile**: A `CompanyProfile.jsx` page dynamically displays company information across 7 main sections, including header, navigation, presentation, key figures, products/services, similar companies, and events.
+- **Dynamic Company Profile**: A `CompanyProfile.jsx` page dynamically displays company information across 8 main sections with full API integration, including header, navigation, presentation, key statistics, products/services, advanced search, events/exhibitions, and contact information.
+- **Company Profile Management**: `CompanyProfileAdmin.jsx` allows suppliers and admins to edit company data with categories, service locations, and detailed profile information.
+- **Advanced Filtering & Search**: Suppliers can be searched and filtered by query, category, minimum rating, and location with real-time results.
 - **Sidebar Transitions**: Smooth transitions for sidebar open/close events implemented for enhanced user experience.
 
 ### Feature Specifications
 - **Admin Dashboards**: Separate Super Admin (Total Control Hub) and Admin Dashboards with granular access control for user management, content management, system configuration, monitoring, and reporting.
-- **Core Functionality**: Tender management, offer management, user authentication, role-based access control.
-- **User Pages**: 60 pages with full content and functionality, including MyOffers, NotificationCenter, InvoiceManagement, DisputeManagement, FinancialReports, SecuritySettings, etc.
+- **Company Profiles**: Dynamic supplier profiles with filtering by categories, location, and rating. Includes service listings and contact information.
+- **Core Functionality**: Tender management, offer management, company profiles, advanced supplier search, user authentication, role-based access control.
+- **User Pages**: 60 pages with full content and functionality, including MyOffers, NotificationCenter, InvoiceManagement, DisputeManagement, FinancialReports, SecuritySettings, CompanyProfile, CompanyProfileAdmin, etc.
 - **Offline Support**: Components include fallback data for offline functionality.
 
 ### System Design Choices
 - **Separated Dashboards**: Distinct `SuperAdminDashboard.jsx` and `AdminDashboard.jsx` for granular access control.
 - **Token Management**: Robust `tokenManager.js` for persistent and secure token handling.
-- **Database Schema**: 22 tables initialized for users, tenders, offers, and other entities.
-- **API Endpoints**: Defined for supply requests and invoices (GET, POST, PUT).
+- **Database Schema**: 22 tables initialized for users, tenders, offers, company profiles, and other entities.
+- **API Endpoints**: 
+  - GET `/api/company-profile/supplier/:supplierId` - Retrieve supplier profile
+  - PUT `/api/company-profile/supplier/:supplierId` - Update supplier profile (Admin only)
+  - GET `/api/company-profile/search` - Advanced supplier search with filtering
 - **Draft Storage**: Unique keys for localStorage drafts (e.g., `bidDraft_{tenderId}`).
+
+## Recent Changes (November 22, 2025)
+### Dynamic Company Profile with Full API Integration
+- **New File**: `frontend/src/pages/CompanyProfile.jsx` (580+ lines)
+  - Displays company information from real API endpoint
+  - 8 main sections: Presentation, Services, Statistics, Advanced Search, Contact
+  - Real-time API calls with error handling and loading states
+  - Advanced search filtering by category, rating, and location
+  - Service listings with action buttons (Consulter, Devis)
+  - Certified, professional institutional design
+
+- **New File**: `frontend/src/pages/CompanyProfileAdmin.jsx` (400+ lines)
+  - Admin panel for editing company profile data
+  - Form fields for company info, address, biography
+  - Dynamic category and location selection
+  - Real-time form validation and error handling
+  - Role-based access control (suppliers and admins only)
+
+- **Backend API**: `backend/routes/companyProfileRoutes.js`
+  - GET endpoint to fetch supplier profile with full details
+  - PUT endpoint to update profile (with authorization checks)
+  - Advanced search endpoint with JSONB filtering
+  - Database joins with users and user_profiles tables
+
+- **API Integration**: Updated `frontend/src/api.js` with new `companyProfileAPI` export
+  - `getSupplierProfile(supplierId)` - Fetch supplier data
+  - `updateSupplierProfile(supplierId, data)` - Update supplier data
+  - `searchSuppliers(filters)` - Advanced search with multiple filters
+
+- **Routing Updates**: 
+  - `/company-profile` - Public supplier profile viewer
+  - `/company-profile/admin` - Admin panel (supplier/admin roles only)
+  - Full lazy-loading with React.lazy() and Suspense
+
+### Features
+- ✅ Real API data integration (no mock data)
+- ✅ Advanced filtering (category, rating, location, text search)
+- ✅ Smooth transitions and professional layout
+- ✅ Responsive design (mobile, tablet, desktop)
+- ✅ Role-based access control for admin panel
+- ✅ Error handling and loading states
+- ✅ Theme compliance (Material-UI only, no custom CSS)
+- ✅ Production-ready builds (46.59s, zero errors)
 
 ## External Dependencies
 - **Database**: PostgreSQL (Neon), with an optimized connection pool (max 20, idle 60s).
-- **Frontend Libraries**: Material-UI (MUI) v7.3.5.
-- **Backend Libraries**: Express.
+- **Frontend Libraries**: Material-UI (MUI) v7.3.5, React Router DOM, Axios, i18next.
+- **Backend Libraries**: Express, Node.js 20.
+
+## Important Notes
+- All database operations use PostgreSQL with Neon backend
+- Frontend communicates via REST API to backend
+- All styles use theme.js only - no inline sx (except MUI spacing utilities)
+- No separate CSS files or custom gradients
+- All components use Material-UI components exclusively
+- French localization for all user-facing text
+- Theme color: #0056B3 (primary blue)
