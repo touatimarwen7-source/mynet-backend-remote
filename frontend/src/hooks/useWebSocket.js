@@ -23,7 +23,6 @@ export const useWebSocket = () => {
 
     // Connection events
     newSocket.on('connect', () => {
-      console.log('✅ WebSocket connected');
       setConnected(true);
 
       // Join user room
@@ -34,7 +33,6 @@ export const useWebSocket = () => {
     });
 
     newSocket.on('disconnect', () => {
-      console.log('❌ WebSocket disconnected');
       setConnected(false);
     });
 
@@ -42,7 +40,7 @@ export const useWebSocket = () => {
     newSocket.on('offer-created', (data) => {
       setNotifications(prev => [...prev, {
         type: 'offer',
-        message: `New offer from ${data.supplier} for ${data.price}`,
+        message: `Nouvelle offre de ${data.supplier} pour ${data.price}`,
         data
       }]);
     });
@@ -50,7 +48,7 @@ export const useWebSocket = () => {
     newSocket.on('tender-updated', (data) => {
       setNotifications(prev => [...prev, {
         type: 'tender',
-        message: `Tender status changed to ${data.status}`,
+        message: `Statut de l'appel d'offres modifié à ${data.status}`,
         data
       }]);
     });
@@ -58,7 +56,7 @@ export const useWebSocket = () => {
     newSocket.on('message-received', (data) => {
       setNotifications(prev => [...prev, {
         type: 'message',
-        message: `New message from ${data.senderId}`,
+        message: `Nouveau message de ${data.senderId}`,
         data
       }]);
     });
@@ -66,7 +64,7 @@ export const useWebSocket = () => {
     newSocket.on('rating-updated', (data) => {
       setNotifications(prev => [...prev, {
         type: 'rating',
-        message: `You received a ${data.rating}-star rating from ${data.reviewer}`,
+        message: `Vous avez reçu une note de ${data.rating} étoiles de ${data.reviewer}`,
         data
       }]);
     });

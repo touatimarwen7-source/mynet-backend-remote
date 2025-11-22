@@ -98,7 +98,7 @@ export default function CreateTender() {
       try {
         setFormData(JSON.parse(saved));
       } catch (e) {
-        console.error('Error loading draft:', e);
+        // Brouillon corrompu, ignorer
       }
     }
   }, []);

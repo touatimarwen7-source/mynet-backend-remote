@@ -99,7 +99,7 @@ export default function CreateBid() {
         setFormData(savedData);
         setTechnicalDetails(savedData.technical_details_array || []);
       } catch (e) {
-        console.error('Error loading draft:', e);
+        // Brouillon corrompu, ignorer
       }
     }
   }, [tenderId]);

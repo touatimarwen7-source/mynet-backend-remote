@@ -43,13 +43,13 @@ export default function SystemConfig() {
         const response = await adminAPI.config.getAll();
         setConfig(response.data || response);
       } catch {
-        // استخدم الإعدادات الافتراضية
-        console.warn('استخدام الإعدادات الافتراضية');
+        // Utiliser les paramètres par défaut
+        console.warn('Utilisation des paramètres par défaut');
       }
       setErrorMsg('');
     } catch (error) {
       const formatted = errorHandler.getUserMessage(error);
-      console.warn('خطأ في التحميل:', formatted.message);
+      console.warn('Erreur lors du chargement:', formatted.message);
       setErrorMsg('');
     } finally {
       setLoading(false);
@@ -68,15 +68,15 @@ export default function SystemConfig() {
           await adminAPI.config.update({ [key]: newValue });
         }
       } catch {
-        // حدّث محلياً في حالة الفشل
+        // Mise à jour locale en cas d'échec
       }
 
       setConfig({ ...config, [key]: newValue });
-      setSuccessMsg(`تم تحديث الإعداد`);
+      setSuccessMsg(`Paramètre mis à jour`);
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (error) {
       const formatted = errorHandler.getUserMessage(error);
-      setErrorMsg(formatted.message || 'خطأ في التحديث');
+      setErrorMsg(formatted.message || 'Erreur lors de la mise à jour');
     } finally {
       setUpdating(false);
     }
@@ -88,33 +88,33 @@ export default function SystemConfig() {
       try {
         await adminAPI.config.clearCache();
       } catch {
-        // حدّث محلياً في حالة الفشل
+        // Mise à jour locale en cas d'échec
       }
-      setSuccessMsg('تم تنظيف الذاكرة المؤقتة');
+      setSuccessMsg('Cache nettoyé avec succès');
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (error) {
       const formatted = errorHandler.getUserMessage(error);
-      setErrorMsg(formatted.message || 'خطأ في التنظيف');
+      setErrorMsg(formatted.message || 'Erreur lors du nettoyage');
     } finally {
       setUpdating(false);
     }
   };
 
   const handleSystemRestart = async () => {
-    if (!window.confirm('هل أنت متأكد من إعادة تشغيل النظام؟')) return;
+    if (!window.confirm('Êtes-vous sûr de vouloir redémarrer le système?')) return;
 
     try {
       setUpdating(true);
       try {
         await adminAPI.config.restartSystem();
       } catch {
-        // حدّث محلياً في حالة الفشل
+        // Mise à jour locale en cas d'échec
       }
-      setSuccessMsg('جاري إعادة تشغيل النظام...');
+      setSuccessMsg('Redémarrage du système en cours...');
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (error) {
       const formatted = errorHandler.getUserMessage(error);
-      setErrorMsg(formatted.message || 'خطأ في الإعادة');
+      setErrorMsg(formatted.message || 'Erreur lors du redémarrage');
     } finally {
       setUpdating(false);
     }
@@ -127,14 +127,14 @@ export default function SystemConfig() {
       try {
         await adminAPI.config.update({ [key]: newValue });
       } catch {
-        // حدّث محلياً في حالة الفشل
+        // Mise à jour locale en cas d'échec
       }
       setConfig({ ...config, [key]: newValue });
-      setSuccessMsg('تم التحديث');
+      setSuccessMsg('Mise à jour réussie');
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (error) {
       const formatted = errorHandler.getUserMessage(error);
-      setErrorMsg(formatted.message || 'خطأ في التحديث');
+      setErrorMsg(formatted.message || 'Erreur lors de la mise à jour');
     } finally {
       setUpdating(false);
     }
@@ -151,7 +151,7 @@ export default function SystemConfig() {
 
       {config.maintenanceMode && (
         <Alert severity="warning" icon={<WarningIcon />} sx={{ mb: 2 }}>
-          وضع الصيانة مفعّل. يمكن للمسؤولين الأعليين فقط الوصول إلى النظام.
+          Mode maintenance activé. Seuls les super-administrateurs peuvent accéder au système.
         </Alert>
       )}
 
@@ -160,7 +160,7 @@ export default function SystemConfig() {
           <Card sx={{ border: '1px solid #E0E0E0', boxShadow: 'none' }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                الإعدادات التشغيلية
+                Paramètres Opérationnels
               </Typography>
               <Divider sx={{ mb: 2 }} />
 
@@ -173,7 +173,7 @@ export default function SystemConfig() {
                       disabled={updating}
                     />
                   }
-                  label="وضع الصيانة"
+                  label="Mode Maintenance"
                 />
 
                 <FormControlLabel
@@ -184,7 +184,7 @@ export default function SystemConfig() {
                       disabled={updating}
                     />
                   }
-                  label="تنبيهات البريد الإلكتروني"
+                  label="Notifications par Email"
                 />
 
                 <FormControlLabel
@@ -195,7 +195,7 @@ export default function SystemConfig() {
                       disabled={updating}
                     />
                   }
-                  label="النسخ الاحتياطي التلقائي"
+                  label="Sauvegarde Automatique"
                 />
 
                 <FormControlLabel
@@ -206,7 +206,7 @@ export default function SystemConfig() {
                       disabled={updating}
                     />
                   }
-                  label="المصادقة الثنائية"
+                  label="Authentification à Deux Facteurs"
                 />
 
                 <FormControlLabel
@@ -217,7 +217,7 @@ export default function SystemConfig() {
                       disabled={updating}
                     />
                   }
-                  label="تفعيل الذاكرة المؤقتة"
+                  label="Activer le Cache"
                 />
               </Box>
             </CardContent>
@@ -228,14 +228,14 @@ export default function SystemConfig() {
           <Card sx={{ border: '1px solid #E0E0E0', boxShadow: 'none' }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                الإعدادات المتقدمة
+                Paramètres Avancés
               </Typography>
               <Divider sx={{ mb: 2 }} />
 
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Box>
                   <Typography sx={{ fontSize: '13px', fontWeight: 600, mb: 1 }}>
-                    حد معدل طلبات API
+                    Limite de Débit API
                   </Typography>
                   <TextField
                     fullWidth
@@ -256,7 +256,7 @@ export default function SystemConfig() {
                   disabled={updating}
                   sx={{ backgroundColor: '#0056B3' }}
                 >
-                  تنظيف الذاكرة المؤقتة
+                  Nettoyer le Cache
                 </Button>
 
                 <Button
@@ -266,7 +266,7 @@ export default function SystemConfig() {
                   disabled={updating}
                   sx={{ color: '#F57C00', borderColor: '#F57C00' }}
                 >
-                  إعادة تشغيل النظام
+                  Redémarrer le Système
                 </Button>
               </Box>
             </CardContent>
@@ -277,33 +277,33 @@ export default function SystemConfig() {
           <Card sx={{ border: '1px solid #E0E0E0', boxShadow: 'none' }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                معلومات النظام
+                Informations Système
               </Typography>
               <Divider sx={{ mb: 2 }} />
 
               <Grid container spacing={2}>
                 <Grid item xs={6} sm={3}>
                   <Box>
-                    <Typography variant="caption" sx={{ color: '#616161' }}>الإصدار</Typography>
+                    <Typography variant="caption" sx={{ color: '#616161' }}>Version</Typography>
                     <Typography sx={{ fontWeight: 600 }}>1.2.0</Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={3}>
                   <Box>
-                    <Typography variant="caption" sx={{ color: '#616161' }}>صحة النظام</Typography>
+                    <Typography variant="caption" sx={{ color: '#616161' }}>Santé du Système</Typography>
                     <Typography sx={{ fontWeight: 600, color: '#2E7D32' }}>99.9%</Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={3}>
                   <Box>
-                    <Typography variant="caption" sx={{ color: '#616161' }}>المستخدمون النشطون</Typography>
+                    <Typography variant="caption" sx={{ color: '#616161' }}>Utilisateurs Actifs</Typography>
                     <Typography sx={{ fontWeight: 600 }}>1,254</Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={3}>
                   <Box>
-                    <Typography variant="caption" sx={{ color: '#616161' }}>آخر نسخة احتياطية</Typography>
-                    <Typography sx={{ fontWeight: 600 }}>اليوم 02:30</Typography>
+                    <Typography variant="caption" sx={{ color: '#616161' }}>Dernière Sauvegarde</Typography>
+                    <Typography sx={{ fontWeight: 600 }}>Aujourd'hui 02:30</Typography>
                   </Box>
                 </Grid>
               </Grid>

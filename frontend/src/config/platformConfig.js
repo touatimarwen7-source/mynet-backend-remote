@@ -7,7 +7,7 @@ export const PLATFORM_CONFIG = {
   // Langue officielle de la plateforme
   OFFICIAL_LANGUAGE: 'fr',
   
-  // Langues supportées (français, arabe, anglais)
+  // Langue exclusive: FRANÇAIS UNIQUEMENT
   SUPPORTED_LANGUAGES: {
     fr: {
       name: 'Français',
@@ -15,20 +15,6 @@ export const PLATFORM_CONFIG = {
       flag: '🇫🇷',
       direction: 'ltr',
       isOfficial: true
-    },
-    ar: {
-      name: 'Arabic',
-      nativeName: 'العربية',
-      flag: '🇸🇦',
-      direction: 'rtl',
-      isOfficial: false
-    },
-    en: {
-      name: 'English',
-      nativeName: 'English',
-      flag: '🇬🇧',
-      direction: 'ltr',
-      isOfficial: false
     }
   },
 

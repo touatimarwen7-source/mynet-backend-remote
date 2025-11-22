@@ -30,7 +30,7 @@ export default function DynamicAdvertisement() {
           <Button 
             variant="contained" 
             sx={{ backgroundColor: '#0056B3', color: '#FFFFFF' }}
-            onClick={() => console.log('CTA clicked:', ad.title)}
+            onClick={() => {}}
           >
             {ad.cta}
           </Button>
