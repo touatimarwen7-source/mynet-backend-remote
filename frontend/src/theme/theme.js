@@ -441,6 +441,94 @@ const institutionalTheme = createTheme({
             backgroundColor: '#003d7a !important',
           },
         },
+        /* ===== DynamicAdvertisement ===== */
+        '.dynamic-advertisement-container': {
+          width: '100%',
+          padding: '24px',
+          backgroundColor: '#F9F9F9',
+          borderRadius: '0px',
+        },
+        '.dynamic-ad-card': {
+          boxShadow: 'none',
+          border: '1px solid #E0E0E0',
+          backgroundColor: '#FFFFFF',
+          borderRadius: '4px',
+          padding: 0,
+          '&.dynamic-ad-success': {
+            borderLeftColor: '#2e7d32',
+            borderLeftWidth: '4px',
+          },
+          '&.dynamic-ad-webinar': {
+            borderLeftColor: '#0288d1',
+            borderLeftWidth: '4px',
+          },
+          '&.dynamic-ad-promo': {
+            borderLeftColor: '#f57c00',
+            borderLeftWidth: '4px',
+          },
+        },
+        '.dynamic-ad-content': {
+          padding: '24px',
+          '& .dynamic-ad-title': {
+            fontSize: '16px !important',
+            fontWeight: '600 !important',
+            color: '#212121',
+            marginBottom: '12px',
+          },
+          '& .dynamic-ad-message': {
+            fontSize: '14px !important',
+            color: '#616161',
+            marginBottom: '16px',
+            lineHeight: 1.6,
+          },
+        },
+        '.dynamic-ad-cta': {
+          backgroundColor: '#0056B3 !important',
+          color: '#FFFFFF !important',
+          padding: '10px 20px !important',
+          fontSize: '14px !important',
+          fontWeight: '500 !important',
+          textTransform: 'none !important',
+          borderRadius: '4px !important',
+          minHeight: '40px',
+          '&:hover': {
+            backgroundColor: '#003d7a !important',
+          },
+        },
+        '.dynamic-ad-controls': {
+          padding: '16px 24px',
+          borderTop: '1px solid #E0E0E0',
+          backgroundColor: '#F9F9F9',
+          borderBottomLeftRadius: '3px',
+          borderBottomRightRadius: '3px',
+        },
+        '.dynamic-ad-dot': {
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          backgroundColor: '#E0E0E0',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '0px',
+          transition: 'all 200ms ease-in-out',
+          '&:hover': {
+            backgroundColor: '#bdbdbd',
+          },
+          '&.active': {
+            backgroundColor: '#0056B3',
+            width: '10px',
+            height: '10px',
+          },
+        },
+        '.dynamic-ad-next-btn': {
+          color: '#0056B3',
+          padding: '4px !important',
+          minWidth: '24px !important',
+          height: '24px',
+          '&:hover': {
+            backgroundColor: '#f5f5f5',
+          },
+        },
       },
     },
 

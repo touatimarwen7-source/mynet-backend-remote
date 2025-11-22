@@ -1,4 +1,13 @@
 import { useState } from 'react';
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Stack,
+} from '@mui/material';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 export default function DynamicAdvertisement() {
   const [advertisements] = useState([
@@ -31,25 +40,47 @@ export default function DynamicAdvertisement() {
     setCurrentAd((prev) => (prev + 1) % advertisements.length);
   };
 
+  const ad = advertisements[currentAd];
+
   return (
-    <div className="dynamic-advertisement">
-      <div className={`ad-card ad-${advertisements[currentAd].type}`}>
-        <div className="ad-content">
-          <h3>{advertisements[currentAd].title}</h3>
-          <p>{advertisements[currentAd].message}</p>
-          <button className="ad-cta">{advertisements[currentAd].cta}</button>
-        </div>
-        <div className="ad-controls">
+    <Box className="dynamic-advertisement-container">
+      <Card className={`dynamic-ad-card dynamic-ad-${ad.type}`}>
+        <CardContent className="dynamic-ad-content">
+          <Typography variant="h5" component="h3" className="dynamic-ad-title">
+            {ad.title}
+          </Typography>
+          <Typography variant="body2" className="dynamic-ad-message">
+            {ad.message}
+          </Typography>
+          <Button variant="contained" className="dynamic-ad-cta">
+            {ad.cta}
+          </Button>
+        </CardContent>
+
+        {/* Ad Controls */}
+        <Stack
+          direction="row"
+          spacing={1}
+          className="dynamic-ad-controls"
+          justifyContent="center"
+        >
           {advertisements.map((_, idx) => (
-            <button
+            <Box
               key={idx}
-              className={`dot ${idx === currentAd ? 'active' : ''}`}
+              component="button"
               onClick={() => setCurrentAd(idx)}
-            ></button>
+              className={`dynamic-ad-dot ${idx === currentAd ? 'active' : ''}`}
+            />
           ))}
-          <button className="next-btn" onClick={handleNext}>→</button>
-        </div>
-      </div>
-    </div>
+          <Button
+            size="small"
+            className="dynamic-ad-next-btn"
+            onClick={handleNext}
+          >
+            <NavigateNextIcon />
+          </Button>
+        </Stack>
+      </Card>
+    </Box>
   );
 }
