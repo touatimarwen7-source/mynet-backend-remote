@@ -38,3 +38,42 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
 - **Database**: PostgreSQL (Neon), with an optimized connection pool (max 20, idle 60s).
 - **Frontend Libraries**: Material-UI (MUI) v7.3.5.
 - **Backend Libraries**: Express.
+---
+
+## 🎯 Session 6 Update - Multi-Step Wizard Form
+
+### ✅ CreateTender.jsx - Transformation Complete
+
+**Previous:** Accordion-based form with 6 expandable sections  
+**New:** 8-Step Professional Wizard with Auto-Save
+
+#### 8-Step Architecture:
+1. **Basic Information** - Title, Description, Public/Private toggle
+2. **Classification** - Category selection (UNSPSC system)
+3. **Budget & Currency** - Budget ranges (TND/USD/EUR)
+4. **Timeline** - Deadlines, Encryption dates, Query periods, Alert system
+5. **Requirements** - Dynamic requirement chips management
+6. **Evaluation Criteria** - Weighted scoring (must total 100%)
+7. **Attachments** - File upload with table management
+8. **Review & Submit** - Final summary confirmation
+
+#### Key Features:
+- ✅ Auto-save to localStorage (Draft recovery)
+- ✅ Form validation at each step
+- ✅ Progress bar & visual feedback
+- ✅ Stepper component (step tracking)
+- ✅ Exit confirmation dialog
+- ✅ Auto-save notifications
+- ✅ Mobile responsive design
+- ✅ Step completion tracking
+
+#### Technical Implementation:
+- Encryption date handling for secure bidding
+- Query period management (end before deadline)
+- Offer validity tracking (days-based)
+- Alert system configuration (48h, 24h, 1h)
+- All dates use datetime-local for timezone handling
+- Form data persisted across navigation
+- Graceful error handling
+
+---
