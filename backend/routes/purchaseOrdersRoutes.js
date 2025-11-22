@@ -127,7 +127,7 @@ router.put('/:poId/status', authMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'PO not found' });
     }
     const po = poResult.rows[0];
-    if (po.buyer_id !== req.user.id && po.supplier_id !== req.user.id && req.user.role !== 'admin') {
+    if (po.buyer_id !== req.user.id && po.supplier_id !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
 
@@ -159,8 +159,8 @@ router.delete('/:poId', authMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'PO not found' });
     }
     const po = poResult.rows[0];
-    if (po.buyer_id !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Unauthorized - only buyer or admin can delete' });
+    if (po.buyer_id !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+      return res.status(403).json({ error: 'Unauthorized - only buyer or admin or super_admin can delete' });
     }
 
     // ISSUE FIX #5: Soft delete instead of hard delete
