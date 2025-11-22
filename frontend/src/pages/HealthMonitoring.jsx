@@ -16,7 +16,6 @@ export default function HealthMonitoring() {
               HealthMonitoring
             </Typography>
             <Alert severity="success" sx={{ backgroundColor: '#e8f5e9', color: '#1b5e20', border: '1px solid #2e7d32' }}>
-              ✓ Converted to Material-UI
             </Alert>
           </CardContent>
         </Card>
