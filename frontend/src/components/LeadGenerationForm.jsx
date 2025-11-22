@@ -27,7 +27,6 @@ export default function LeadGenerationForm() {
       setFormData({ name: '', email: '', company: '', phone: '', formType: 'demo' });
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
-      console.error('Erreur:', error);
     } finally {
       setLoading(false);
     }

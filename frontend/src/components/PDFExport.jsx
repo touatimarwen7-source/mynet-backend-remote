@@ -48,7 +48,6 @@ const PDFExport = ({ documentType, documentId, supplierId = null, startDate = nu
       window.URL.revokeObjectURL(url);
     } catch (err) {
       setError('فشل تحميل المستند. حاول مرة أخرى.');
-      console.error('Error exporting PDF:', err);
     } finally {
       setLoading(false);
     }
@@ -69,7 +68,6 @@ const PDFExport = ({ documentType, documentId, supplierId = null, startDate = nu
       newWindow.addEventListener('load', () => { newWindow.print(); });
     } catch (err) {
       setError('فشل فتح المستند. حاول مرة أخرى.');
-      console.error('Error printing PDF:', err);
     } finally {
       setLoading(false);
     }

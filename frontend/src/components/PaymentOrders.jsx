@@ -17,7 +17,6 @@ export default function PaymentOrders() {
       const response = await procurementAPI.getPurchaseOrders?.() || { data: { purchaseOrders: [] } };
       setOrders(response.data.purchaseOrders || []);
     } catch (error) {
-      console.error('خطأ في تحميل أوامر الصرف:', error);
       setOrders([]);
     } finally {
       setLoading(false);

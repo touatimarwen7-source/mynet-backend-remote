@@ -44,7 +44,6 @@ export default function AccountSettings() {
       });
       setSettings(response.data.settings || settings);
     } catch (error) {
-      console.error('Erreur:', error);
     } finally {
       setLoading(false);
     }

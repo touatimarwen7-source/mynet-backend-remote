@@ -83,7 +83,6 @@ export default function Profile({ user }) {
         setActivity(response.data.activity || []);
       }
     } catch (err) {
-      console.error('Erreur lors du chargement de l\'activité');
     }
   };
 

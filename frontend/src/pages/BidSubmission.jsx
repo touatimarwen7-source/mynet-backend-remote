@@ -40,7 +40,6 @@ export default function BidSubmission() {
       setTender(res.data.tender);
     } catch (error) {
       setError('Erreur lors du chargement de l\'appel d\'offres');
-      console.error('Erreur:', error);
     } finally {
       setLoading(false);
     }

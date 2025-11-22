@@ -47,7 +47,6 @@ export default function BuyerActiveTenders() {
       const response = await procurementAPI.getMyTenders({ status: 'active' });
       setTenders(response.data.tenders || []);
     } catch (err) {
-      console.error('Erreur:', err);
     } finally {
       setLoading(false);
     }
@@ -71,7 +70,6 @@ export default function BuyerActiveTenders() {
         await procurementAPI.closeTender(tenderId);
         fetchActiveTenders();
       } catch (err) {
-        console.error('Erreur:', err);
       }
     }
   };

@@ -102,7 +102,6 @@ function App() {
           const userData = TokenManager.getUserFromToken();
           setUser(userData);
         } catch (error) {
-          console.error('Erreur lors du décodage du jeton:', error);
           TokenManager.clearTokens();
           setUser(null);
         }

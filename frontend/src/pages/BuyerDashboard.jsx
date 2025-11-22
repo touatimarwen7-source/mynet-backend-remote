@@ -68,7 +68,6 @@ export default function BuyerDashboard() {
       
       setRecentTenders(tenders.slice(0, 10));
     } catch (error) {
-      console.error('Erreur lors du chargement des données:', error);
     } finally {
       setLoading(false);
     }

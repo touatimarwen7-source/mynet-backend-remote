@@ -49,7 +49,6 @@ export default function AdminDashboard() {
         pendingAudits: 12
       });
     } catch (error) {
-      console.error('Erreur lors du chargement:', error);
     } finally {
       setLoading(false);
     }

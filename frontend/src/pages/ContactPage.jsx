@@ -47,7 +47,6 @@ export default function ContactPage() {
       setFormData({ name: '', email: '', phone: '', company: '', subject: '', message: '' });
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
-      console.error('Erreur:', error);
     } finally {
       setSubmitting(false);
     }

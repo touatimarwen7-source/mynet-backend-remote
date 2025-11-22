@@ -39,7 +39,6 @@ export function setupInactivityTimer(timeout = 15 * 60 * 1000) {
   const resetTimer = () => {
     clearTimeout(inactivityTimer);
     inactivityTimer = setTimeout(() => {
-      console.warn('انتهاء الجلسة بسبب الخمول');
       TokenManager.clearTokens();
       window.location.href = '/login';
     }, timeout);

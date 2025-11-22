@@ -198,7 +198,6 @@ export const Icon = ({ name, size = 24, className = '' }) => {
   const IconComponent = Icons[name];
   
   if (!IconComponent) {
-    console.warn(`Icon "${name}" not found`);
     return null;
   }
 

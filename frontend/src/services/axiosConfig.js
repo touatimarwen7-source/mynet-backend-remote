@@ -62,7 +62,6 @@ axiosInstance.interceptors.request.use(
     if (TokenManager.shouldRefreshToken() && !isRefreshing) {
       // Silently refresh in background
       refreshAccessToken().catch((err) => {
-        console.warn('Background token refresh failed:', err.message);
       });
     }
 
@@ -156,7 +155,6 @@ async function refreshAccessToken() {
 
     return accessToken;
   } catch (err) {
-    console.error('Token refresh failed:', err.message);
     throw err;
   }
 }
@@ -170,7 +168,6 @@ async function logout() {
     // Notify backend (backend will clear httpOnly cookie)
     await axiosInstance.post('/auth/logout');
   } catch (err) {
-    console.warn('Logout error:', err.message);
   } finally {
     // Always clear frontend tokens
     TokenManager.clearTokens();

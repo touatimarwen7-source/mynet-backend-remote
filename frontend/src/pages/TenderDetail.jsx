@@ -38,7 +38,6 @@ export default function TenderDetail() {
         const userData = TokenManager.getUserFromToken();
         setUser(userData);
       } catch (e) {
-        console.error('Erreur lors du décodage du jeton:', e);
       }
     }
   }, []);

@@ -10,7 +10,6 @@ export const tokenStorage = {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     // إرسال إلى Backend لتعيين HTTP-Only Cookies
-    console.log('تم تخزين التوكنات بآمان في الذاكرة');
   },
 
   getAccessToken() {

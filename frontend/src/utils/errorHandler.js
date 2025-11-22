@@ -71,11 +71,9 @@ export const errorHandler = {
       url: error?.response?.config?.url
     };
 
-    console.error('Error:', errorInfo);
 
     // In production, send to error tracking service
     if (process.env.NODE_ENV === 'production') {
-      // TODO: Send to error tracking service (e.g., Sentry)
     }
   },
 

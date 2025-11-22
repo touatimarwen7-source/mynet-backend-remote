@@ -110,7 +110,6 @@ export default function CreateOffer() {
       const response = await procurementAPI.getMyOffers();
       setCatalogProducts(response.data.offers || []);
     } catch (err) {
-      console.error('Erreur lors de la récupération du catalogue:', err);
     }
   };
 

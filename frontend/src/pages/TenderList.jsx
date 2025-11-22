@@ -41,7 +41,6 @@ export default function TenderList() {
       const response = await procurementAPI.getTenders();
       setTenders(response.data.tenders || []);
     } catch (err) {
-      console.error('Erreur lors de la récupération des appels d\'offres:', err);
     } finally {
       setLoading(false);
     }

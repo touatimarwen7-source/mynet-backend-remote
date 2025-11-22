@@ -25,7 +25,6 @@ class TokenManager {
    */
   static setAccessToken(token, expiresIn = 900) {
     if (!token || typeof token !== 'string') {
-      console.warn('Invalid token format');
       return;
     }
 
@@ -130,7 +129,6 @@ class TokenManager {
       const decoded = JSON.parse(atob(parts[1]));
       return decoded;
     } catch (err) {
-      console.warn('Invalid token format');
       return null;
     }
   }
