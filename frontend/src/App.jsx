@@ -81,6 +81,7 @@ const CompanyProfileAdmin = lazy(() => import('./pages/CompanyProfileAdmin'));
 const DirectSupplyRequest = lazy(() => import('./pages/DirectSupplyRequest'));
 const MySupplyRequests = lazy(() => import('./pages/MySupplyRequests'));
 const SupplierRequests = lazy(() => import('./pages/SupplierRequests'));
+const SupplierReviews = lazy(() => import('./pages/SupplierReviews'));
 
 const LoadingFallback = () => (
   <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
@@ -431,6 +432,10 @@ function App() {
               <Route 
               path="/supplier-requests" 
               element={user?.role === 'supplier' ? <SupplierRequests /> : <Navigate to="/tenders" />} 
+            />
+              <Route 
+              path="/supplier-reviews/:supplierId" 
+              element={user ? <SupplierReviews /> : <Navigate to="/login" />} 
             />
               <Route 
               path="/mfa-setup" 

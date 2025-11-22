@@ -45,6 +45,43 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
 - **Draft Storage**: Unique keys for localStorage drafts (e.g., `bidDraft_{tenderId}`).
 
 ## Recent Changes (November 22, 2025)
+### Reviews & Ratings System - Complete review, rating, and feedback functionality
+- **New File**: `frontend/src/pages/SupplierReviews.jsx` (270+ lines)
+  - Display all reviews for a user with statistics
+  - 5-star rating distribution chart
+  - Add, edit, and delete reviews
+  - Real-time average rating calculation
+  - Dialog form for adding/editing reviews
+  - Responsive card layout
+
+- **Backend API**: `backend/routes/reviewsRoutes.js`
+  - POST `/api/procurement/reviews` - Create new review
+  - GET `/api/procurement/reviews/user/:userId` - Get reviews for a user
+  - GET `/api/procurement/reviews/my-reviews` - Get my received reviews (authenticated)
+  - GET `/api/procurement/reviews/my-given` - Get reviews I gave (authenticated)
+  - PUT `/api/procurement/reviews/:reviewId` - Update review (own only)
+  - DELETE `/api/procurement/reviews/:reviewId` - Delete review (own only)
+  - Authorization: Users can only edit/delete their own reviews
+  - Automatic average_rating update in users table
+
+- **API Integration**: Updated `frontend/src/api.js`
+  - Reviews API endpoints fully integrated
+
+- **Routing**: Added `/supplier-reviews/:supplierId` route
+  - Accessible to all logged-in users
+  - Dynamic supplierId parameter
+
+- **Features**:
+  - ✅ 5-star rating system (1-5)
+  - ✅ Review comments with unlimited text
+  - ✅ Rating distribution statistics
+  - ✅ Real-time average calculation
+  - ✅ Edit own reviews anytime
+  - ✅ Delete review functionality
+  - ✅ Automatic user rating update
+  - ✅ Responsive design
+  - ✅ French localization
+
 ### Direct Supply Request Feature - Buyers can send direct supply requests to suppliers
 - **New File**: `frontend/src/pages/DirectSupplyRequest.jsx` (400+ lines)
   - 4-step wizard for creating supply requests

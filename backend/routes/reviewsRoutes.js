@@ -1,0 +1,204 @@
+const express = require('express');
+const authMiddleware = require('../middleware/authMiddleware');
+
+const router = express.Router();
+
+// Add a review
+router.post('/', authMiddleware, async (req, res) => {
+  try {
+    const { reviewed_user_id, tender_id, rating, comment } = req.body;
+    const reviewer_id = req.user.id;
+
+    if (!reviewed_user_id || !rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ error: 'Invalid rating or user' });
+    }
+
+    const db = req.app.get('db');
+
+    // Insert review
+    const result = await db.query(`
+      INSERT INTO reviews (
+        reviewer_id, reviewed_user_id, tender_id, rating, comment
+      )
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `, [reviewer_id, reviewed_user_id, tender_id, rating, comment]);
+
+    // Update user average rating
+    await db.query(`
+      UPDATE users 
+      SET average_rating = (
+        SELECT AVG(rating) FROM reviews WHERE reviewed_user_id = $1
+      )
+      WHERE id = $1
+    `, [reviewed_user_id]);
+
+    res.status(201).json({
+      success: true,
+      message: 'Review created successfully',
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error creating review:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get reviews for a user
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const db = req.app.get('db');
+
+    const result = await db.query(`
+      SELECT 
+        r.*,
+        u.company_name as reviewer_company,
+        u.full_name as reviewer_name
+      FROM reviews r
+      LEFT JOIN users u ON r.reviewer_id = u.id
+      WHERE r.reviewed_user_id = $1
+      ORDER BY r.created_at DESC
+      LIMIT 50
+    `, [userId]);
+
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get my reviews (as reviewed user)
+router.get('/my-reviews', authMiddleware, async (req, res) => {
+  try {
+    const db = req.app.get('db');
+
+    const result = await db.query(`
+      SELECT 
+        r.*,
+        u.company_name as reviewer_company,
+        u.full_name as reviewer_name
+      FROM reviews r
+      LEFT JOIN users u ON r.reviewer_id = u.id
+      WHERE r.reviewed_user_id = $1
+      ORDER BY r.created_at DESC
+    `, [req.user.id]);
+
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get my given reviews (as reviewer)
+router.get('/my-given', authMiddleware, async (req, res) => {
+  try {
+    const db = req.app.get('db');
+
+    const result = await db.query(`
+      SELECT 
+        r.*,
+        u.company_name as reviewed_company,
+        u.average_rating as reviewed_current_rating
+      FROM reviews r
+      LEFT JOIN users u ON r.reviewed_user_id = u.id
+      WHERE r.reviewer_id = $1
+      ORDER BY r.created_at DESC
+    `, [req.user.id]);
+
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update review
+router.put('/:reviewId', authMiddleware, async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const { rating, title, comment } = req.body;
+
+    const db = req.app.get('db');
+
+    // Check if review belongs to reviewer
+    const checkResult = await db.query(
+      'SELECT * FROM reviews WHERE id = $1',
+      [reviewId]
+    );
+
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+
+    const review = checkResult.rows[0];
+    if (review.reviewer_id !== req.user.id) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const result = await db.query(`
+      UPDATE reviews 
+      SET rating = $1, comment = $2, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $3
+      RETURNING *
+    `, [rating, comment, reviewId]);
+
+    // Update user average rating
+    await db.query(`
+      UPDATE users 
+      SET average_rating = (
+        SELECT AVG(rating) FROM reviews WHERE reviewed_user_id = $1
+      )
+      WHERE id = $1
+    `, [review.reviewed_user_id]);
+
+    res.json({
+      success: true,
+      message: 'Review updated successfully',
+      data: result.rows[0]
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete review
+router.delete('/:reviewId', authMiddleware, async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const db = req.app.get('db');
+
+    const checkResult = await db.query(
+      'SELECT * FROM reviews WHERE id = $1',
+      [reviewId]
+    );
+
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+
+    const review = checkResult.rows[0];
+    if (review.reviewer_id !== req.user.id) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    await db.query(
+      'UPDATE reviews SET is_deleted = true WHERE id = $1',
+      [reviewId]
+    );
+
+    // Update user average rating
+    await db.query(`
+      UPDATE users 
+      SET average_rating = (
+        SELECT AVG(rating) FROM reviews WHERE reviewed_user_id = $1
+      )
+      WHERE id = $1
+    `, [review.reviewed_user_id]);
+
+    res.json({ success: true, message: 'Review deleted' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = router;
