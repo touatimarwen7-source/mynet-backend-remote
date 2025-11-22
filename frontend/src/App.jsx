@@ -1,72 +1,82 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Box } from '@mui/material';
+import { Box, CircularProgress, Container } from '@mui/material';
 import institutionalTheme from './theme/theme';
 import AlertStrip from './components/AlertStrip';
 import UnifiedHeader from './components/UnifiedHeader';
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import FeaturesPage from './pages/FeaturesPage';
-import PricingPage from './pages/PricingPage';
-import ContactPage from './pages/ContactPage';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import TenderList from './pages/TenderList';
-import CreateTender from './pages/CreateTender';
-import TenderDetail from './pages/TenderDetail';
-import MyOffers from './pages/MyOffers';
-import Profile from './pages/Profile';
-import AuditLog from './pages/AuditLog';
-import PartialAward from './pages/PartialAward';
-import OfferAnalysis from './pages/OfferAnalysis';
-import BuyerDashboard from './pages/BuyerDashboard';
-import BuyerActiveTenders from './pages/BuyerActiveTenders';
-import InvoiceManagement from './pages/InvoiceManagement';
-import FinancialReports from './pages/FinancialReports';
-import BudgetManagement from './pages/BudgetManagement';
-import TenderEvaluation from './pages/TenderEvaluation';
-import TenderAwarding from './pages/TenderAwarding';
-import TeamPermissions from './pages/TeamPermissions';
-import SupplierProductsManagement from './pages/SupplierProductsManagement';
-import SupplierServicesManagement from './pages/SupplierServicesManagement';
-import BidSubmission from './pages/BidSubmission';
-import ContractManagement from './pages/ContractManagement';
-import DeliveryManagement from './pages/DeliveryManagement';
-import AwardNotifications from './pages/AwardNotifications';
-import PerformanceMonitoring from './pages/PerformanceMonitoring';
-import DisputeManagement from './pages/DisputeManagement';
-import InvoiceGeneration from './pages/InvoiceGeneration';
-import MonitoringSubmissions from './pages/MonitoringSubmissions';
-import TestingChecklist from './pages/TestingChecklist';
-import CreateTenderImproved from './pages/CreateTenderImproved';
-import TenderChat from './pages/TenderChat';
-import TenderSecuritySettings from './pages/TenderSecuritySettings';
-import TenderPreferencesSettings from './pages/TenderPreferencesSettings';
-import TeamManagement from './pages/TeamManagement';
-import SupplierSearch from './pages/SupplierSearch';
-import SupplierDashboard from './pages/SupplierDashboard';
-import AdminGuide from './pages/AdminGuide';
-import SubmitBid from './pages/SubmitBid';
-import NotificationCenter from './pages/NotificationCenter';
-import CreateOffer from './pages/CreateOffer';
-import SupplierCatalog from './pages/SupplierCatalog';
-import SupplierProfile from './pages/SupplierProfile';
-import SupplierInvoices from './pages/SupplierInvoices';
-import AdminDashboard from './pages/AdminDashboard';
-import MFASetup from './pages/MFASetup';
-import AuditLogViewer from './pages/AuditLogViewer';
-import HealthMonitoring from './pages/HealthMonitoring';
-import ArchiveManagement from './pages/ArchiveManagement';
-import SubscriptionTiers from './pages/SubscriptionTiers';
-import FeatureControl from './pages/FeatureControl';
-import UserManagement from './pages/UserManagement';
 import { setupInactivityTimer } from './utils/security';
 import ToastContainer from './components/ToastContainer';
 import Sidebar from './components/Sidebar';
 import { ToastContext } from './contexts/ToastContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
+
+// Core pages (eager load)
+import HomePage from './pages/HomePage';
+import Login from './pages/Login';
+import Register from './pages/Register';
+
+// Lazy load heavy pages
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const FeaturesPage = lazy(() => import('./pages/FeaturesPage'));
+const PricingPage = lazy(() => import('./pages/PricingPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const TenderList = lazy(() => import('./pages/TenderList'));
+const CreateTender = lazy(() => import('./pages/CreateTender'));
+const TenderDetail = lazy(() => import('./pages/TenderDetail'));
+const MyOffers = lazy(() => import('./pages/MyOffers'));
+const Profile = lazy(() => import('./pages/Profile'));
+const AuditLog = lazy(() => import('./pages/AuditLog'));
+const PartialAward = lazy(() => import('./pages/PartialAward'));
+const OfferAnalysis = lazy(() => import('./pages/OfferAnalysis'));
+const BuyerDashboard = lazy(() => import('./pages/BuyerDashboard'));
+const BuyerActiveTenders = lazy(() => import('./pages/BuyerActiveTenders'));
+const InvoiceManagement = lazy(() => import('./pages/InvoiceManagement'));
+const FinancialReports = lazy(() => import('./pages/FinancialReports'));
+const BudgetManagement = lazy(() => import('./pages/BudgetManagement'));
+const TenderEvaluation = lazy(() => import('./pages/TenderEvaluation'));
+const TenderAwarding = lazy(() => import('./pages/TenderAwarding'));
+const TeamPermissions = lazy(() => import('./pages/TeamPermissions'));
+const SupplierProductsManagement = lazy(() => import('./pages/SupplierProductsManagement'));
+const SupplierServicesManagement = lazy(() => import('./pages/SupplierServicesManagement'));
+const BidSubmission = lazy(() => import('./pages/BidSubmission'));
+const ContractManagement = lazy(() => import('./pages/ContractManagement'));
+const DeliveryManagement = lazy(() => import('./pages/DeliveryManagement'));
+const AwardNotifications = lazy(() => import('./pages/AwardNotifications'));
+const PerformanceMonitoring = lazy(() => import('./pages/PerformanceMonitoring'));
+const DisputeManagement = lazy(() => import('./pages/DisputeManagement'));
+const InvoiceGeneration = lazy(() => import('./pages/InvoiceGeneration'));
+const MonitoringSubmissions = lazy(() => import('./pages/MonitoringSubmissions'));
+const TestingChecklist = lazy(() => import('./pages/TestingChecklist'));
+const CreateTenderImproved = lazy(() => import('./pages/CreateTenderImproved'));
+const TenderChat = lazy(() => import('./pages/TenderChat'));
+const TenderSecuritySettings = lazy(() => import('./pages/TenderSecuritySettings'));
+const TenderPreferencesSettings = lazy(() => import('./pages/TenderPreferencesSettings'));
+const TeamManagement = lazy(() => import('./pages/TeamManagement'));
+const SupplierSearch = lazy(() => import('./pages/SupplierSearch'));
+const SupplierDashboard = lazy(() => import('./pages/SupplierDashboard'));
+const AdminGuide = lazy(() => import('./pages/AdminGuide'));
+const SubmitBid = lazy(() => import('./pages/SubmitBid'));
+const NotificationCenter = lazy(() => import('./pages/NotificationCenter'));
+const CreateOffer = lazy(() => import('./pages/CreateOffer'));
+const SupplierCatalog = lazy(() => import('./pages/SupplierCatalog'));
+const SupplierProfile = lazy(() => import('./pages/SupplierProfile'));
+const SupplierInvoices = lazy(() => import('./pages/SupplierInvoices'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const MFASetup = lazy(() => import('./pages/MFASetup'));
+const AuditLogViewer = lazy(() => import('./pages/AuditLogViewer'));
+const HealthMonitoring = lazy(() => import('./pages/HealthMonitoring'));
+const ArchiveManagement = lazy(() => import('./pages/ArchiveManagement'));
+const SubscriptionTiers = lazy(() => import('./pages/SubscriptionTiers'));
+const FeatureControl = lazy(() => import('./pages/FeatureControl'));
+const UserManagement = lazy(() => import('./pages/UserManagement'));
+
+const LoadingFallback = () => (
+  <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+    <CircularProgress sx={{ color: '#0056B3' }} />
+  </Container>
+);
 
 function App() {
   const [user, setUser] = useState(null);
@@ -144,206 +154,208 @@ function App() {
         {user && <Sidebar user={user} onLogout={handleLogout} />}
 
         <Box component="main" sx={{ flex: 1, paddingY: '20px' }}>
-          <Routes>
-            {/* Pages Publiques */}
-            <Route path="/" element={!user ? <HomePage /> : <Navigate to="/tenders" />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/features" element={<FeaturesPage />} />
-            <Route path="/pricing" element={<PricingPage />} />
-            <Route path="/contact" element={<ContactPage />} />
+          <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+              {/* Pages Publiques */}
+              <Route path="/" element={!user ? <HomePage /> : <Navigate to="/tenders" />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/features" element={<FeaturesPage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/contact" element={<ContactPage />} />
 
-            {/* Authentification */}
-            <Route path="/login" element={<Login setUser={setUser} />} />
-            <Route path="/register" element={<Register />} />
+              {/* Authentification */}
+              <Route path="/login" element={<Login setUser={setUser} />} />
+              <Route path="/register" element={<Register />} />
 
-            {/* Appels d'offres */}
-            <Route path="/tenders" element={<TenderList />} />
-            <Route path="/tender/security" element={<TenderSecuritySettings />} />
-            <Route path="/tender/preferences" element={<TenderPreferencesSettings />} />
-            <Route path="/tender/:id" element={<TenderDetail />} />
-            <Route path="/tender/:id/audit-log" element={<AuditLog />} />
-            <Route path="/tender/:id/award" element={<PartialAward />} />
-            <Route path="/tender/:id/analysis" element={<OfferAnalysis />} />
+              {/* Appels d'offres */}
+              <Route path="/tenders" element={<TenderList />} />
+              <Route path="/tender/security" element={<TenderSecuritySettings />} />
+              <Route path="/tender/preferences" element={<TenderPreferencesSettings />} />
+              <Route path="/tender/:id" element={<TenderDetail />} />
+              <Route path="/tender/:id/audit-log" element={<AuditLog />} />
+              <Route path="/tender/:id/award" element={<PartialAward />} />
+              <Route path="/tender/:id/analysis" element={<OfferAnalysis />} />
 
-            {/* Interface Acheteur */}
-            <Route 
+              {/* Interface Acheteur */}
+              <Route 
               path="/buyer-dashboard" 
               element={user?.role === 'buyer' ? <BuyerDashboard /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/buyer-active-tenders" 
               element={user?.role === 'buyer' ? <BuyerActiveTenders /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/create-tender" 
               element={user?.role === 'buyer' ? <CreateTenderImproved /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/tender/:id/chat" 
               element={user ? <TenderChat /> : <Navigate to="/login" />} 
             />
-            <Route 
+              <Route 
               path="/team-management" 
               element={user?.role === 'buyer' ? <TeamManagement /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/invoices" 
               element={user?.role === 'buyer' ? <InvoiceManagement /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/budgets" 
               element={user?.role === 'buyer' ? <BudgetManagement /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/financial-reports" 
               element={user?.role === 'buyer' ? <FinancialReports /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/security" 
               element={user ? <Profile /> : <Navigate to="/login" />} 
             />
-            <Route 
+              <Route 
               path="/preferences" 
               element={user ? <Profile /> : <Navigate to="/login" />} 
             />
-            <Route 
+              <Route 
               path="/team-permissions" 
               element={user?.role === 'buyer' ? <TeamPermissions /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/tender-evaluation" 
               element={user?.role === 'buyer' ? <TenderEvaluation /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/tender-awarding" 
               element={user?.role === 'buyer' ? <TenderAwarding /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/supplier-products" 
               element={user?.role === 'supplier' ? <SupplierProductsManagement /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/supplier-services" 
               element={user?.role === 'supplier' ? <SupplierServicesManagement /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/supplier-reports" 
               element={user?.role === 'supplier' ? <SupplierDashboard /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/bid-submission/:tenderId" 
               element={user?.role === 'supplier' ? <BidSubmission /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/contracts" 
               element={user?.role === 'buyer' ? <ContractManagement /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/deliveries" 
               element={user?.role === 'buyer' ? <DeliveryManagement /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/award-notifications" 
               element={user?.role === 'buyer' ? <AwardNotifications /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/performance" 
               element={user?.role === 'buyer' ? <PerformanceMonitoring /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/disputes" 
               element={user?.role === 'buyer' ? <DisputeManagement /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/invoice-generation" 
               element={user?.role === 'buyer' ? <InvoiceGeneration /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/monitoring-submissions" 
               element={user?.role === 'buyer' ? <MonitoringSubmissions /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/testing-checklist" 
               element={<TestingChecklist />} 
             />
-            <Route 
+              <Route 
               path="/supplier-payments" 
               element={user?.role === 'supplier' ? <SupplierInvoices /> : <Navigate to="/tenders" />} 
             />
 
-            {/* Interface Fournisseur */}
-            <Route 
+              {/* Interface Fournisseur */}
+              <Route 
               path="/supplier-search" 
               element={user?.role === 'supplier' ? <SupplierSearch /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/tender/:id/bid" 
               element={user?.role === 'supplier' ? <SubmitBid /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/notifications" 
               element={user ? <NotificationCenter /> : <Navigate to="/login" />} 
             />
-            <Route 
+              <Route 
               path="/supplier-catalog" 
               element={user?.role === 'supplier' ? <SupplierCatalog /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/supplier-invoices" 
               element={user?.role === 'supplier' ? <SupplierInvoices /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/my-offers" 
               element={user?.role === 'supplier' ? <MyOffers /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/create-offer/:tenderId" 
               element={user?.role === 'supplier' ? <CreateOffer /> : <Navigate to="/tenders" />} 
             />
 
-            {/* Administration */}
-            <Route 
+              {/* Administration */}
+              <Route 
               path="/admin" 
               element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/admin/audit-logs" 
               element={user?.role === 'admin' ? <AuditLogViewer /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/admin/health" 
               element={user?.role === 'admin' ? <HealthMonitoring /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/admin/archive" 
               element={user?.role === 'admin' ? <ArchiveManagement /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/admin/tiers" 
               element={user?.role === 'admin' ? <SubscriptionTiers /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/admin/features" 
               element={user?.role === 'admin' ? <FeatureControl /> : <Navigate to="/tenders" />} 
             />
-            <Route 
+              <Route 
               path="/admin/users" 
               element={user?.role === 'admin' ? <UserManagement /> : <Navigate to="/tenders" />} 
             />
 
-            {/* Profil et Sécurité */}
-            <Route 
+              {/* Profil et Sécurité */}
+              <Route 
               path="/profile" 
               element={user ? <Profile user={user} /> : <Navigate to="/login" />} 
             />
-            <Route 
+              <Route 
               path="/mfa-setup" 
               element={user ? <MFASetup /> : <Navigate to="/login" />} 
             />
 
-            {/* Par défaut */}
-            <Route path="*" element={<Navigate to="/tenders" />} />
-          </Routes>
+              {/* Par défaut */}
+              <Route path="*" element={<Navigate to="/tenders" />} />
+            </Routes>
+          </Suspense>
         </Box>
 
         <Box component="footer" sx={{ backgroundColor: '#F9F9F9', borderTop: '1px solid #E0E0E0', padding: '20px', textAlign: 'center', fontSize: '13px', color: '#616161' }}>

@@ -1,0 +1,45 @@
+import { Box, Paper, Table, TableHead, TableBody, TableRow, TableCell, TextField, Button } from '@mui/material';
+
+export default function CreateOfferLineItems({ items, onLineItemChange, onOpenCatalog, isDeadlinePassed, getTotalBidAmount }) {
+  return (
+    <Box>
+      <Paper sx={{ overflow: 'hidden' }}>
+        <Table>
+          <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 600, color: '#0056B3' }}>Description</TableCell>
+              <TableCell sx={{ fontWeight: 600, color: '#0056B3' }} align="right">Qty</TableCell>
+              <TableCell sx={{ fontWeight: 600, color: '#0056B3' }} align="right">Prix Unitaire</TableCell>
+              <TableCell sx={{ fontWeight: 600, color: '#0056B3' }} align="right">Total</TableCell>
+              <TableCell sx={{ fontWeight: 600, color: '#0056B3' }} align="center">Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {items.map((item, idx) => (
+              <TableRow key={idx} sx={{ borderBottom: '1px solid #e0e0e0' }}>
+                <TableCell sx={{ color: '#212121' }}>{item.description}</TableCell>
+                <TableCell align="right" sx={{ color: '#212121' }}>{item.quantity}</TableCell>
+                <TableCell align="right">
+                  <TextField size="small" type="number" value={item.unit_price} onChange={(e) => onLineItemChange(idx, 'unit_price', e.target.value)} disabled={isDeadlinePassed} sx={{ width: '100px' }} />
+                </TableCell>
+                <TableCell align="right" sx={{ color: '#0056B3', fontWeight: 600 }}>
+                  {item.total_price.toFixed(2)} TND
+                </TableCell>
+                <TableCell align="center">
+                  <Button size="small" onClick={() => onOpenCatalog(idx)} disabled={isDeadlinePassed} sx={{ color: '#0056B3', textTransform: 'none' }}>
+                    Catalogue
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Paper>
+      <Box sx={{ padding: '16px', backgroundColor: '#f5f5f5', marginTop: '16px', borderRadius: '4px' }}>
+        <span style={{ fontSize: '16px', fontWeight: 600, color: '#0056B3' }}>
+          Total: {getTotalBidAmount()} TND
+        </span>
+      </Box>
+    </Box>
+  );
+}

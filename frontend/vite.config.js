@@ -18,5 +18,18 @@ export default defineConfig({
   preview: {
     host: '0.0.0.0',
     port: 5000
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-core': ['react', 'react-dom', 'react-router-dom'],
+          'mui-core': ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
+          'api': ['axios'],
+          'i18n': ['i18next', 'react-i18next', 'i18next-browser-languagedetector', 'i18next-http-backend']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
   }
 })
