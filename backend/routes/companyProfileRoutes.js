@@ -3,10 +3,17 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Get company profile by supplier ID
+// Get company profile (only own profile or any if admin)
 router.get('/supplier/:supplierId', authMiddleware, async (req, res) => {
   try {
     const { supplierId } = req.params;
+    const userId = parseInt(supplierId);
+    
+    // Check authorization: user can only view their own profile, admins can view any
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin' && req.user.id !== userId) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    
     const db = req.app.get('db');
     
     const result = await db.query(`

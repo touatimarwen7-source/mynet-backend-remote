@@ -51,22 +51,17 @@ export default function CompanyProfileAdmin() {
 
   useEffect(() => {
     setPageTitle('Gestion du Profil d\'Entreprise');
-    // Get current user's ID from localStorage or URL
+    // Get current user's ID from localStorage
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    setCurrentUser(user);
-    fetchProfile(user.id);
-  }, []);
-
-  const fetchProfile = async (userId) => {
-    if (!userId) {
+    if (!user.id) {
       setError('Utilisateur non identifié');
       setLoading(false);
       return;
     }
-    
-    const supplierId = new URLSearchParams(window.location.search).get('id') || userId;
-    await fetchProfileData(supplierId);
-  };
+    setCurrentUser(user);
+    // كل مستخدم يحرر بروفيله فقط - لا يمكن تغيير ID من URL
+    fetchProfileData(user.id);
+  }, []);
 
   const fetchProfileData = async (supplierId) => {
     try {
@@ -138,9 +133,15 @@ export default function CompanyProfileAdmin() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      const supplierId = new URLSearchParams(window.location.search).get('id') || localStorage.getItem('currentSupplierId') || 1;
+      // يمكن للمستخدم تحرير بروفيله فقط - استخدام ID المستخدم الحالي
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!user.id) {
+        setError('Utilisateur non identifié');
+        setSaving(false);
+        return;
+      }
       
-      await companyProfileAPI.updateSupplierProfile(supplierId, formData);
+      await companyProfileAPI.updateSupplierProfile(user.id, formData);
       
       setSuccess('Profil mis à jour avec succès!');
       setTimeout(() => setSuccess(''), 3000);
