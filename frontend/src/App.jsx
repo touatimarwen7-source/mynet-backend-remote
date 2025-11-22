@@ -117,7 +117,8 @@ function App() {
         }
       } catch (error) {
         console.error('Auth check error:', error);
-        TokenManager.clearTokens();
+        // Don't clear tokens on general errors - only on authentication errors
+        // Just set user to null for now
         setUser(null);
       } finally {
         setLoading(false);

@@ -190,10 +190,12 @@ axiosInstance.interceptors.response.use(
       }
     }
 
-    // Handle 403 Forbidden (invalid/expired session)
+    // Handle 403 Forbidden - Only clear tokens if it's truly a permission issue
+    // Don't clear on resource-specific 403 errors (e.g., user doesn't have permission to that specific resource)
     if (error.response?.status === 403) {
-      TokenManager.clearTokens();
-      window.location.href = '/login';
+      // Only log 403, don't immediately logout
+      console.warn('403 Forbidden error - access denied to resource', error.config?.url);
+      // Let components handle the 403 appropriately without clearing auth
     }
 
     return Promise.reject(error);

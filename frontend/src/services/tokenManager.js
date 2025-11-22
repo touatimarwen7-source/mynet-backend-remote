@@ -1,13 +1,13 @@
 /**
  * Secure Token Manager Service
  * Handles storage and retrieval of authentication tokens
- * Uses localStorage for reliable persistence in Replit
+ * Uses multiple storage layers: memory -> sessionStorage -> localStorage (for iframe compatibility)
  */
 
 const TOKEN_KEY = 'access_token';
 const TOKEN_EXPIRY_KEY = 'token_expiry';
 
-// Memory storage for access token (faster access)
+// Memory storage for access token (fastest - survives while tab is open)
 let memoryAccessToken = null;
 let tokenExpiryTime = null;
 
@@ -19,34 +19,71 @@ class TokenManager {
    */
   static setAccessToken(token, expiresIn = 900) {
     if (!token || typeof token !== 'string') {
+      console.warn('Invalid token provided to setAccessToken');
       return;
     }
 
-    memoryAccessToken = token;
-    tokenExpiryTime = Date.now() + expiresIn * 1000;
+    const tokenExpiryMs = Date.now() + expiresIn * 1000;
     
-    // Also persist to localStorage for page refreshes
+    // Set in memory FIRST
+    memoryAccessToken = token;
+    tokenExpiryTime = tokenExpiryMs;
+    console.log('Token set in memory, expires in:', expiresIn, 'seconds, expiry time:', new Date(tokenExpiryMs));
+    
+    // Persist to sessionStorage
+    try {
+      sessionStorage.setItem(TOKEN_KEY, token);
+      sessionStorage.setItem(TOKEN_EXPIRY_KEY, String(tokenExpiryMs));
+      console.log('Token persisted to sessionStorage');
+    } catch (e) {
+      console.warn('sessionStorage unavailable:', e);
+    }
+    
+    // Also try localStorage as backup
     try {
       localStorage.setItem(TOKEN_KEY, token);
-      localStorage.setItem(TOKEN_EXPIRY_KEY, String(tokenExpiryTime));
+      localStorage.setItem(TOKEN_EXPIRY_KEY, String(tokenExpiryMs));
+      console.log('Token persisted to localStorage');
     } catch (e) {
       console.warn('localStorage unavailable:', e);
     }
-    
-    console.log('Token stored, expires in:', expiresIn, 'seconds');
   }
 
   /**
-   * Get access token from memory or localStorage
+   * Get access token from memory or storage
    * @returns {string|null} Access token or null if expired/missing
    */
   static getAccessToken() {
     // Check memory first (fastest)
-    if (memoryAccessToken && this.isTokenValid()) {
-      return memoryAccessToken;
+    if (memoryAccessToken) {
+      if (this.isTokenValid()) {
+        return memoryAccessToken;
+      }
     }
 
-    // Fall back to localStorage
+    // Fall back to sessionStorage (most compatible with Replit iframe)
+    try {
+      const token = sessionStorage.getItem(TOKEN_KEY);
+      const expiryStr = sessionStorage.getItem(TOKEN_EXPIRY_KEY);
+      
+      if (token && expiryStr) {
+        const expiryTime = parseInt(expiryStr, 10);
+        if (!isNaN(expiryTime) && Date.now() < expiryTime) {
+          // Restore to memory
+          memoryAccessToken = token;
+          tokenExpiryTime = expiryTime;
+          return token;
+        } else {
+          // Token is expired, clear it
+          sessionStorage.removeItem(TOKEN_KEY);
+          sessionStorage.removeItem(TOKEN_EXPIRY_KEY);
+        }
+      }
+    } catch (e) {
+      console.warn('Error retrieving token from sessionStorage:', e);
+    }
+
+    // Fall back to localStorage if sessionStorage fails
     try {
       const token = localStorage.getItem(TOKEN_KEY);
       const expiryStr = localStorage.getItem(TOKEN_EXPIRY_KEY);
@@ -54,17 +91,22 @@ class TokenManager {
       if (token && expiryStr) {
         const expiryTime = parseInt(expiryStr, 10);
         if (!isNaN(expiryTime) && Date.now() < expiryTime) {
+          // Restore to memory
           memoryAccessToken = token;
           tokenExpiryTime = expiryTime;
           return token;
+        } else {
+          // Token is expired, clear it
+          localStorage.removeItem(TOKEN_KEY);
+          localStorage.removeItem(TOKEN_EXPIRY_KEY);
         }
       }
     } catch (e) {
-      console.warn('Error retrieving token:', e);
+      console.warn('Error retrieving token from localStorage:', e);
     }
 
-    // Token expired or missing
-    this.clearTokens();
+    // Token expired or missing - set memory to null but don't clear storage multiple times
+    memoryAccessToken = null;
     return null;
   }
 
@@ -75,15 +117,20 @@ class TokenManager {
   static isTokenValid() {
     if (!tokenExpiryTime) {
       try {
-        const storedExpiry = localStorage.getItem(TOKEN_EXPIRY_KEY);
+        // Check sessionStorage first
+        let storedExpiry = sessionStorage.getItem(TOKEN_EXPIRY_KEY);
+        if (!storedExpiry) {
+          storedExpiry = localStorage.getItem(TOKEN_EXPIRY_KEY);
+        }
         if (storedExpiry) {
           tokenExpiryTime = parseInt(storedExpiry, 10);
         }
       } catch (e) {
-        // localStorage unavailable
+        // storage unavailable
       }
     }
-    return tokenExpiryTime && !isNaN(tokenExpiryTime) && Date.now() < tokenExpiryTime;
+    const isValid = tokenExpiryTime && !isNaN(tokenExpiryTime) && Date.now() < tokenExpiryTime;
+    return isValid;
   }
 
   /**
@@ -94,10 +141,17 @@ class TokenManager {
     tokenExpiryTime = null;
     
     try {
+      sessionStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(TOKEN_EXPIRY_KEY);
+    } catch (e) {
+      console.warn('Error clearing sessionStorage:', e);
+    }
+    
+    try {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(TOKEN_EXPIRY_KEY);
     } catch (e) {
-      console.warn('Error clearing tokens:', e);
+      console.warn('Error clearing localStorage:', e);
     }
     
     // Also clear CSRF token
