@@ -173,10 +173,11 @@ function App() {
             <UnifiedHeader />
             <ToastContainer toasts={toasts} removeToast={removeToast} />
           
-          {/* Sidebar Navigation - Only for authenticated users */}
-          {user && <Sidebar user={user} onLogout={handleLogout} />}
+          <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+            {/* Sidebar Navigation - Only for authenticated users */}
+            {user && <Sidebar user={user} onLogout={handleLogout} />}
 
-          <Box component="main" sx={{ flex: 1, paddingY: '20px' }}>
+            <Box component="main" sx={{ flex: 1, overflowY: 'auto', paddingY: '20px', paddingX: { xs: '12px', sm: '20px' } }}>
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
               {/* Pages Publiques */}
@@ -400,7 +401,8 @@ function App() {
               <Route path="*" element={<Navigate to="/tenders" />} />
             </Routes>
           </Suspense>
-        </Box>
+            </Box>
+          </Box>
 
         <Box component="footer" sx={{ backgroundColor: '#F9F9F9', borderTop: '1px solid #E0E0E0', padding: '20px', textAlign: 'center', fontSize: '13px', color: '#616161' }}>
           &copy; 2025 MyNet.tn - Système de Gestion des Appels d'Offres et des Achats
