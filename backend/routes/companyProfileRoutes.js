@@ -29,7 +29,7 @@ router.get('/supplier/:supplierId', authMiddleware, async (req, res) => {
       FROM users u
       LEFT JOIN user_profiles up ON u.id = up.user_id
       LEFT JOIN supplier_verifications sv ON u.id = sv.user_id
-      WHERE u.id = $1 AND u.role = 'supplier'
+      WHERE u.id = $1 AND (u.role = 'supplier' OR u.role = 'buyer')
     `, [supplierId]);
     
     if (result.rows.length === 0) {
@@ -42,13 +42,13 @@ router.get('/supplier/:supplierId', authMiddleware, async (req, res) => {
   }
 });
 
-// Update company profile (Admin only)
+// Update company profile (Admin, Suppliers, Buyers)
 router.put('/supplier/:supplierId', authMiddleware, async (req, res) => {
   try {
     const { supplierId } = req.params;
     const { company_name, phone, bio, address, city, country, profile_picture, preferred_categories, service_locations } = req.body;
     
-    // Check if user is admin or the supplier themselves
+    // Check if user is admin or the user themselves (supplier or buyer)
     if (req.user.role !== 'admin' && req.user.role !== 'super_admin' && req.user.id !== parseInt(supplierId)) {
       return res.status(403).json({ error: 'Unauthorized' });
     }

@@ -24,6 +24,7 @@ import { setPageTitle } from '../utils/pageTitle';
 import { companyProfileAPI } from '../api';
 
 export default function CompanyProfileAdmin() {
+  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -50,13 +51,26 @@ export default function CompanyProfileAdmin() {
 
   useEffect(() => {
     setPageTitle('Gestion du Profil d\'Entreprise');
-    fetchProfile();
+    // Get current user's ID from localStorage or URL
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    setCurrentUser(user);
+    fetchProfile(user.id);
   }, []);
 
-  const fetchProfile = async () => {
+  const fetchProfile = async (userId) => {
+    if (!userId) {
+      setError('Utilisateur non identifié');
+      setLoading(false);
+      return;
+    }
+    
+    const supplierId = new URLSearchParams(window.location.search).get('id') || userId;
+    await fetchProfileData(supplierId);
+  };
+
+  const fetchProfileData = async (supplierId) => {
     try {
       setLoading(true);
-      const supplierId = new URLSearchParams(window.location.search).get('id') || localStorage.getItem('currentSupplierId') || 1;
       const data = await companyProfileAPI.getSupplierProfile(supplierId);
       
       setFormData({
@@ -140,7 +154,8 @@ export default function CompanyProfileAdmin() {
   };
 
   const handleCancel = () => {
-    fetchProfile();
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    fetchProfileData(user.id || 1);
     setSuccess('');
     setError('');
   };

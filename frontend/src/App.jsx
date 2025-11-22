@@ -415,7 +415,7 @@ function App() {
             />
               <Route 
               path="/company-profile/admin" 
-              element={user?.role === 'supplier' || user?.role === 'admin' ? <CompanyProfileAdmin /> : <Navigate to="/tenders" />} 
+              element={user?.role === 'supplier' || user?.role === 'buyer' || user?.role === 'admin' ? <CompanyProfileAdmin /> : <Navigate to="/tenders" />} 
             />
               <Route 
               path="/mfa-setup" 

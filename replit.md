@@ -45,7 +45,7 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
 - **Draft Storage**: Unique keys for localStorage drafts (e.g., `bidDraft_{tenderId}`).
 
 ## Recent Changes (November 22, 2025)
-### Dynamic Company Profile with Full API Integration
+### Dynamic Company Profile with Full API Integration - Now for Buyers & Suppliers
 - **New File**: `frontend/src/pages/CompanyProfile.jsx` (580+ lines)
   - Displays company information from real API endpoint
   - 8 main sections: Presentation, Services, Statistics, Advanced Search, Contact
@@ -53,19 +53,22 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
   - Advanced search filtering by category, rating, and location
   - Service listings with action buttons (Consulter, Devis)
   - Certified, professional institutional design
+  - **Accessible to**: All logged-in users (buyers + suppliers)
 
-- **New File**: `frontend/src/pages/CompanyProfileAdmin.jsx` (400+ lines)
+- **New File**: `frontend/src/pages/CompanyProfileAdmin.jsx` (390+ lines)
   - Admin panel for editing company profile data
   - Form fields for company info, address, biography
   - Dynamic category and location selection
   - Real-time form validation and error handling
-  - Role-based access control (suppliers and admins only)
+  - **Role-based access control**: Suppliers, Buyers, and Admins can edit their own profile
+  - Auto-loads current user's profile data
 
 - **Backend API**: `backend/routes/companyProfileRoutes.js`
-  - GET endpoint to fetch supplier profile with full details
-  - PUT endpoint to update profile (with authorization checks)
+  - GET endpoint to fetch supplier/buyer profile (supports both roles)
+  - PUT endpoint to update profile (with authorization checks - users can edit their own, admins can edit any)
   - Advanced search endpoint with JSONB filtering
   - Database joins with users and user_profiles tables
+  - **Authorization**: Users can edit their own profile; admins can edit any profile
 
 - **API Integration**: Updated `frontend/src/api.js` with new `companyProfileAPI` export
   - `getSupplierProfile(supplierId)` - Fetch supplier data
@@ -73,9 +76,10 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
   - `searchSuppliers(filters)` - Advanced search with multiple filters
 
 - **Routing Updates**: 
-  - `/company-profile` - Public supplier profile viewer
-  - `/company-profile/admin` - Admin panel (supplier/admin roles only)
+  - `/company-profile` - Profile viewer for all logged-in users
+  - `/company-profile/admin` - Edit panel (suppliers, buyers, admins)
   - Full lazy-loading with React.lazy() and Suspense
+  - Auto-loads current user's profile on admin panel
 
 ### Features
 - ✅ Real API data integration (no mock data)
