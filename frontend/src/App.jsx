@@ -82,6 +82,9 @@ const DirectSupplyRequest = lazy(() => import('./pages/DirectSupplyRequest'));
 const MySupplyRequests = lazy(() => import('./pages/MySupplyRequests'));
 const SupplierRequests = lazy(() => import('./pages/SupplierRequests'));
 const SupplierReviews = lazy(() => import('./pages/SupplierReviews'));
+const Inbox = lazy(() => import('./pages/Inbox'));
+const Compose = lazy(() => import('./pages/Compose'));
+const MessageDetail = lazy(() => import('./pages/MessageDetail'));
 
 const LoadingFallback = () => (
   <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
@@ -436,6 +439,18 @@ function App() {
               <Route 
               path="/supplier-reviews/:supplierId" 
               element={user ? <SupplierReviews /> : <Navigate to="/login" />} 
+            />
+              <Route 
+              path="/inbox" 
+              element={user ? <Inbox /> : <Navigate to="/login" />} 
+            />
+              <Route 
+              path="/compose" 
+              element={user ? <Compose /> : <Navigate to="/login" />} 
+            />
+              <Route 
+              path="/message/:messageId" 
+              element={user ? <MessageDetail /> : <Navigate to="/login" />} 
             />
               <Route 
               path="/mfa-setup" 

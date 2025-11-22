@@ -49,4 +49,36 @@ router.get('/suppliers', async (req, res) => {
     }
 });
 
+router.get('/users', async (req, res) => {
+    try {
+        const db = req.app.get('db');
+        const { keyword = '', limit = 20 } = req.query;
+
+        const result = await db.query(`
+            SELECT 
+                u.id,
+                u.full_name,
+                u.company_name,
+                u.role,
+                u.average_rating,
+                up.profile_picture
+            FROM users u
+            LEFT JOIN user_profiles up ON u.id = up.user_id
+            WHERE (u.company_name ILIKE $1 OR u.full_name ILIKE $1)
+            AND u.is_active = true
+            LIMIT $2
+        `, [`%${keyword}%`, limit]);
+
+        res.status(200).json({
+            success: true,
+            count: result.rows.length,
+            results: result.rows
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            error: error.message 
+        });
+    }
+});
+
 module.exports = router;

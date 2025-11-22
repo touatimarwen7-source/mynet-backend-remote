@@ -1,0 +1,234 @@
+const express = require('express');
+const authMiddleware = require('../middleware/authMiddleware');
+
+const router = express.Router();
+
+// Send a message
+router.post('/', authMiddleware, async (req, res) => {
+  try {
+    const { receiver_id, subject, content, related_entity_type, related_entity_id } = req.body;
+    const sender_id = req.user.id;
+
+    if (!receiver_id || !content) {
+      return res.status(400).json({ error: 'receiver_id and content are required' });
+    }
+
+    if (sender_id === parseInt(receiver_id)) {
+      return res.status(400).json({ error: 'Cannot send message to yourself' });
+    }
+
+    const db = req.app.get('db');
+
+    const result = await db.query(`
+      INSERT INTO messages (
+        sender_id, receiver_id, subject, content, related_entity_type, related_entity_id
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *
+    `, [sender_id, receiver_id, subject || null, content, related_entity_type || null, related_entity_id || null]);
+
+    res.status(201).json({
+      success: true,
+      message: 'Message sent successfully',
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get inbox (received messages)
+router.get('/inbox', authMiddleware, async (req, res) => {
+  try {
+    const { page = 1, limit = 20, unread_only = false } = req.query;
+    const offset = (page - 1) * limit;
+    const db = req.app.get('db');
+
+    let query = `
+      SELECT 
+        m.*,
+        u.company_name as sender_company,
+        u.full_name as sender_name
+      FROM messages m
+      LEFT JOIN users u ON m.sender_id = u.id
+      WHERE m.receiver_id = $1
+    `;
+    const params = [req.user.id];
+
+    if (unread_only === 'true') {
+      query += ' AND m.is_read = false';
+    }
+
+    query += ' ORDER BY m.created_at DESC LIMIT $2 OFFSET $3';
+    params.push(limit, offset);
+
+    const result = await db.query(query, params);
+
+    // Get total count
+    let countQuery = 'SELECT COUNT(*) FROM messages WHERE receiver_id = $1';
+    if (unread_only === 'true') {
+      countQuery += ' AND is_read = false';
+    }
+    const countResult = await db.query(countQuery, [req.user.id]);
+
+    res.json({
+      data: result.rows,
+      total: parseInt(countResult.rows[0].count),
+      page: parseInt(page),
+      limit: parseInt(limit)
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get sent messages
+router.get('/sent', authMiddleware, async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const offset = (page - 1) * limit;
+    const db = req.app.get('db');
+
+    const result = await db.query(`
+      SELECT 
+        m.*,
+        u.company_name as receiver_company,
+        u.full_name as receiver_name
+      FROM messages m
+      LEFT JOIN users u ON m.receiver_id = u.id
+      WHERE m.sender_id = $1
+      ORDER BY m.created_at DESC
+      LIMIT $2 OFFSET $3
+    `, [req.user.id, limit, offset]);
+
+    const countResult = await db.query(
+      'SELECT COUNT(*) FROM messages WHERE sender_id = $1',
+      [req.user.id]
+    );
+
+    res.json({
+      data: result.rows,
+      total: parseInt(countResult.rows[0].count),
+      page: parseInt(page),
+      limit: parseInt(limit)
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get single message
+router.get('/:messageId', authMiddleware, async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const db = req.app.get('db');
+
+    const result = await db.query(`
+      SELECT 
+        m.*,
+        u.company_name as sender_company,
+        u.full_name as sender_name
+      FROM messages m
+      LEFT JOIN users u ON m.sender_id = u.id
+      WHERE m.id = $1 AND (m.receiver_id = $2 OR m.sender_id = $2)
+    `, [messageId, req.user.id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+
+    const message = result.rows[0];
+
+    // Mark as read if receiver
+    if (message.receiver_id === req.user.id && !message.is_read) {
+      await db.query(
+        'UPDATE messages SET is_read = true WHERE id = $1',
+        [messageId]
+      );
+      message.is_read = true;
+    }
+
+    res.json(message);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Mark as read
+router.put('/:messageId/read', authMiddleware, async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const db = req.app.get('db');
+
+    const checkResult = await db.query(
+      'SELECT * FROM messages WHERE id = $1',
+      [messageId]
+    );
+
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+
+    const message = checkResult.rows[0];
+    if (message.receiver_id !== req.user.id) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    await db.query(
+      'UPDATE messages SET is_read = true WHERE id = $1',
+      [messageId]
+    );
+
+    res.json({ success: true, message: 'Message marked as read' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get unread count
+router.get('/count/unread', authMiddleware, async (req, res) => {
+  try {
+    const db = req.app.get('db');
+
+    const result = await db.query(
+      'SELECT COUNT(*) FROM messages WHERE receiver_id = $1 AND is_read = false',
+      [req.user.id]
+    );
+
+    res.json({ unread_count: parseInt(result.rows[0].count) });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete message (soft delete via update)
+router.delete('/:messageId', authMiddleware, async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const db = req.app.get('db');
+
+    const checkResult = await db.query(
+      'SELECT * FROM messages WHERE id = $1',
+      [messageId]
+    );
+
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+
+    const message = checkResult.rows[0];
+    if (message.sender_id !== req.user.id && message.receiver_id !== req.user.id) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    // For now, just remove it (you could implement soft delete later)
+    await db.query('DELETE FROM messages WHERE id = $1', [messageId]);
+
+    res.json({ success: true, message: 'Message deleted' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = router;

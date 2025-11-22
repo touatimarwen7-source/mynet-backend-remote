@@ -12,6 +12,7 @@ const supplierFeatureRoutes = require('./routes/supplierFeatureRoutes');
 const companyProfileRoutes = require('./routes/companyProfileRoutes');
 const directSupplyRoutes = require('./routes/directSupplyRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
+const messagesRoutes = require('./routes/messagesRoutes');
 const { ipMiddleware } = require('./middleware/ipMiddleware');
 
 const app = express();
@@ -57,8 +58,8 @@ app.use('/api/admin/supplier-features', supplierFeatureRoutes);
 app.use('/api/company-profile', companyProfileRoutes);
 app.use('/api/direct-supply', directSupplyRoutes);
 app.use('/api/procurement/reviews', reviewsRoutes);
+app.use('/api/messaging', messagesRoutes);
 app.use('/api/search', searchRoutes);
-app.use('/api/messaging', messagingRoutes);
 app.use('/api/documents/pdf', pdfRoutes);
 app.use('/api/webhooks', stripeWebhookRoutes);
 
