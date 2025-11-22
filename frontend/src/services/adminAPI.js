@@ -310,6 +310,132 @@ export const adminAPI = {
         throw formatted;
       }
     }
+  },
+
+  // Feature Flags Management
+  features: {
+    /**
+     * Get all feature flags
+     * @returns {Promise}
+     */
+    getAll: async () => {
+      try {
+        const response = await api.get('/features/all');
+        return response.data;
+      } catch (error) {
+        const formatted = errorHandler.getUserMessage(error);
+        throw formatted;
+      }
+    },
+
+    /**
+     * Enable a feature
+     * @param {string} featureKey - Feature key
+     * @returns {Promise}
+     */
+    enable: async (featureKey) => {
+      try {
+        const response = await api.put('/features/enable', { feature_key: featureKey });
+        return response.data;
+      } catch (error) {
+        const formatted = errorHandler.getUserMessage(error);
+        throw formatted;
+      }
+    },
+
+    /**
+     * Disable a feature
+     * @param {string} featureKey - Feature key
+     * @param {string} reason - Reason for disabling
+     * @returns {Promise}
+     */
+    disable: async (featureKey, reason = '') => {
+      try {
+        const response = await api.put('/features/disable', { feature_key: featureKey, reason });
+        return response.data;
+      } catch (error) {
+        const formatted = errorHandler.getUserMessage(error);
+        throw formatted;
+      }
+    },
+
+    /**
+     * Get features by category
+     * @param {string} category - Category name
+     * @returns {Promise}
+     */
+    getByCategory: async (category) => {
+      try {
+        const response = await api.get(`/features/category/${category}`);
+        return response.data;
+      } catch (error) {
+        const formatted = errorHandler.getUserMessage(error);
+        throw formatted;
+      }
+    }
+  },
+
+  // Subscription Plans Management
+  subscriptions: {
+    /**
+     * Get all subscription plans
+     * @returns {Promise}
+     */
+    getPlans: async () => {
+      try {
+        const response = await api.get('/subscriptions/plans');
+        return response.data;
+      } catch (error) {
+        const formatted = errorHandler.getUserMessage(error);
+        throw formatted;
+      }
+    },
+
+    /**
+     * Create a new subscription plan
+     * @param {object} planData - Plan details
+     * @returns {Promise}
+     */
+    createPlan: async (planData) => {
+      try {
+        const response = await api.post('/admin/subscriptions/plans', planData);
+        return response.data;
+      } catch (error) {
+        const formatted = errorHandler.getUserMessage(error);
+        throw formatted;
+      }
+    },
+
+    /**
+     * Update a subscription plan
+     * @param {string} planId - Plan ID
+     * @param {object} planData - Plan details
+     * @returns {Promise}
+     */
+    updatePlan: async (planId, planData) => {
+      try {
+        const response = await api.put(`/admin/subscriptions/plans/${planId}`, planData);
+        return response.data;
+      } catch (error) {
+        const formatted = errorHandler.getUserMessage(error);
+        throw formatted;
+      }
+    },
+
+    /**
+     * Delete a subscription plan
+     * @param {string} planId - Plan ID
+     * @returns {Promise}
+     */
+    deletePlan: async (planId) => {
+      try {
+        const response = await api.delete(`/admin/subscriptions/plans/${planId}`);
+        return response.data;
+      } catch (error) {
+        const formatted = errorHandler.getUserMessage(error);
+        throw formatted;
+      }
+    }
   }
 };
 

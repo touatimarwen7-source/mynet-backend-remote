@@ -4,10 +4,11 @@ import SecurityIcon from '@mui/icons-material/Security';
 import ArticleIcon from '@mui/icons-material/Article';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
-import StorageIcon from '@mui/icons-material/Storage';
+import BuildIcon from '@mui/icons-material/Build';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import UserRoleManagement from '../components/Admin/UserRoleManagement';
 import ContentManager from '../components/Admin/ContentManager';
+import ServicesManager from '../components/Admin/ServicesManager';
 import SystemConfig from '../components/Admin/SystemConfig';
 import AdminAnalytics from '../components/Admin/AdminAnalytics';
 import { setPageTitle } from '../utils/pageTitle';
@@ -40,6 +41,12 @@ export default function SuperAdminDashboard() {
       icon: <ArticleIcon />, 
       component: <ContentManager />,
       description: 'تعديل الصفحات الثابتة، إدارة الملفات والصور والوثائق'
+    },
+    { 
+      label: '🔧 إدارة الخدمات والخطط', 
+      icon: <BuildIcon />, 
+      component: <ServicesManager />,
+      description: 'إدارة الخدمات العامة (Feature Flags)، خطط الاشتراك، خدمات المزودين'
     },
     { 
       label: '⚙️ إعدادات النظام', 
