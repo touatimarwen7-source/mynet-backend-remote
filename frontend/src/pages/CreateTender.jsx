@@ -71,6 +71,49 @@ const REQUIREMENT_PRIORITIES = [
   { value: 'desirable', label: 'Souhaitable', color: '#4caf50' },
 ];
 
+// ============ Unit Options Configuration ============
+const UNIT_OPTIONS = [
+  { group: 'Unités Standard', options: [
+    { value: 'unité', label: 'Unité' },
+    { value: 'pièce', label: 'Pièce' },
+    { value: 'lot', label: 'Lot' },
+  ]},
+  { group: 'Poids & Masse', options: [
+    { value: 'mg', label: 'Milligramme (mg)' },
+    { value: 'g', label: 'Gramme (g)' },
+    { value: 'kg', label: 'Kilogramme (kg)' },
+    { value: 'tonnes', label: 'Tonnes' },
+  ]},
+  { group: 'Volume & Liquides', options: [
+    { value: 'ml', label: 'Millilitre (ml)' },
+    { value: 'l', label: 'Litre (l)' },
+    { value: 'm3', label: 'Mètre cube (m³)' },
+  ]},
+  { group: 'Longueur & Surface', options: [
+    { value: 'mm', label: 'Millimètre (mm)' },
+    { value: 'cm', label: 'Centimètre (cm)' },
+    { value: 'm', label: 'Mètre (m)' },
+    { value: 'km', label: 'Kilomètre (km)' },
+    { value: 'm2', label: 'Mètre carré (m²)' },
+    { value: 'ha', label: 'Hectare (ha)' },
+  ]},
+  { group: 'Temps', options: [
+    { value: 'minute', label: 'Minute' },
+    { value: 'heure', label: 'Heure' },
+    { value: 'jour', label: 'Jour' },
+    { value: 'semaine', label: 'Semaine' },
+    { value: 'mois', label: 'Mois' },
+    { value: 'année', label: 'Année' },
+  ]},
+  { group: 'Emballage', options: [
+    { value: 'boite', label: 'Boîte' },
+    { value: 'paquet', label: 'Paquet' },
+    { value: 'carton', label: 'Carton' },
+    { value: 'palette', label: 'Palette' },
+    { value: 'conteneur', label: 'Conteneur' },
+  ]},
+];
+
 // ============ Initial State ============
 const getInitialFormData = () => ({
   title: '',
@@ -222,16 +265,16 @@ const StepOne = ({ formData, handleChange, loading }) => {
             disabled={loading}
             sx={{ borderRadius: '4px' }}
           >
-            <MenuItem value="unité">Unité</MenuItem>
-            <MenuItem value="kg">Kilogramme (kg)</MenuItem>
-            <MenuItem value="tonnes">Tonnes</MenuItem>
-            <MenuItem value="litres">Litres</MenuItem>
-            <MenuItem value="m2">Mètres carrés (m²)</MenuItem>
-            <MenuItem value="m3">Mètres cubes (m³)</MenuItem>
-            <MenuItem value="mètres">Mètres</MenuItem>
-            <MenuItem value="heures">Heures</MenuItem>
-            <MenuItem value="jours">Jours</MenuItem>
-            <MenuItem value="mois">Mois</MenuItem>
+            {UNIT_OPTIONS.map((group) => [
+              <MenuItem key={`header-${group.group}`} disabled sx={{ fontWeight: 600, color: '#0056B3', fontSize: '12px' }}>
+                ─ {group.group}
+              </MenuItem>,
+              ...group.options.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value} sx={{ pl: '24px' }}>
+                  {opt.label}
+                </MenuItem>
+              )),
+            ])}
           </Select>
         </Box>
       </Stack>
@@ -557,14 +600,18 @@ const StepThree = ({ formData, setFormData, loading }) => {
                   onChange={(e) => setNewArticle({ ...newArticle, unit: e.target.value })}
                   disabled={loading}
                   size="small"
-                  sx={{ minWidth: '100px' }}
+                  sx={{ minWidth: '120px' }}
                 >
-                  <MenuItem value="unité">Unité</MenuItem>
-                  <MenuItem value="kg">kg</MenuItem>
-                  <MenuItem value="litre">Litre</MenuItem>
-                  <MenuItem value="m">Mètre</MenuItem>
-                  <MenuItem value="m²">m²</MenuItem>
-                  <MenuItem value="boite">Boîte</MenuItem>
+                  {UNIT_OPTIONS.map((group) => [
+                    <MenuItem key={`header-${group.group}`} disabled sx={{ fontWeight: 600, color: '#0056B3', fontSize: '12px' }}>
+                      ─ {group.group}
+                    </MenuItem>,
+                    ...group.options.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value} sx={{ pl: '24px', fontSize: '12px' }}>
+                        {opt.label}
+                      </MenuItem>
+                    )),
+                  ])}
                 </Select>
 
                 <Button
