@@ -36,6 +36,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { setPageTitle } from '../utils/pageTitle';
 import { procurementAPI } from '../api';
+import { validateLots, validateBudget, handleAPIError } from '../utils/validationHelpers';
 
 // ============ Configuration ============
 const STAGES = [
@@ -1443,9 +1444,36 @@ export default function CreateTender() {
   };
 
   const handleSubmit = async () => {
+    // Enhanced validation
     if (getTotalCriteria() !== 100) {
       setError('Les critères d\'évaluation doivent totaliser exactement 100%');
       return;
+    }
+
+    // Validate Award Level compatibility
+    if (!formData.awardLevel) {
+      setError('Niveau de ترسية requis');
+      return;
+    }
+
+    // Validate Lots & Articles
+    if (!formData.lots || formData.lots.length === 0) {
+      setError('Au moins un lot est requis');
+      return;
+    }
+
+    for (let i = 0; i < formData.lots.length; i++) {
+      const lot = formData.lots[i];
+      if (!lot.articles || lot.articles.length === 0) {
+        setError(`Le lot "${lot.objet}" n'a pas d'articles`);
+        return;
+      }
+      for (const article of lot.articles) {
+        if (!article.name || !article.quantity || !article.unit) {
+          setError(`Article incomplet dans le lot "${lot.objet}"`);
+          return;
+        }
+      }
     }
 
     setLoading(true);
@@ -1459,9 +1487,8 @@ export default function CreateTender() {
       localStorage.removeItem('tenderDraft');
       navigate(`/tender/${response.data.tender.id}`);
     } catch (err) {
-      setError(
-        err.response?.data?.error || 'Erreur lors de la création de l\'appel d\'offres'
-      );
+      const errorMsg = err.response?.data?.error || err.response?.data?.message || err.message;
+      setError('Erreur: ' + (errorMsg || 'Erreur lors de la création de l\'appel d\'offres'));
     } finally {
       setLoading(false);
     }
@@ -1713,3 +1740,6 @@ export default function CreateTender() {
     </Box>
   );
 }
+
+// Import validation helpers at the top:
+// import { validateLots, validateBudget, handleAPIError } from '../utils/validationHelpers';

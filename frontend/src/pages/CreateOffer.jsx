@@ -81,25 +81,46 @@ export default function CreateOffer() {
       const response = await procurementAPI.getTender(tenderId);
       setTender(response.data.tender);
       
-      const items = response.data.tender.requirements || [];
+      // Use Lots/Articles instead of requirements
+      const lots = response.data.tender.lots || [];
+      const items = [];
+      
+      if (lots.length > 0) {
+        lots.forEach((lot, lotIdx) => {
+          if (lot.articles && lot.articles.length > 0) {
+            lot.articles.forEach((article, artIdx) => {
+              items.push({
+                id: `${lotIdx}-${artIdx}`,
+                lot_id: lot.numero,
+                lot_name: lot.objet,
+                description: article.name,
+                quantity: parseFloat(article.quantity) || 1,
+                unit: article.unit || 'unité',
+                unit_price: '',
+                total_price: 0,
+                specifications: '',
+                partial_quantity: null,
+                is_partial: false,
+                technical_response: ''
+              });
+            });
+          }
+        });
+      }
+
       setOfferData(prev => ({
         ...prev,
-        line_items: items.map((item, idx) => ({
-          id: idx,
-          description: item.description || item,
-          quantity: item.quantity || 1,
-          unit: item.unit || 'piece',
-          unit_price: '',
-          total_price: 0,
-          specifications: '',
-          partial_quantity: null,
-          is_partial: false,
-          technical_response: ''
-        }))
+        line_items: items.length > 0 ? items : []
       }));
-      addToast('L\'appel d\'offres a été chargé avec succès', 'success', 2000);
+      
+      if (items.length === 0) {
+        addToast('Aucun article trouvé', 'warning', 2000);
+      } else {
+        addToast('L\'appel d\'offres a été chargé avec succès', 'success', 2000);
+      }
     } catch (err) {
-      const errorMessage = 'Erreur lors du chargement de l\'appel d\'offres: ' + err.message;
+      const errorMsg = err.response?.data?.error || err.message;
+      const errorMessage = 'Erreur lors du chargement: ' + errorMsg;
       setError(errorMessage);
       addToast(errorMessage, 'error', 4000);
     } finally {
@@ -168,6 +189,7 @@ export default function CreateOffer() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Enhanced validation
     if (isDeadlinePassed) {
       setError(`L'envoi a échoué. L'appel d'offres est fermé depuis ${new Date(tender.deadline).toLocaleDateString('fr-FR')}`);
       return;
@@ -178,9 +200,28 @@ export default function CreateOffer() {
       return;
     }
 
-    const invalidItems = offerData.line_items.filter(item => !item.unit_price || item.unit_price === 0);
+    // Validate all prices are filled and positive
+    const invalidItems = offerData.line_items.filter(item => !item.unit_price || parseFloat(item.unit_price) <= 0);
     if (invalidItems.length > 0) {
-      setError('Veuillez remplir les prix de tous les articles');
+      setError(`${invalidItems.length} article(s) ont des prix invalides (doit être > 0)`);
+      return;
+    }
+
+    // Validate total doesn't exceed budget
+    const totalAmount = parseFloat(getTotalBidAmount());
+    if (tender.budget_max && totalAmount > tender.budget_max) {
+      setError(`Le total (${totalAmount.toFixed(2)} TND) dépasse le budget (${tender.budget_max} TND)`);
+      return;
+    }
+
+    // Validate files
+    const invalidFiles = offerData.attachments.filter(file => {
+      const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      return !validTypes.includes(file.type) || file.size > maxSize;
+    });
+    if (invalidFiles.length > 0) {
+      setError('Fichiers invalides (PDF/DOC, max 10MB)');
       return;
     }
 
@@ -209,8 +250,8 @@ export default function CreateOffer() {
         navigate('/my-offers');
       }, 2500);
     } catch (err) {
-      const errorMsg = err.response?.data?.error || err.message;
-      setError('Erreur lors de l\'envoi de l\'offre: ' + errorMsg);
+      const errorMsg = err.response?.data?.error || err.response?.data?.message || err.message;
+      setError('Erreur: ' + (errorMsg || 'Erreur lors de l\'envoi'));
       addToast('Erreur lors de l\'envoi', 'error', 4000);
     } finally {
       setSubmitting(false);

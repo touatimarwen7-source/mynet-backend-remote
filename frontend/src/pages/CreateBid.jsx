@@ -748,6 +748,37 @@ export default function CreateBid() {
   const handleSubmit = async () => {
     if (!validateStep()) return;
 
+    // Enhanced validation
+    // Validate prices
+    for (let i = 0; i < formData.line_items.length; i++) {
+      const item = formData.line_items[i];
+      const price = parseFloat(item.unit_price);
+      if (!item.unit_price || isNaN(price) || price <= 0) {
+        setError(`Article ${i + 1}: Prix invalide (doit être > 0)`);
+        return;
+      }
+      const total = price * (parseFloat(item.quantity) || 1);
+      if (tender.budget_max && total > tender.budget_max) {
+        setError(`Article ${i + 1}: Dépasse le budget maximum`);
+        return;
+      }
+    }
+
+    // Validate files
+    const validFileTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
+    
+    for (const file of (formData.attachments || [])) {
+      if (!validFileTypes.includes(file.type)) {
+        setError(`Fichier "${file.name}": Type non autorisé (PDF/DOC seulement)`);
+        return;
+      }
+      if (file.size > maxFileSize) {
+        setError(`Fichier "${file.name}": Trop volumineux (max 10MB)`);
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       // Create FormData for file upload
@@ -780,7 +811,8 @@ export default function CreateBid() {
         navigate(`/tender/${tenderId}`);
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.error || 'Erreur lors de la soumission de l\'offre');
+      const errorMsg = err.response?.data?.error || err.response?.data?.message || err.message;
+      setError('Erreur: ' + (errorMsg || 'Erreur lors de la soumission'));
     } finally {
       setLoading(false);
     }
