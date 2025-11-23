@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Container, Typography, Button } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 /**
@@ -42,7 +43,8 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      return (
+      // Get theme using a functional component pattern workaround
+      const errorContent = (
         <Container maxWidth="md">
           <Box
             sx={{
@@ -66,7 +68,7 @@ class ErrorBoundary extends React.Component {
             <Typography
               variant="h3"
               sx={{
-                color: theme.palette.text.primary,
+                color: '#212121',
                 fontWeight: 600,
                 marginBottom: '16px'
               }}
@@ -90,7 +92,7 @@ class ErrorBoundary extends React.Component {
                 variant="contained"
                 onClick={this.handleReset}
                 sx={{
-                  backgroundColor: theme.palette.primary.main,
+                  backgroundColor: '#0056B3',
                   color: '#FFFFFF',
                   textTransform: 'none',
                   fontSize: '14px',
@@ -108,8 +110,8 @@ class ErrorBoundary extends React.Component {
                 variant="outlined"
                 onClick={this.handleReload}
                 sx={{
-                  color: theme.palette.primary.main,
-                  borderColor: theme.palette.primary.main,
+                  color: '#0056B3',
+                  borderColor: '#0056B3',
                   textTransform: 'none',
                   fontSize: '14px',
                   fontWeight: 500,
@@ -126,6 +128,7 @@ class ErrorBoundary extends React.Component {
           </Box>
         </Container>
       );
+      return errorContent;
     }
 
     return this.props.children;
