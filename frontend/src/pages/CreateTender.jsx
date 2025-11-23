@@ -87,6 +87,7 @@ const getInitialFormData = () => ({
   alert_type: 'before_48h',
   is_public: true,
   lots: [],
+  awardLevel: 'lot', // Global award level: 'lot', 'article', 'tender'
   participation_eligibility: '',
   mandatory_documents: [],
   disqualification_criteria: '',
@@ -360,29 +361,59 @@ const StepTwo = ({ formData, handleChange, loading }) => {
 };
 
 const StepThree = ({ formData, setFormData, loading }) => {
-  const [newLot, setNewLot] = useState({ numero: '', objet: '', typeAdjudication: 'lot' });
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [newLot, setNewLot] = useState({ numero: '', objet: '', articles: [] });
+  const [newArticle, setNewArticle] = useState({ name: '', quantity: '', unit: 'unité' });
+  const [editingLotIndex, setEditingLotIndex] = useState(null);
+  const [editingArticleIndex, setEditingArticleIndex] = useState(null);
+  const theme = institutionalTheme;
+
+  const handleAddArticle = () => {
+    if (newArticle.name.trim() && newArticle.quantity.trim()) {
+      const updated = [...(newLot.articles || [])];
+      if (editingArticleIndex !== null) {
+        updated[editingArticleIndex] = newArticle;
+        setEditingArticleIndex(null);
+      } else {
+        updated.push(newArticle);
+      }
+      setNewLot({ ...newLot, articles: updated });
+      setNewArticle({ name: '', quantity: '', unit: 'unité' });
+    }
+  };
+
+  const handleRemoveArticle = (index) => {
+    setNewLot({
+      ...newLot,
+      articles: (newLot.articles || []).filter((_, i) => i !== index),
+    });
+  };
+
+  const handleEditArticle = (index) => {
+    setNewArticle((newLot.articles || [])[index]);
+    setEditingArticleIndex(index);
+  };
 
   const handleAddLot = () => {
-    if (newLot.numero.trim() && newLot.objet.trim()) {
-      if (editingIndex !== null) {
+    if (newLot.numero.trim() && newLot.objet.trim() && (newLot.articles || []).length > 0) {
+      if (editingLotIndex !== null) {
         const updated = [...formData.lots];
-        updated[editingIndex] = newLot;
+        updated[editingLotIndex] = newLot;
         setFormData((prev) => ({ ...prev, lots: updated }));
-        setEditingIndex(null);
+        setEditingLotIndex(null);
       } else {
         setFormData((prev) => ({
           ...prev,
           lots: [...(prev.lots || []), newLot],
         }));
       }
-      setNewLot({ numero: '', objet: '', typeAdjudication: 'lot' });
+      setNewLot({ numero: '', objet: '', articles: [] });
+      setNewArticle({ name: '', quantity: '', unit: 'unité' });
     }
   };
 
   const handleEditLot = (index) => {
     setNewLot(formData.lots[index]);
-    setEditingIndex(index);
+    setEditingLotIndex(index);
   };
 
   const handleRemoveLot = (index) => {
@@ -396,6 +427,45 @@ const StepThree = ({ formData, setFormData, loading }) => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      {/* Award Level Selection */}
+      <Box sx={{ p: '16px', backgroundColor: '#FFF3E0', borderRadius: '4px', borderLeft: '4px solid #FF9800' }}>
+        <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#F57C00', mb: '12px' }}>
+          🎯 Niveau de ترسية (Attribution)
+        </Typography>
+        <Typography sx={{ fontSize: '12px', color: '#666666', mb: '12px' }}>
+          Sélectionnez à quel niveau l'attribution sera effectuée :
+        </Typography>
+        <Stack direction="row" spacing={2}>
+          {[
+            { value: 'lot', label: 'Par Lot', description: 'Un lot entier à un fournisseur' },
+            { value: 'article', label: 'Par Article', description: 'Chaque article à un fournisseur' },
+            { value: 'tender', label: 'Global', description: 'Toute l\'appel d\'offres' },
+          ].map((option) => (
+            <Box
+              key={option.value}
+              onClick={() => setFormData((prev) => ({ ...prev, awardLevel: option.value }))}
+              sx={{
+                flex: 1,
+                p: '12px',
+                border: formData.awardLevel === option.value ? '2px solid #0056B3' : '1px solid #ddd',
+                backgroundColor: formData.awardLevel === option.value ? '#E3F2FD' : '#fff',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                '&:hover': { borderColor: '#0056B3' },
+              }}
+            >
+              <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#212121' }}>
+                {option.label}
+              </Typography>
+              <Typography sx={{ fontSize: '11px', color: '#666666' }}>
+                {option.description}
+              </Typography>
+            </Box>
+          ))}
+        </Stack>
+      </Box>
+
       {/* Lot Input */}
       <Box sx={{ p: '16px', backgroundColor: '#E3F2FD', borderRadius: '4px' }}>
         <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#0056B3', mb: '16px' }}>
@@ -406,6 +476,7 @@ const StepThree = ({ formData, setFormData, loading }) => {
           <TextField
             fullWidth
             label="Numéro du Lot"
+            placeholder="Ex: Lot 1, Lot 2..."
             value={newLot.numero}
             onChange={(e) => setNewLot({ ...newLot, numero: e.target.value })}
             disabled={loading}
@@ -415,6 +486,7 @@ const StepThree = ({ formData, setFormData, loading }) => {
           <TextField
             fullWidth
             label="Objet du Lot"
+            placeholder="Ex: Informatique, Fournitures de Bureau..."
             value={newLot.objet}
             onChange={(e) => setNewLot({ ...newLot, objet: e.target.value })}
             disabled={loading}
@@ -423,21 +495,125 @@ const StepThree = ({ formData, setFormData, loading }) => {
             rows={2}
           />
 
-          <Select
-            value={newLot.typeAdjudication}
-            onChange={(e) => setNewLot({ ...newLot, typeAdjudication: e.target.value })}
-            disabled={loading}
-            size="small"
-          >
-            <MenuItem value="lot">Lot</MenuItem>
-            <MenuItem value="global">Global</MenuItem>
-          </Select>
+          {/* Articles Section */}
+          <Box sx={{ p: '12px', backgroundColor: '#fff', borderRadius: '4px', border: '1px dashed #0056B3' }}>
+            <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#0056B3', mb: '12px' }}>
+              📦 Articles du Lot
+            </Typography>
+
+            {/* Article Input */}
+            <Stack spacing={2} sx={{ mb: '12px' }}>
+              <TextField
+                fullWidth
+                label="Nom de l'Article"
+                placeholder="Ex: Imprimante Laser"
+                value={newArticle.name}
+                onChange={(e) => setNewArticle({ ...newArticle, name: e.target.value })}
+                disabled={loading}
+                size="small"
+              />
+
+              <Stack direction="row" spacing={1}>
+                <TextField
+                  fullWidth
+                  label="Quantité"
+                  type="number"
+                  value={newArticle.quantity}
+                  onChange={(e) => setNewArticle({ ...newArticle, quantity: e.target.value })}
+                  disabled={loading}
+                  size="small"
+                  inputProps={{ min: '1' }}
+                />
+
+                <Select
+                  value={newArticle.unit}
+                  onChange={(e) => setNewArticle({ ...newArticle, unit: e.target.value })}
+                  disabled={loading}
+                  size="small"
+                  sx={{ minWidth: '100px' }}
+                >
+                  <MenuItem value="unité">Unité</MenuItem>
+                  <MenuItem value="kg">kg</MenuItem>
+                  <MenuItem value="litre">Litre</MenuItem>
+                  <MenuItem value="m">Mètre</MenuItem>
+                  <MenuItem value="m²">m²</MenuItem>
+                  <MenuItem value="boite">Boîte</MenuItem>
+                </Select>
+
+                <Button
+                  variant="contained"
+                  onClick={handleAddArticle}
+                  disabled={loading}
+                  sx={{
+                    backgroundColor: '#0056B3',
+                    color: '#fff',
+                    textTransform: 'none',
+                  }}
+                >
+                  {editingArticleIndex !== null ? '✓ MAJ' : '+ Ajouter'}
+                </Button>
+
+                {editingArticleIndex !== null && (
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setNewArticle({ name: '', quantity: '', unit: 'unité' });
+                      setEditingArticleIndex(null);
+                    }}
+                    disabled={loading}
+                    sx={{ color: '#d32f2f', borderColor: '#d32f2f' }}
+                  >
+                    Annuler
+                  </Button>
+                )}
+              </Stack>
+            </Stack>
+
+            {/* Articles List */}
+            {(newLot.articles || []).length > 0 && (
+              <Stack spacing={1}>
+                {newLot.articles.map((article, idx) => (
+                  <Paper
+                    key={idx}
+                    sx={{
+                      p: '8px 12px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      backgroundColor: '#F9F9F9',
+                      borderLeft: '3px solid #4CAF50',
+                    }}
+                  >
+                    <Typography sx={{ fontSize: '12px', color: '#212121' }}>
+                      {article.name} - {article.quantity} {article.unit}
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: '4px' }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleEditArticle(idx)}
+                        disabled={loading}
+                      >
+                        <EditIcon sx={{ fontSize: '16px', color: '#0056B3' }} />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleRemoveArticle(idx)}
+                        disabled={loading}
+                      >
+                        <DeleteIcon sx={{ fontSize: '16px', color: '#d32f2f' }} />
+                      </IconButton>
+                    </Box>
+                  </Paper>
+                ))}
+              </Stack>
+            )}
+          </Box>
 
           <Stack direction="row" spacing={1}>
             <Button
               variant="contained"
               onClick={handleAddLot}
-              disabled={loading}
+              disabled={loading || (newLot.articles || []).length === 0}
               sx={{
                 backgroundColor: '#0056B3',
                 color: '#fff',
@@ -445,14 +621,16 @@ const StepThree = ({ formData, setFormData, loading }) => {
                 textTransform: 'none',
               }}
             >
-              {editingIndex !== null ? 'Mettre à Jour' : 'Ajouter'}
+              {editingLotIndex !== null ? '✓ Mettre à Jour' : '✓ Ajouter Lot'}
             </Button>
-            {editingIndex !== null && (
+            {editingLotIndex !== null && (
               <Button
                 variant="outlined"
                 onClick={() => {
-                  setNewLot({ numero: '', objet: '', typeAdjudication: 'lot' });
-                  setEditingIndex(null);
+                  setNewLot({ numero: '', objet: '', articles: [] });
+                  setEditingLotIndex(null);
+                  setNewArticle({ name: '', quantity: '', unit: 'unité' });
+                  setEditingArticleIndex(null);
                 }}
                 disabled={loading}
                 sx={{ color: '#d32f2f', borderColor: '#d32f2f' }}
@@ -468,45 +646,65 @@ const StepThree = ({ formData, setFormData, loading }) => {
       {lots.length > 0 && (
         <Box>
           <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '12px' }}>
-            Lots ({lots.length})
+            📋 Lots ({lots.length})
           </Typography>
-          <Stack spacing={1}>
+          <Stack spacing={2}>
             {lots.map((lot, index) => (
               <Paper
                 key={index}
                 sx={{
-                  p: '12px 16px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  p: '16px',
                   backgroundColor: '#F9F9F9',
                   borderLeft: '4px solid #0056B3',
                 }}
               >
-                <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121' }}>
-                    Lot {lot.numero}
-                  </Typography>
-                  <Typography sx={{ fontSize: '12px', color: '#666666' }}>
-                    {lot.objet}
-                  </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: '12px' }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121' }}>
+                      Lot {lot.numero}
+                    </Typography>
+                    <Typography sx={{ fontSize: '12px', color: '#666666' }}>
+                      {lot.objet}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: '8px' }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleEditLot(index)}
+                      disabled={loading}
+                    >
+                      <EditIcon sx={{ fontSize: '18px', color: '#0056B3' }} />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleRemoveLot(index)}
+                      disabled={loading}
+                    >
+                      <DeleteIcon sx={{ fontSize: '18px', color: '#d32f2f' }} />
+                    </IconButton>
+                  </Box>
                 </Box>
-                <Box sx={{ display: 'flex', gap: '8px' }}>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleEditLot(index)}
-                    disabled={loading}
-                  >
-                    <EditIcon sx={{ fontSize: '18px', color: '#0056B3' }} />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleRemoveLot(index)}
-                    disabled={loading}
-                  >
-                    <DeleteIcon sx={{ fontSize: '18px', color: '#d32f2f' }} />
-                  </IconButton>
-                </Box>
+
+                {/* Articles Display */}
+                {(lot.articles || []).length > 0 && (
+                  <Stack spacing={1} sx={{ mt: '8px' }}>
+                    {lot.articles.map((article, aIdx) => (
+                      <Box
+                        key={aIdx}
+                        sx={{
+                          p: '8px 12px',
+                          backgroundColor: '#fff',
+                          borderLeft: '2px solid #4CAF50',
+                          borderRadius: '2px',
+                        }}
+                      >
+                        <Typography sx={{ fontSize: '11px', color: '#212121' }}>
+                          • {article.name} : <strong>{article.quantity} {article.unit}</strong>
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Stack>
+                )}
               </Paper>
             ))}
           </Stack>
@@ -924,6 +1122,12 @@ const StepDocuments = ({ formData, setFormData, loading }) => {
 };
 
 const StepSeven = ({ formData, handleChange, loading }) => {
+  const awardLevelLabel = {
+    lot: 'Par Lot',
+    article: 'Par Article',
+    tender: 'Global (Toute l\'appel d\'offres)',
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <Alert severity="success" sx={{ backgroundColor: '#E8F5E9', color: '#2E7D32' }}>
@@ -958,6 +1162,13 @@ const StepSeven = ({ formData, handleChange, loading }) => {
           </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography sx={{ color: '#666666' }}>🎯 Niveau de ترسية:</Typography>
+            <Typography sx={{ fontWeight: 600, color: '#0056B3' }}>
+              {awardLevelLabel[formData.awardLevel] || 'Non défini'}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography sx={{ color: '#666666' }}>Lots:</Typography>
             <Typography sx={{ fontWeight: 600, color: '#212121' }}>
               {(formData.lots || []).length}
@@ -979,6 +1190,53 @@ const StepSeven = ({ formData, handleChange, loading }) => {
           </Box>
         </Stack>
       </Paper>
+
+      {/* Detailed Lots Section */}
+      {(formData.lots || []).length > 0 && (
+        <Paper sx={{ p: '20px', backgroundColor: '#F9F9F9', borderRadius: '4px' }}>
+          <Typography sx={{ fontSize: '14px', fontWeight: 600, color: '#0056B3', mb: '16px' }}>
+            📦 Détail des Lots et Articles
+          </Typography>
+
+          <Stack spacing={2}>
+            {formData.lots.map((lot, idx) => (
+              <Box
+                key={idx}
+                sx={{
+                  p: '12px',
+                  backgroundColor: '#fff',
+                  border: '1px solid #E0E0E0',
+                  borderRadius: '4px',
+                  borderLeft: '4px solid #0056B3',
+                }}
+              >
+                <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#212121', mb: '8px' }}>
+                  Lot {lot.numero}: {lot.objet}
+                </Typography>
+
+                {(lot.articles || []).length > 0 && (
+                  <Stack spacing={1} sx={{ ml: '12px' }}>
+                    {lot.articles.map((article, aIdx) => (
+                      <Box
+                        key={aIdx}
+                        sx={{
+                          p: '6px',
+                          backgroundColor: '#F9F9F9',
+                          borderRadius: '2px',
+                          fontSize: '11px',
+                          color: '#666666',
+                        }}
+                      >
+                        • <strong>{article.name}</strong> : {article.quantity} {article.unit}
+                      </Box>
+                    ))}
+                  </Stack>
+                )}
+              </Box>
+            ))}
+          </Stack>
+        </Paper>
+      )}
 
       {/* Contact Info */}
       <Box>
