@@ -87,6 +87,10 @@ const Inbox = lazy(() => import('./pages/Inbox'));
 const Compose = lazy(() => import('./pages/Compose'));
 const MessageDetail = lazy(() => import('./pages/MessageDetail'));
 const PurchaseOrders = lazy(() => import('./pages/PurchaseOrders'));
+const POManagement = lazy(() => import('./pages/POManagement'));
+const PODetail = lazy(() => import('./pages/PODetail'));
+const ReviewsList = lazy(() => import('./pages/ReviewsList'));
+const SuperAdminCRUD = lazy(() => import('./pages/SuperAdminCRUD'));
 
 const LoadingFallback = () => (
   <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
@@ -361,11 +365,27 @@ function App() {
               element={user?.role === 'supplier' ? <CreateOffer /> : <Navigate to="/tenders" />} 
             />
 
+              {/* Bons de Commande - Purchase Orders */}
+              <Route 
+              path="/po-management" 
+              element={user?.role === 'buyer' ? <POManagement /> : <Navigate to="/tenders" />} 
+            />
+              <Route 
+              path="/po-detail/:id" 
+              element={user?.role === 'buyer' ? <PODetail /> : <Navigate to="/tenders" />} 
+            />
+
+              {/* Avis et Évaluations - Reviews & Ratings */}
+              <Route 
+              path="/reviews" 
+              element={user ? <ReviewsList /> : <Navigate to="/login" />} 
+            />
+
               {/* Administration */}
-              {/* Super Admin - Centre de Contrôle Total */}
+              {/* Super Admin - Centre de Contrôle Total CRUD */}
               <Route 
               path="/super-admin" 
-              element={user?.role === 'super_admin' ? <SuperAdminDashboard /> : <Navigate to="/tenders" />} 
+              element={user?.role === 'super_admin' ? <SuperAdminCRUD /> : <Navigate to="/tenders" />} 
             />
               {/* Admin - Limited Permissions */}
               <Route 
