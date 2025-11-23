@@ -79,21 +79,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// ISSUE FIX #7: Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
-});
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5, // 5 attempts per 15 minutes
-  skipSuccessfulRequests: true
-});
+// 🚀 ENHANCED RATE LIMITING with per-user + IP tracking
+const enhancedRateLimiting = require('./middleware/enhancedRateLimiting');
 
-app.use('/api/', limiter);
-app.use('/api/auth/login', loginLimiter);
-app.use('/api/auth/register', loginLimiter);
+// Apply enhanced rate limiting
+app.use('/api/', enhancedRateLimiting.general);
+app.post('/api/auth/login', enhancedRateLimiting.login);
+app.post('/api/auth/register', enhancedRateLimiting.register);
+app.post('/api/auth/password-reset', enhancedRateLimiting.passwordReset);
+app.post('/api/procurement/tenders', enhancedRateLimiting.tenderCreation);
+app.post('/api/procurement/offers', enhancedRateLimiting.offerSubmission);
+app.post('/api/messaging', enhancedRateLimiting.messageSending);
+app.get('/api/search', enhancedRateLimiting.search);
+app.post('/api/export', enhancedRateLimiting.export);
+
+// Advanced rate limit middleware for tracking
+app.use(enhancedRateLimiting.advancedRateLimitMiddleware);
 
 // ⏱️ REQUEST TIMEOUT ENFORCEMENT (NEW)
 app.use(requestTimeout);
@@ -286,6 +287,51 @@ app.delete('/api/cache/clear', (req, res) => {
     
     res.status(200).json({
       message: 'Cache cleared successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 📊 RATE LIMIT MONITORING ENDPOINTS
+app.get('/api/admin/rate-limit-stats', (req, res) => {
+  try {
+    const stats = enhancedRateLimiting.getRateLimitStats();
+    res.status(200).json({
+      stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/rate-limit-reset', (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ error: 'userId is required' });
+    }
+    
+    const key = `user:${userId}`;
+    const reset = enhancedRateLimiting.resetLimits(key);
+    
+    res.status(200).json({
+      message: reset ? 'Limits reset successfully' : 'User not found',
+      userId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/admin/rate-limit-clear', (req, res) => {
+  try {
+    enhancedRateLimiting.clearAllLimits();
+    res.status(200).json({
+      message: 'All rate limits cleared successfully',
       timestamp: new Date().toISOString()
     });
   } catch (error) {
