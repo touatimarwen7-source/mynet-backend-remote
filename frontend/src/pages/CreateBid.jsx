@@ -818,6 +818,38 @@ export default function CreateBid() {
       <Container maxWidth="md">
         <Card sx={{ border: '1px solid #E0E0E0', borderRadius: '4px', boxShadow: 'none' }}>
           <CardContent sx={{ padding: '40px' }}>
+            {/* Lots Display */}
+            {tender?.lots && tender.lots.length > 0 && (
+              <Paper sx={{ p: '16px', backgroundColor: '#F5F5F5', mb: '16px', borderLeft: '4px solid #0056B3' }}>
+                <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#0056B3', mb: '12px' }}>
+                  📦 Lots et Articles
+                </Typography>
+                <Stack spacing={1.5}>
+                  {tender.lots.map((lot, idx) => (
+                    <Box key={idx} sx={{ pl: '8px', borderLeft: '2px dashed #0056B3' }}>
+                      <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#212121' }}>
+                        Lot {lot.numero}: {lot.objet}
+                      </Typography>
+                      {lot.articles && lot.articles.length > 0 && (
+                        <Stack spacing={0.5} sx={{ mt: '6px', ml: '8px' }}>
+                          {lot.articles.map((article, aIdx) => (
+                            <Typography key={aIdx} sx={{ fontSize: '11px', color: '#666666' }}>
+                              ├─ {article.name}: {article.quantity} {article.unit}
+                            </Typography>
+                          ))}
+                        </Stack>
+                      )}
+                    </Box>
+                  ))}
+                </Stack>
+                {tender.awardLevel && (
+                  <Typography sx={{ fontSize: '11px', color: '#0056B3', fontWeight: 600, mt: '12px', pt: '12px', borderTop: '1px solid #ddd' }}>
+                    🎯 ترسية: {tender.awardLevel === 'lot' ? 'Par Lot' : tender.awardLevel === 'article' ? 'Par Article' : 'Global'}
+                  </Typography>
+                )}
+              </Paper>
+            )}
+
             {/* Header */}
             <Box sx={{ marginBottom: '32px' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', mb: '16px' }}>

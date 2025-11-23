@@ -103,6 +103,51 @@ Lot 2: Fournitures de Bureau
 }
 ```
 
+## UI Integration Updates - November 23, 2025
+
+### 🎯 Lots & Articles Display Across All Pages
+
+✅ **TenderDetail.jsx Enhanced**
+- Added dedicated section showing all Lots with nested Articles
+- Hierarchical display with visual indicators (├─ symbols)
+- Shows Award Level (ترسية) with color-coded styling
+- Articles display: quantity and unit for each
+
+✅ **TenderEvaluation.jsx Updated**
+- Header now displays Award Level context
+- Shows number of Lots in tender for evaluator context
+- Award level helps evaluators understand scoring impact
+
+✅ **BidComparison.jsx Enhanced**
+- Summary section includes Award Level display
+- Shows total Lots count
+- Helps buyers understand bidding structure before evaluation
+
+✅ **CreateBid.jsx Enhanced**
+- Lots display at top of form (before any input)
+- Suppliers see complete Lots/Articles structure they're bidding on
+- Award Level context provided for bid structure understanding
+- Build: 45.76s ✅
+
+✅ **CreateOffer.jsx Enhanced**
+- Lots display prominently before Stepper form
+- Suppliers see hierarchical structure of tender
+- Award Level shown for reference
+- Consistent with CreateBid implementation
+
+### 📝 Technical Details
+- All Lots sections use consistent Material-UI styling
+- Color scheme: #0056B3 primary color, #F5F5F5 background
+- Hierarchical display with Box nesting and border styling
+- Conditional rendering: only shows if lots exist and have articles
+- All components built successfully (0 errors)
+
+### ✅ Quality Assurance
+- All 5 components updated with consistent Lots display
+- Frontend Workflow: Running ✅
+- Browser console: Connected ✅
+- Build verification: 0 errors ✅
+
 ## Backup & Recovery Testing - November 23, 2025
 
 ### 🎯 Implementation Complete
