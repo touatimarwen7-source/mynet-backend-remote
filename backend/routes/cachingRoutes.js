@@ -76,3 +76,34 @@ router.post('/invalidate', authMiddleware, (req, res) => {
 });
 
 module.exports = router;
+
+// 📊 CACHE STATISTICS ENDPOINT
+app.get('/api/cache/stats', (req, res) => {
+  try {
+    const cacheManager = require('../utils/redisCache').getCacheManager();
+    const stats = cacheManager.getStats();
+    
+    res.status(200).json({
+      cache: stats,
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 🗑️ CACHE CLEAR ENDPOINT
+app.delete('/api/cache/clear', (req, res) => {
+  try {
+    const cacheManager = require('../utils/redisCache').getCacheManager();
+    cacheManager.clear();
+    
+    res.status(200).json({
+      message: 'Cache cleared successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});

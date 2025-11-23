@@ -50,8 +50,8 @@ const { globalErrorHandler, notFoundHandler, asyncHandler } = require('./middlew
 const { safeQueryMiddleware } = require('./middleware/safeQueryMiddleware');
 const { validationMiddleware } = require('./middleware/validationMiddleware');
 const { attachValidators } = require('./middleware/endpointValidators');
-const { cacheMiddleware } = require('./middleware/cacheMiddleware');
-const comprehensiveCacheMiddleware = require('./middleware/comprehensiveCacheMiddleware');
+const distributedCacheMiddleware = require('./middleware/distributedCacheMiddleware');
+const { getCacheManager } = require('./utils/redisCache');
 const { errorTracker } = require('./services/ErrorTrackingService');
 
 const app = express();
@@ -107,8 +107,8 @@ app.use(requestIdMiddleware);
 // ENHANCEMENT: Add performance monitoring
 app.use(performanceMiddleware);
 
-// 🚀 CACHING: Add comprehensive cache middleware (100% endpoints)
-app.use(comprehensiveCacheMiddleware);
+// 🚀 CACHING: Add distributed Redis cache middleware (100% endpoints)
+app.use(distributedCacheMiddleware);
 
 // ENHANCEMENT: Add API version headers
 app.use(versionMiddleware);
@@ -238,4 +238,35 @@ logger.info('MyNet.tn Backend Started', {
   nodeVersion: process.version,
   environment: process.env.NODE_ENV,
   port: process.env.PORT || 3000,
+});
+
+// 📊 CACHE STATISTICS ENDPOINT
+app.get('/api/cache/stats', (req, res) => {
+  try {
+    const cacheManager = getCacheManager();
+    const stats = cacheManager.getStats();
+    
+    res.status(200).json({
+      cache: stats,
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 🗑️ CACHE CLEAR ENDPOINT
+app.delete('/api/cache/clear', (req, res) => {
+  try {
+    const cacheManager = getCacheManager();
+    cacheManager.clear();
+    
+    res.status(200).json({
+      message: 'Cache cleared successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
