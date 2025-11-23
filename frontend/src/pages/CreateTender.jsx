@@ -80,7 +80,7 @@ const getInitialFormData = () => ({
   budget_max: '',
   currency: 'TND',
   quantity_required: '',
-  unit: 'unité',
+  unit: '',
   deadline: '',
   opening_date: '',
   queries_start_date: '',
@@ -364,23 +364,27 @@ const StepTwo = ({ formData, handleChange, loading }) => {
 
 const StepThree = ({ formData, setFormData, loading }) => {
   const [newLot, setNewLot] = useState({ numero: '', objet: '', articles: [] });
-  const [newArticle, setNewArticle] = useState({ name: '', quantity: '', unit: 'unité' });
+  const [newArticle, setNewArticle] = useState({ name: '', quantity: '', unit: '' });
   const [editingLotIndex, setEditingLotIndex] = useState(null);
   const [editingArticleIndex, setEditingArticleIndex] = useState(null);
   const theme = institutionalTheme;
 
   const handleAddArticle = () => {
-    if (newArticle.name.trim() && newArticle.quantity.trim()) {
-      const updated = [...(newLot.articles || [])];
-      if (editingArticleIndex !== null) {
-        updated[editingArticleIndex] = newArticle;
-        setEditingArticleIndex(null);
-      } else {
-        updated.push(newArticle);
-      }
-      setNewLot({ ...newLot, articles: updated });
-      setNewArticle({ name: '', quantity: '', unit: 'unité' });
+    // Validate all required article fields
+    if (!newArticle.name.trim() || !newArticle.quantity.trim() || !newArticle.unit || newArticle.unit === 'unité') {
+      alert('✋ Veuillez remplir: Nom, Quantité et Unité de l\'article');
+      return;
     }
+    
+    const updated = [...(newLot.articles || [])];
+    if (editingArticleIndex !== null) {
+      updated[editingArticleIndex] = newArticle;
+      setEditingArticleIndex(null);
+    } else {
+      updated.push(newArticle);
+    }
+    setNewLot({ ...newLot, articles: updated });
+    setNewArticle({ name: '', quantity: '', unit: '' });
   };
 
   const handleRemoveArticle = (index) => {
@@ -409,7 +413,7 @@ const StepThree = ({ formData, setFormData, loading }) => {
         }));
       }
       setNewLot({ numero: '', objet: '', articles: [] });
-      setNewArticle({ name: '', quantity: '', unit: 'unité' });
+      setNewArticle({ name: '', quantity: '', unit: '' });
     }
   };
 
@@ -580,7 +584,7 @@ const StepThree = ({ formData, setFormData, loading }) => {
                   <Button
                     variant="outlined"
                     onClick={() => {
-                      setNewArticle({ name: '', quantity: '', unit: 'unité' });
+                      setNewArticle({ name: '', quantity: '', unit: '' });
                       setEditingArticleIndex(null);
                     }}
                     disabled={loading}
@@ -652,7 +656,7 @@ const StepThree = ({ formData, setFormData, loading }) => {
                 onClick={() => {
                   setNewLot({ numero: '', objet: '', articles: [] });
                   setEditingLotIndex(null);
-                  setNewArticle({ name: '', quantity: '', unit: 'unité' });
+                  setNewArticle({ name: '', quantity: '', unit: '' });
                   setEditingArticleIndex(null);
                 }}
                 disabled={loading}
