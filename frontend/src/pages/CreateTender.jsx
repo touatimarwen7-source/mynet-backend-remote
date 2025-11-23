@@ -78,6 +78,7 @@ const getInitialFormData = () => ({
   category: 'technology',
   quantity_required: '',
   unit: '',
+  publication_date: '',
   deadline: '',
   opening_date: '',
   queries_start_date: '',
@@ -203,6 +204,27 @@ const StepOne = ({ formData, handleChange, loading }) => {
 const StepTwo = ({ formData, handleChange, loading }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      {/* Publication Date */}
+      <Box>
+        <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '8px' }}>
+          Date de Publication *
+        </Typography>
+        <TextField
+          fullWidth
+          type="datetime-local"
+          name="publication_date"
+          value={formData.publication_date}
+          onChange={handleChange}
+          disabled={loading}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '4px',
+              backgroundColor: '#FAFAFA',
+            },
+          }}
+        />
+      </Box>
+
       {/* Deadline */}
       <Box>
         <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '8px' }}>
