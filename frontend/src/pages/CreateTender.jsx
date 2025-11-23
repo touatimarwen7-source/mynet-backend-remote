@@ -32,6 +32,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { setPageTitle } from '../utils/pageTitle';
 import { procurementAPI } from '../api';
 
@@ -42,6 +44,7 @@ const STAGES = [
   { name: 'Lots', description: 'Division en lots' },
   { name: 'Exigences', description: 'Critères obligatoires' },
   { name: 'Évaluation', description: 'Critères d\'évaluation' },
+  { name: 'Spécifications', description: 'Cahier des charges et documents' },
   { name: 'Finalisation', description: 'Révision finale' },
 ];
 
@@ -74,6 +77,8 @@ const getInitialFormData = () => ({
   budget_min: '',
   budget_max: '',
   currency: 'TND',
+  quantity_required: '',
+  unit: 'unité',
   deadline: '',
   opening_date: '',
   queries_start_date: '',
@@ -93,6 +98,7 @@ const getInitialFormData = () => ({
   technical_specifications: '',
   requirements: [],
   attachments: [],
+  specification_documents: [],
   evaluation_criteria: {
     price: 30,
     quality: 40,
@@ -176,6 +182,56 @@ const StepOne = ({ formData, handleChange, loading }) => {
           ))}
         </Select>
       </FormControl>
+
+      {/* Quantity */}
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        <Box sx={{ flex: 1 }}>
+          <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '8px' }}>
+            Quantité Requise
+          </Typography>
+          <TextField
+            fullWidth
+            type="number"
+            name="quantity_required"
+            value={formData.quantity_required}
+            onChange={handleChange}
+            disabled={loading}
+            placeholder="Ex: 100"
+            inputProps={{ min: 0, step: 0.01 }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '4px',
+                backgroundColor: '#FAFAFA',
+              },
+            }}
+          />
+        </Box>
+
+        <Box sx={{ flex: 1 }}>
+          <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '8px' }}>
+            Unité
+          </Typography>
+          <Select
+            fullWidth
+            name="unit"
+            value={formData.unit}
+            onChange={handleChange}
+            disabled={loading}
+            sx={{ borderRadius: '4px' }}
+          >
+            <MenuItem value="unité">Unité</MenuItem>
+            <MenuItem value="kg">Kilogramme (kg)</MenuItem>
+            <MenuItem value="tonnes">Tonnes</MenuItem>
+            <MenuItem value="litres">Litres</MenuItem>
+            <MenuItem value="m2">Mètres carrés (m²)</MenuItem>
+            <MenuItem value="m3">Mètres cubes (m³)</MenuItem>
+            <MenuItem value="mètres">Mètres</MenuItem>
+            <MenuItem value="heures">Heures</MenuItem>
+            <MenuItem value="jours">Jours</MenuItem>
+            <MenuItem value="mois">Mois</MenuItem>
+          </Select>
+        </Box>
+      </Stack>
 
       {/* Visibility */}
       <FormControlLabel
@@ -740,7 +796,134 @@ const StepFive = ({ formData, handleChange, totalCriteria, loading }) => {
   );
 };
 
-const StepSix = ({ formData, handleChange, loading }) => {
+const StepDocuments = ({ formData, setFormData, loading }) => {
+  const [dragOver, setDragOver] = useState(false);
+
+  const handleFileUpload = (files) => {
+    const newFiles = Array.from(files || []);
+    setFormData((prev) => ({
+      ...prev,
+      specification_documents: [...(prev.specification_documents || []), ...newFiles],
+    }));
+  };
+
+  const handleRemoveFile = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      specification_documents: (prev.specification_documents || []).filter((_, i) => i !== index),
+    }));
+  };
+
+  const docs = formData.specification_documents || [];
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <Alert severity="info" sx={{ backgroundColor: '#E3F2FD', color: '#0056B3' }}>
+        📄 Uploadez le cahier des charges, les spécifications techniques et tout document pertinent
+      </Alert>
+
+      {/* Drag & Drop Area */}
+      <Box
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragOver(true);
+        }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragOver(false);
+          handleFileUpload(e.dataTransfer.files);
+        }}
+        sx={{
+          border: '2px dashed #0056B3',
+          borderRadius: '8px',
+          padding: '40px',
+          textAlign: 'center',
+          backgroundColor: dragOver ? '#E3F2FD' : '#F9F9F9',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          '&:hover': { backgroundColor: '#E3F2FD' },
+        }}
+      >
+        <UploadFileIcon sx={{ fontSize: 48, color: '#0056B3', mb: 2 }} />
+        <Typography sx={{ fontSize: '14px', fontWeight: 600, color: '#212121', mb: 1 }}>
+          Glissez-déposez vos fichiers ici
+        </Typography>
+        <Typography sx={{ fontSize: '12px', color: '#999999' }}>
+          ou cliquez pour sélectionner
+        </Typography>
+        <input
+          type="file"
+          multiple
+          onChange={(e) => handleFileUpload(e.target.files)}
+          disabled={loading}
+          style={{ display: 'none' }}
+          id="file-upload"
+        />
+        <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
+          <Button
+            component="span"
+            variant="contained"
+            sx={{
+              backgroundColor: '#0056B3',
+              color: '#fff',
+              marginTop: '12px',
+              textTransform: 'none',
+            }}
+            disabled={loading}
+          >
+            ➕ Sélectionner les fichiers
+          </Button>
+        </label>
+      </Box>
+
+      {/* Files List */}
+      {docs.length > 0 && (
+        <Box>
+          <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '12px' }}>
+            Fichiers uploadés ({docs.length})
+          </Typography>
+          <Stack spacing={1}>
+            {docs.map((file, index) => (
+              <Paper
+                key={index}
+                sx={{
+                  p: '12px 16px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  backgroundColor: '#F9F9F9',
+                  borderLeft: '4px solid #0056B3',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                  <FileDownloadIcon sx={{ color: '#0056B3' }} />
+                  <Box>
+                    <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121' }}>
+                      {file.name || 'Fichier'}
+                    </Typography>
+                    <Typography sx={{ fontSize: '12px', color: '#999999' }}>
+                      {file.size ? `${(file.size / 1024).toFixed(2)} KB` : 'Taille inconnue'}
+                    </Typography>
+                  </Box>
+                </Box>
+                <IconButton
+                  size="small"
+                  onClick={() => handleRemoveFile(index)}
+                  disabled={loading}
+                >
+                  <DeleteIcon sx={{ fontSize: '18px', color: '#d32f2f' }} />
+                </IconButton>
+              </Paper>
+            ))}
+          </Stack>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+const StepSeven = ({ formData, handleChange, loading }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <Alert severity="success" sx={{ backgroundColor: '#E8F5E9', color: '#2E7D32' }}>
@@ -997,7 +1180,9 @@ export default function CreateTender() {
           />
         );
       case 5:
-        return <StepSix formData={formData} handleChange={handleChange} loading={loading} />;
+        return <StepDocuments formData={formData} setFormData={setFormData} loading={loading} />;
+      case 6:
+        return <StepSeven formData={formData} handleChange={handleChange} loading={loading} />;
       default:
         return null;
     }
