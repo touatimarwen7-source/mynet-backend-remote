@@ -17,14 +17,21 @@ import {
   CircularProgress,
   Chip,
   Stack,
+  Checkbox,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import LockIcon from '@mui/icons-material/Lock';
+import CompareIcon from '@mui/icons-material/Compare';
+import DownloadIcon from '@mui/icons-material/Download';
 import { procurementAPI } from '../api';
 import { formatDate, parseDate } from '../utils/dateFormatter';
 import { setPageTitle } from '../utils/pageTitle';
+import ConfirmDialog from '../components/ConfirmDialog';
+import Pagination from '../components/Pagination';
+import StatusBadge from '../components/StatusBadge';
+import { exportToJSON, exportToCSV, prepareDataForExport } from '../utils/exportUtils';
 
 export default function BuyerActiveTenders() {
   const navigate = useNavigate();
@@ -32,6 +39,10 @@ export default function BuyerActiveTenders() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
   const [sortBy, setSortBy] = useState('created_at');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, action: null, tenderId: null });
+  const [selectedTenders, setSelectedTenders] = useState(new Set());
 
   useEffect(() => {
     setPageTitle('Appels d\'Offres Actifs');
@@ -64,13 +75,71 @@ export default function BuyerActiveTenders() {
     return 0;
   });
 
-  const handleCloseTender = async (tenderId) => {
-    if (window.confirm('Êtes-vous sûr de vouloir clôturer cet appel d\'offres ?')) {
-      try {
+  const totalPages = Math.ceil(sortedTenders.length / pageSize);
+  const startIdx = (currentPage - 1) * pageSize;
+  const paginatedTenders = sortedTenders.slice(startIdx, startIdx + pageSize);
+
+  const handleCloseTender = (tenderId) => {
+    setConfirmDialog({
+      open: true,
+      action: 'close',
+      tenderId,
+      title: 'Clôturer l\'appel d\'offres',
+      message: 'Êtes-vous sûr de vouloir clôturer cet appel d\'offres ? Cette action ne peut pas être annulée.'
+    });
+  };
+
+  const handleConfirmAction = async () => {
+    const { action, tenderId } = confirmDialog;
+    try {
+      if (action === 'close') {
         await procurementAPI.closeTender(tenderId);
-        fetchActiveTenders();
-      } catch (err) {
       }
+      fetchActiveTenders();
+      setConfirmDialog({ ...confirmDialog, open: false });
+    } catch (err) {
+      setConfirmDialog({ ...confirmDialog, open: false });
+    }
+  };
+
+  const handleSelectTender = (tenderId, isSelected) => {
+    const newSelected = new Set(selectedTenders);
+    if (isSelected) {
+      newSelected.add(tenderId);
+    } else {
+      newSelected.delete(tenderId);
+    }
+    setSelectedTenders(newSelected);
+  };
+
+  const handleSelectAll = (isSelected) => {
+    if (isSelected) {
+      setSelectedTenders(new Set(paginatedTenders.map(t => t.id)));
+    } else {
+      setSelectedTenders(new Set());
+    }
+  };
+
+  const handleExport = (format) => {
+    const dataToExport = selectedTenders.size > 0
+      ? tenders.filter(t => selectedTenders.has(t.id))
+      : tenders;
+
+    const exportData = prepareDataForExport(dataToExport, [
+      { label: 'ID', key: 'id' },
+      { label: 'Titre', key: 'title' },
+      { label: 'Description', key: 'description' },
+      { label: 'Catégorie', key: 'category' },
+      { label: 'Budget', key: 'budget_max' },
+      { label: 'Devise', key: 'currency' },
+      { label: 'Date limite', key: 'deadline' },
+      { label: 'Offres reçues', key: 'offers_count' }
+    ]);
+
+    if (format === 'json') {
+      exportToJSON(exportData, `appels-offres-${new Date().toISOString().split('T')[0]}.json`);
+    } else {
+      exportToCSV(exportData, `appels-offres-${new Date().toISOString().split('T')[0]}.csv`);
     }
   };
 
@@ -135,21 +204,67 @@ export default function BuyerActiveTenders() {
           </CardContent>
         </Card>
 
+        {selectedTenders.size > 0 && (
+          <Alert sx={{ backgroundColor: '#e3f2fd', color: '#0d47a1', border: '1px solid #0056B3', marginBottom: '16px' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography sx={{ fontSize: '13px' }}>
+                {selectedTenders.size} appel(s) sélectionné(s)
+              </Typography>
+              <Box sx={{ display: 'flex', gap: '8px' }}>
+                <Button
+                  size="small"
+                  startIcon={<DownloadIcon />}
+                  onClick={() => handleExport('json')}
+                  sx={{ textTransform: 'none', color: '#0056B3' }}
+                >
+                  JSON
+                </Button>
+                <Button
+                  size="small"
+                  startIcon={<DownloadIcon />}
+                  onClick={() => handleExport('csv')}
+                  sx={{ textTransform: 'none', color: '#0056B3' }}
+                >
+                  CSV
+                </Button>
+              </Box>
+            </Box>
+          </Alert>
+        )}
+
         {sortedTenders.length === 0 ? (
           <Alert severity="info" sx={{ backgroundColor: '#e3f2fd', color: '#0d47a1', border: '1px solid #0056B3' }}>
             Aucun appel d'offres actif. Créez votre premier appel maintenant!
           </Alert>
         ) : (
-          <Grid container spacing={2}>
-            {sortedTenders.map((tender) => (
+          <>
+            <Box sx={{ marginBottom: '16px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <Checkbox
+                checked={selectedTenders.size === paginatedTenders.length && paginatedTenders.length > 0}
+                onChange={(e) => handleSelectAll(e.target.checked)}
+                sx={{ '& svg': { fontSize: '20px' } }}
+              />
+              <Typography sx={{ fontSize: '13px', color: '#666' }}>
+                Sélectionner tous les éléments de la page
+              </Typography>
+            </Box>
+            <Grid container spacing={2}>
+              {paginatedTenders.map((tender) => (
               <Grid size={{ xs: 12, md: 6 }} key={tender.id}>
-                <Card sx={{ border: '1px solid #e0e0e0', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <CardContent sx={{ padding: '24px', flex: 1 }}>
+                <Card sx={{ border: '1px solid #e0e0e0', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                  <Box sx={{ position: 'absolute', top: '12px', left: '12px', zIndex: 1 }}>
+                    <Checkbox
+                      checked={selectedTenders.has(tender.id)}
+                      onChange={(e) => handleSelectTender(tender.id, e.target.checked)}
+                      sx={{ '& svg': { fontSize: '20px' } }}
+                    />
+                  </Box>
+                  <CardContent sx={{ padding: '24px', flex: 1, paddingLeft: '52px' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                       <Typography variant="h4" sx={{ fontSize: '18px', fontWeight: 600, color: '#212121', flex: 1 }}>
                         {tender.title}
                       </Typography>
-                      <Chip label="Actif" sx={{ backgroundColor: '#e8f5e9', color: '#1b5e20' }} />
+                      <StatusBadge status="active" />
                     </Box>
 
                     <Typography sx={{ color: '#616161', marginBottom: '16px', fontSize: '14px' }}>
@@ -180,7 +295,7 @@ export default function BuyerActiveTenders() {
                     </Stack>
                   </CardContent>
 
-                  <Box sx={{ padding: '16px 24px', borderTop: '1px solid #e0e0e0', display: 'flex', gap: '8px' }}>
+                  <Box sx={{ padding: '16px 24px', borderTop: '1px solid #e0e0e0', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     <Button
                       size="small"
                       variant="contained"
@@ -188,6 +303,7 @@ export default function BuyerActiveTenders() {
                       onClick={() => navigate(`/tender/${tender.id}`)}
                       sx={{
                         flex: 1,
+                        minWidth: '80px',
                         backgroundColor: '#0056B3',
                         textTransform: 'none',
                         '&:hover': { backgroundColor: '#0d47a1' },
@@ -198,9 +314,18 @@ export default function BuyerActiveTenders() {
                     <Button
                       size="small"
                       variant="outlined"
+                      startIcon={<CompareIcon />}
+                      onClick={() => navigate(`/bid-comparison/${tender.id}`)}
+                      sx={{ flex: 1, minWidth: '80px', color: '#0056B3', borderColor: '#0056B3', textTransform: 'none' }}
+                    >
+                      Comparer
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
                       startIcon={<EditIcon />}
                       onClick={() => navigate(`/tender/${tender.id}/edit`)}
-                      sx={{ flex: 1, color: '#0056B3', borderColor: '#0056B3', textTransform: 'none' }}
+                      sx={{ flex: 1, minWidth: '80px', color: '#0056B3', borderColor: '#0056B3', textTransform: 'none' }}
                     >
                       Modifier
                     </Button>
@@ -209,7 +334,7 @@ export default function BuyerActiveTenders() {
                       variant="outlined"
                       startIcon={<LockIcon />}
                       onClick={() => handleCloseTender(tender.id)}
-                      sx={{ flex: 1, color: '#f57c00', borderColor: '#f57c00', textTransform: 'none' }}
+                      sx={{ flex: 1, minWidth: '80px', color: '#f57c00', borderColor: '#f57c00', textTransform: 'none' }}
                     >
                       Clôturer
                     </Button>
@@ -217,8 +342,30 @@ export default function BuyerActiveTenders() {
                 </Card>
               </Grid>
             ))}
-          </Grid>
+            </Grid>
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              totalItems={sortedTenders.length}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={(size) => {
+                setPageSize(size);
+                setCurrentPage(1);
+              }}
+            />
+          </>
         )}
+
+        <ConfirmDialog
+          open={confirmDialog.open}
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          onConfirm={handleConfirmAction}
+          onCancel={() => setConfirmDialog({ ...confirmDialog, open: false })}
+          severity="warning"
+        />
       </Container>
     </Box>
   );

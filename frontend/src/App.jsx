@@ -37,6 +37,7 @@ const PartialAward = lazy(() => import('./pages/PartialAward'));
 const OfferAnalysis = lazy(() => import('./pages/OfferAnalysis'));
 const BuyerDashboard = lazy(() => import('./pages/BuyerDashboard'));
 const BuyerActiveTenders = lazy(() => import('./pages/BuyerActiveTenders'));
+const BidComparison = lazy(() => import('./pages/BidComparison'));
 const InvoiceManagement = lazy(() => import('./pages/InvoiceManagement'));
 const FinancialReports = lazy(() => import('./pages/FinancialReports'));
 const BudgetManagement = lazy(() => import('./pages/BudgetManagement'));
@@ -228,6 +229,10 @@ function App() {
               <Route 
               path="/buyer-active-tenders" 
               element={user?.role === 'buyer' ? <BuyerActiveTenders /> : <Navigate to="/tenders" />} 
+            />
+              <Route 
+              path="/bid-comparison/:tenderId" 
+              element={user?.role === 'buyer' ? <BidComparison /> : <Navigate to="/tenders" />} 
             />
               <Route 
               path="/create-tender" 
