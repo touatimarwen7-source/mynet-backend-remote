@@ -1,80 +1,267 @@
-// WebSocket Configuration for Real-time Updates - TURN 3 ENHANCEMENT
+/**
+ * WebSocket Configuration for Real-time Updates
+ * Handles all socket.io setup and event routing
+ */
+
 const socketIO = require('socket.io');
+const WebSocketEventsManager = require('../services/WebSocketEventsManager');
 
 let io;
+let eventsManager;
 
 const initializeWebSocket = (server) => {
   io = socketIO(server, {
     cors: {
       origin: process.env.FRONTEND_URL || 'http://localhost:5000',
       credentials: true
-    }
+    },
+    transports: ['websocket', 'polling']
   });
 
+  // Initialize Events Manager
+  eventsManager = new WebSocketEventsManager(io);
+
   io.on('connection', (socket) => {
-    console.log(`[WebSocket] User connected: ${socket.id}`);
+    console.log(`[WebSocket] ✨ User connected: ${socket.id}`);
 
-    // Join user to personal room
+    // ========== USER ROOM MANAGEMENT ==========
+
+    /**
+     * Join user personal room (for personal notifications)
+     */
     socket.on('join-user', (userId) => {
-      socket.join(`user-${userId}`);
-      console.log(`[WebSocket] User ${userId} joined personal room`);
+      if (userId) {
+        socket.join(`user-${userId}`);
+        eventsManager.registerUserConnection(userId, socket.id);
+        console.log(`[WebSocket] 👤 User ${userId} joined personal room`);
+        
+        // Emit user online status
+        eventsManager.emitUserOnline(userId);
+      }
     });
 
-    // Join tender room (for real-time bid updates)
+    /**
+     * Join tender room (for tender-specific updates)
+     */
     socket.on('join-tender', (tenderId) => {
-      socket.join(`tender-${tenderId}`);
-      console.log(`[WebSocket] User joined tender ${tenderId} room`);
+      if (tenderId) {
+        socket.join(`tender-${tenderId}`);
+        console.log(`[WebSocket] 🎯 Socket joined tender ${tenderId} room`);
+      }
     });
 
-    // Broadcast new offer
+    /**
+     * Leave tender room
+     */
+    socket.on('leave-tender', (tenderId) => {
+      if (tenderId) {
+        socket.leave(`tender-${tenderId}`);
+        console.log(`[WebSocket] 🚪 Socket left tender ${tenderId} room`);
+      }
+    });
+
+    // ========== OFFER EVENTS ==========
+
+    /**
+     * Broadcast new offer creation
+     */
     socket.on('new-offer', (data) => {
-      io.to(`tender-${data.tenderId}`).emit('offer-created', {
-        tenderId: data.tenderId,
-        offerId: data.offerId,
-        supplier: data.supplier,
-        price: data.price,
-        timestamp: new Date()
-      });
+      if (data.tenderId) {
+        eventsManager.emitOfferCreated(data.tenderId, data);
+        console.log(`[WebSocket] 📦 New offer for tender ${data.tenderId}`);
+      }
     });
 
-    // Broadcast tender status update
+    /**
+     * Broadcast offer status change
+     */
+    socket.on('offer-status-changed', (data) => {
+      if (data.tenderId && data.offerId) {
+        io.to(`tender-${data.tenderId}`).emit('offer-status-updated', {
+          type: 'offer-status-updated',
+          offerId: data.offerId,
+          status: data.status,
+          timestamp: new Date()
+        });
+        console.log(`[WebSocket] 📦 Offer ${data.offerId} status changed to ${data.status}`);
+      }
+    });
+
+    // ========== TENDER EVENTS ==========
+
+    /**
+     * Broadcast tender status change
+     */
     socket.on('tender-status-changed', (data) => {
-      io.to(`tender-${data.tenderId}`).emit('tender-updated', {
-        tenderId: data.tenderId,
-        status: data.status,
-        timestamp: new Date()
-      });
+      if (data.tenderId) {
+        eventsManager.emitTenderStatusChanged(data.tenderId, data.status, data.changedBy);
+        console.log(`[WebSocket] 🎯 Tender ${data.tenderId} status changed to ${data.status}`);
+      }
     });
 
-    // Broadcast message notification
+    /**
+     * Broadcast tender update (any field)
+     */
+    socket.on('tender-updated', (data) => {
+      if (data.tenderId) {
+        eventsManager.emitTenderUpdated(data.tenderId, data);
+        console.log(`[WebSocket] 🎯 Tender ${data.tenderId} updated: ${data.field}`);
+      }
+    });
+
+    // ========== MESSAGE EVENTS ==========
+
+    /**
+     * Broadcast new message
+     */
     socket.on('new-message', (data) => {
-      io.to(`user-${data.recipientId}`).emit('message-received', {
-        senderId: data.senderId,
-        message: data.message,
-        timestamp: new Date()
-      });
+      if (data.recipientId) {
+        eventsManager.emitNewMessage(data.recipientId, data);
+        console.log(`[WebSocket] 💬 Message from ${data.senderId} to ${data.recipientId}`);
+      }
     });
 
-    // Broadcast rating update
+    /**
+     * Broadcast typing indicator
+     */
+    socket.on('user-typing', (data) => {
+      if (data.recipientId) {
+        io.to(`user-${data.recipientId}`).emit('user-typing', {
+          type: 'user-typing',
+          userId: data.userId,
+          timestamp: new Date()
+        });
+      }
+    });
+
+    /**
+     * Broadcast typing stopped
+     */
+    socket.on('user-stop-typing', (data) => {
+      if (data.recipientId) {
+        io.to(`user-${data.recipientId}`).emit('user-stop-typing', {
+          type: 'user-stop-typing',
+          userId: data.userId,
+          timestamp: new Date()
+        });
+      }
+    });
+
+    // ========== RATING & REVIEW EVENTS ==========
+
+    /**
+     * Broadcast new rating
+     */
     socket.on('new-rating', (data) => {
-      io.to(`user-${data.supplierId}`).emit('rating-updated', {
-        rating: data.rating,
-        reviewer: data.reviewer,
-        timestamp: new Date()
-      });
+      if (data.supplierId) {
+        eventsManager.emitRatingReceived(data.supplierId, data);
+        console.log(`[WebSocket] ⭐ New rating for supplier ${data.supplierId}`);
+      }
     });
 
+    /**
+     * Broadcast new review
+     */
+    socket.on('new-review', (data) => {
+      if (data.supplierId) {
+        io.to(`user-${data.supplierId}`).emit('review-received', {
+          type: 'review-received',
+          reviewer: data.reviewer,
+          title: data.title,
+          content: data.content,
+          timestamp: new Date()
+        });
+        console.log(`[WebSocket] ✍️  New review for supplier ${data.supplierId}`);
+      }
+    });
+
+    // ========== NOTIFICATION EVENTS ==========
+
+    /**
+     * Send generic notification
+     */
+    socket.on('send-notification', (data) => {
+      if (data.userId) {
+        eventsManager.emitNotification(data.userId, data);
+        console.log(`[WebSocket] 🔔 Notification sent to user ${data.userId}`);
+      }
+    });
+
+    /**
+     * Send critical alert
+     */
+    socket.on('send-alert', (data) => {
+      if (data.userId) {
+        eventsManager.emitCriticalAlert(data.userId, data);
+        console.log(`[WebSocket] 🚨 Alert sent to user ${data.userId}`);
+      }
+    });
+
+    // ========== STATISTICS EVENTS ==========
+
+    /**
+     * Broadcast statistics update
+     */
+    socket.on('statistics-update', (data) => {
+      if (data.userId) {
+        eventsManager.emitStatisticsUpdate(data.userId, data.stats);
+        console.log(`[WebSocket] 📊 Statistics updated for user ${data.userId}`);
+      }
+    });
+
+    // ========== CONNECTION MANAGEMENT ==========
+
+    /**
+     * Handle user disconnect
+     */
     socket.on('disconnect', () => {
-      console.log(`[WebSocket] User disconnected: ${socket.id}`);
+      // Find and remove user connection
+      for (const [userId, connections] of eventsManager.userConnections) {
+        if (connections.includes(socket.id)) {
+          eventsManager.removeUserConnection(userId, socket.id);
+          if (!eventsManager.isUserOnline(userId)) {
+            eventsManager.emitUserOffline(userId);
+          }
+          console.log(`[WebSocket] 👤 User ${userId} disconnected`);
+          break;
+        }
+      }
+      console.log(`[WebSocket] ❌ Socket disconnected: ${socket.id}`);
+    });
+
+    /**
+     * Error handling
+     */
+    socket.on('error', (error) => {
+      console.error(`[WebSocket] ⚠️  Error on socket ${socket.id}:`, error);
     });
   });
 
   return io;
 };
 
-const getIO = () => io;
+/**
+ * Get IO instance
+ */
+const getIO = () => {
+  if (!io) {
+    throw new Error('WebSocket not initialized');
+  }
+  return io;
+};
+
+/**
+ * Get Events Manager instance
+ */
+const getEventsManager = () => {
+  if (!eventsManager) {
+    throw new Error('WebSocket Events Manager not initialized');
+  }
+  return eventsManager;
+};
 
 module.exports = {
   initializeWebSocket,
-  getIO
+  getIO,
+  getEventsManager
 };

@@ -1,9 +1,11 @@
 require('dotenv').config();
+const http = require('http');
 const app = require('./app');
 const { initializeDb } = require('./config/db');
 const { initializeSchema } = require('./config/schema');
 const { getPool } = require('./config/db');
 const BackupScheduler = require('./services/backup/BackupScheduler');
+const { initializeWebSocket } = require('./config/websocket');
 
 const PORT = process.env.PORT || 3000;
 
@@ -26,10 +28,18 @@ async function startServer() {
             console.warn('⚠️  Server starting without database connection');
         }
 
-        app.listen(PORT, '0.0.0.0', () => {
+        // ✨ Create HTTP server for WebSocket support
+        const server = http.createServer(app);
+        
+        // 🔌 Initialize WebSocket
+        const io = initializeWebSocket(server);
+        console.log('✅ WebSocket initialized');
+
+        server.listen(PORT, '0.0.0.0', () => {
             console.log('========================================');
             console.log(`🚀 Server running on port ${PORT}`);
             console.log(`📍 Access API at: http://localhost:${PORT}`);
+            console.log(`🔌 WebSocket available at: ws://localhost:${PORT}`);
             console.log('========================================');
             console.log('Available endpoints:');
             console.log('  - POST /api/auth/register');

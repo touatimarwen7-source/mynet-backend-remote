@@ -1,126 +1,385 @@
-// WebSocket Hook for Real-time Updates - TURN 3 OPTIONAL
-import { useEffect, useState, useCallback } from 'react';
+/**
+ * Enhanced WebSocket Hook for Real-time Updates
+ * Provides real-time notifications and bidirectional communication
+ */
+
+import { useEffect, useState, useCallback, useRef } from 'react';
 import io from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+// Get socket URL from environment or use default
+const getSocketURL = () => {
+  // Get domain from environment
+  const domain = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+  const port = window.location.port || (window.location.protocol === 'https:' ? 443 : 3000);
+  return import.meta.env.VITE_SOCKET_URL || `http://${domain}:3000`;
+};
 
-export const useWebSocket = () => {
+export const useWebSocket = (userId) => {
   const [socket, setSocket] = useState(null);
   const [connected, setConnected] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
+  const [lastUpdate, setLastUpdate] = useState(null);
+  const socketRef = useRef(null);
+  const reconnectAttempts = useRef(0);
+  const maxReconnectAttempts = 5;
 
   useEffect(() => {
-    // Initialize WebSocket connection
-    const newSocket = io(SOCKET_URL, {
-      auth: {
-        token: localStorage.getItem('token')
-      },
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      reconnectionAttempts: 5
-    });
+    if (!userId) return;
 
-    // Connection events
-    newSocket.on('connect', () => {
-      setConnected(true);
+    try {
+      // Initialize WebSocket connection
+      const token = localStorage.getItem('token');
+      const newSocket = io(getSocketURL(), {
+        auth: {
+          token
+        },
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: maxReconnectAttempts,
+        transports: ['websocket', 'polling']
+      });
 
-      // Join user room
-      const userId = localStorage.getItem('userId');
-      if (userId) {
-        newSocket.emit('join-user', userId);
-      }
-    });
+      socketRef.current = newSocket;
 
-    newSocket.on('disconnect', () => {
-      setConnected(false);
-    });
+      // ========== CONNECTION EVENTS ==========
 
-    // Listen for notifications
-    newSocket.on('offer-created', (data) => {
-      setNotifications(prev => [...prev, {
-        type: 'offer',
-        message: `Nouvelle offre de ${data.supplier} pour ${data.price}`,
-        data
-      }]);
-    });
+      newSocket.on('connect', () => {
+        console.log('[WebSocket] ✅ Connected:', newSocket.id);
+        setConnected(true);
+        reconnectAttempts.current = 0;
 
-    newSocket.on('tender-updated', (data) => {
-      setNotifications(prev => [...prev, {
-        type: 'tender',
-        message: `Statut de l'appel d'offres modifié à ${data.status}`,
-        data
-      }]);
-    });
+        // Join user personal room
+        if (userId) {
+          newSocket.emit('join-user', userId);
+        }
+      });
 
-    newSocket.on('message-received', (data) => {
-      setNotifications(prev => [...prev, {
-        type: 'message',
-        message: `Nouveau message de ${data.senderId}`,
-        data
-      }]);
-    });
+      newSocket.on('disconnect', () => {
+        console.log('[WebSocket] ❌ Disconnected');
+        setConnected(false);
+      });
 
-    newSocket.on('rating-updated', (data) => {
-      setNotifications(prev => [...prev, {
-        type: 'rating',
-        message: `Vous avez reçu une note de ${data.rating} étoiles de ${data.reviewer}`,
-        data
-      }]);
-    });
+      newSocket.on('connect_error', (error) => {
+        console.error('[WebSocket] ⚠️  Connection error:', error);
+        reconnectAttempts.current += 1;
+      });
 
-    setSocket(newSocket);
+      // ========== OFFER EVENTS ==========
 
-    return () => {
-      newSocket.close();
-    };
+      newSocket.on('offer-created', (data) => {
+        console.log('[WebSocket] 📦 New offer:', data);
+        addNotification({
+          type: 'offer',
+          title: 'Nouvelle Offre',
+          message: `Offre de ${data.supplierName || 'Fournisseur'} - ${data.price} ${data.currency}`,
+          data,
+          icon: '📦'
+        });
+        setLastUpdate(data.timestamp);
+      });
+
+      newSocket.on('offer-status-updated', (data) => {
+        console.log('[WebSocket] 📦 Offer status updated:', data);
+        addNotification({
+          type: 'offer-status',
+          title: 'Statut de l\'Offre Modifié',
+          message: `Statut: ${data.status}`,
+          data,
+          icon: '📋'
+        });
+        setLastUpdate(data.timestamp);
+      });
+
+      // ========== TENDER EVENTS ==========
+
+      newSocket.on('tender-status-changed', (data) => {
+        console.log('[WebSocket] 🎯 Tender status changed:', data);
+        addNotification({
+          type: 'tender',
+          title: 'Appel d\'Offres Modifié',
+          message: `Statut: ${data.status}`,
+          data,
+          icon: '🎯'
+        });
+        setLastUpdate(data.timestamp);
+      });
+
+      newSocket.on('tender-updated', (data) => {
+        console.log('[WebSocket] 🎯 Tender updated:', data);
+        addNotification({
+          type: 'tender-update',
+          title: 'Appel d\'Offres Mis à Jour',
+          message: `${data.field} a été modifié`,
+          data,
+          icon: '📝'
+        });
+        setLastUpdate(data.timestamp);
+      });
+
+      // ========== MESSAGE EVENTS ==========
+
+      newSocket.on('message-received', (data) => {
+        console.log('[WebSocket] 💬 New message:', data);
+        addNotification({
+          type: 'message',
+          title: 'Nouveau Message',
+          message: `De: ${data.senderName || 'Utilisateur'}`,
+          data,
+          icon: '💬'
+        });
+        setLastUpdate(data.timestamp);
+      });
+
+      newSocket.on('user-typing', (data) => {
+        console.log('[WebSocket] ✍️  User typing:', data.userId);
+      });
+
+      newSocket.on('user-stop-typing', (data) => {
+        console.log('[WebSocket] ✍️  User stopped typing:', data.userId);
+      });
+
+      // ========== RATING & REVIEW EVENTS ==========
+
+      newSocket.on('rating-received', (data) => {
+        console.log('[WebSocket] ⭐ Rating received:', data);
+        addNotification({
+          type: 'rating',
+          title: 'Nouvelle Évaluation',
+          message: `${data.rating}⭐ de ${data.reviewer}`,
+          data,
+          icon: '⭐'
+        });
+        setLastUpdate(data.timestamp);
+      });
+
+      newSocket.on('review-received', (data) => {
+        console.log('[WebSocket] ✍️  Review received:', data);
+        addNotification({
+          type: 'review',
+          title: 'Nouvel Avis',
+          message: `${data.title} - ${data.reviewer}`,
+          data,
+          icon: '✍️'
+        });
+        setLastUpdate(data.timestamp);
+      });
+
+      // ========== NOTIFICATION EVENTS ==========
+
+      newSocket.on('notification', (data) => {
+        console.log('[WebSocket] 🔔 Notification:', data);
+        addNotification({
+          type: 'notification',
+          title: data.title,
+          message: data.message,
+          data,
+          icon: data.icon || '🔔'
+        });
+        setLastUpdate(data.timestamp);
+      });
+
+      newSocket.on('critical-alert', (data) => {
+        console.log('[WebSocket] 🚨 Critical alert:', data);
+        addNotification({
+          type: 'alert',
+          title: data.title,
+          message: data.message,
+          data,
+          icon: '🚨',
+          severity: 'critical'
+        });
+        setLastUpdate(data.timestamp);
+      });
+
+      // ========== STATISTICS EVENTS ==========
+
+      newSocket.on('statistics-updated', (data) => {
+        console.log('[WebSocket] 📊 Statistics updated:', data);
+        setLastUpdate(data.timestamp);
+      });
+
+      // ========== USER STATUS EVENTS ==========
+
+      newSocket.on('user-online', (data) => {
+        console.log('[WebSocket] 👤 User online:', data.userId);
+        setOnlineUsers(prev => new Set([...prev, data.userId]));
+      });
+
+      newSocket.on('user-offline', (data) => {
+        console.log('[WebSocket] 👤 User offline:', data.userId);
+        setOnlineUsers(prev => {
+          const updated = new Set(prev);
+          updated.delete(data.userId);
+          return updated;
+        });
+      });
+
+      setSocket(newSocket);
+
+      return () => {
+        if (newSocket) {
+          newSocket.disconnect();
+        }
+      };
+    } catch (error) {
+      console.error('[WebSocket] Failed to initialize:', error);
+    }
+  }, [userId]);
+
+  // ========== HELPER FUNCTIONS ==========
+
+  /**
+   * Add notification to state
+   */
+  const addNotification = useCallback((notification) => {
+    const id = Date.now();
+    const notificationWithId = { ...notification, id };
+    
+    setNotifications(prev => [...prev, notificationWithId]);
+
+    // Auto-remove notification after 5 seconds
+    setTimeout(() => {
+      removeNotification(id);
+    }, 5000);
   }, []);
 
-  // Emit functions
+  /**
+   * Remove notification
+   */
+  const removeNotification = useCallback((id) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  }, []);
+
+  /**
+   * Clear all notifications
+   */
+  const clearNotifications = useCallback(() => {
+    setNotifications([]);
+  }, []);
+
+  // ========== EMIT FUNCTIONS ==========
+
+  /**
+   * Join tender room
+   */
   const joinTender = useCallback((tenderId) => {
     if (socket) {
       socket.emit('join-tender', tenderId);
     }
   }, [socket]);
 
-  const sendOffer = useCallback((tenderId, offer) => {
+  /**
+   * Leave tender room
+   */
+  const leaveTender = useCallback((tenderId) => {
     if (socket) {
-      socket.emit('new-offer', { tenderId, ...offer });
+      socket.emit('leave-tender', tenderId);
     }
   }, [socket]);
 
-  const updateTenderStatus = useCallback((tenderId, status) => {
+  /**
+   * Send new offer
+   */
+  const sendOffer = useCallback((tenderId, offerData) => {
     if (socket) {
-      socket.emit('tender-status-changed', { tenderId, status });
+      socket.emit('new-offer', { tenderId, ...offerData });
     }
   }, [socket]);
 
-  const sendMessage = useCallback((recipientId, message) => {
+  /**
+   * Update tender status
+   */
+  const updateTenderStatus = useCallback((tenderId, status, changedBy) => {
     if (socket) {
-      socket.emit('new-message', { recipientId, message });
+      socket.emit('tender-status-changed', { tenderId, status, changedBy });
     }
   }, [socket]);
 
-  const broadcastRating = useCallback((supplierId, rating, reviewer) => {
+  /**
+   * Send message
+   */
+  const sendMessage = useCallback((recipientId, message, senderName) => {
     if (socket) {
-      socket.emit('new-rating', { supplierId, rating, reviewer });
+      socket.emit('new-message', { recipientId, message, senderName });
     }
   }, [socket]);
 
-  const clearNotifications = useCallback(() => {
-    setNotifications([]);
-  }, []);
+  /**
+   * Emit typing indicator
+   */
+  const emitTyping = useCallback((recipientId, userId) => {
+    if (socket) {
+      socket.emit('user-typing', { recipientId, userId });
+    }
+  }, [socket]);
+
+  /**
+   * Emit stop typing
+   */
+  const emitStopTyping = useCallback((recipientId, userId) => {
+    if (socket) {
+      socket.emit('user-stop-typing', { recipientId, userId });
+    }
+  }, [socket]);
+
+  /**
+   * Send rating
+   */
+  const sendRating = useCallback((supplierId, rating, reviewer, comment) => {
+    if (socket) {
+      socket.emit('new-rating', { supplierId, rating, reviewer, comment });
+    }
+  }, [socket]);
+
+  /**
+   * Send review
+   */
+  const sendReview = useCallback((supplierId, title, content, reviewer) => {
+    if (socket) {
+      socket.emit('new-review', { supplierId, title, content, reviewer });
+    }
+  }, [socket]);
+
+  /**
+   * Send notification (admin)
+   */
+  const sendNotification = useCallback((recipientId, notification) => {
+    if (socket) {
+      socket.emit('send-notification', { userId: recipientId, ...notification });
+    }
+  }, [socket]);
+
+  /**
+   * Send alert (admin)
+   */
+  const sendAlert = useCallback((recipientId, alert) => {
+    if (socket) {
+      socket.emit('send-alert', { userId: recipientId, ...alert });
+    }
+  }, [socket]);
 
   return {
     socket,
     connected,
     notifications,
+    onlineUsers,
+    lastUpdate,
+    addNotification,
+    removeNotification,
+    clearNotifications,
     joinTender,
+    leaveTender,
     sendOffer,
     updateTenderStatus,
     sendMessage,
-    broadcastRating,
-    clearNotifications
+    emitTyping,
+    emitStopTyping,
+    sendRating,
+    sendReview,
+    sendNotification,
+    sendAlert
   };
 };
 

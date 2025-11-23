@@ -25,8 +25,9 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
 - **Security**: CORS, CSRF, XSS, AES-256 encryption, rate limiting, brute-force protection, input validation, soft deletes, role-based access control.
 - **Workflow Management**: Multi-step wizard forms for procurement processes with auto-save, draft recovery, validation, and progress tracking (e.g., a 6-stage tender creation wizard).
 - **Core Features**: Dynamic company profiles, advanced filtering & search, messaging, reviews & ratings, direct supply requests, analytics dashboards, bid comparison tool, supplier performance tracking, and comprehensive invoice management (from creation by suppliers to approval by buyers).
+- **Real-time Updates**: WebSocket (socket.io) for live notifications, bidirectional communication, and instant user presence updates via `useWebSocket` hook with comprehensive event management (offers, tenders, messages, ratings).
 - **Data Management**: Export features (JSON, CSV), real-time updates via WebSockets, pagination, and bulk operations.
-- **Notifications**: Integrated email notification system.
+- **Notifications**: Integrated email notification system + Real-time notification center with WebSocket events (offers, tender updates, messages, ratings, reviews).
 - **Super Admin Features**: Full CRUD for static pages, file management, image gallery, documents with versioning, content backup/restore, analytics, service/subscription plan management, audit logs, purchase orders.
 - **Error Handling**: Comprehensive system with custom error classes, global handler, error boundary, and Axios interceptors.
 - **Form Validation**: Custom `useFormValidation` hook, pre-built schemas, real-time error display, and backend error integration, including advanced data validation for tender creation.

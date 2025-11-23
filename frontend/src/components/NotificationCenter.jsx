@@ -1,13 +1,16 @@
-// Notification Center Component - TURN 3 OPTIONAL
+/**
+ * Enhanced Real-time Notification Center Component
+ * Displays WebSocket notifications with proper styling
+ */
 import React, { useState } from 'react';
-import { Box, Badge, IconButton, Popover, List, ListItem, ListItemText, Typography, Button, Chip } from '@mui/material';
+import { Box, Badge, IconButton, Popover, List, ListItem, ListItemText, Typography, Button, Chip, Snackbar, Alert } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ClearIcon from '@mui/icons-material/Clear';
 import useWebSocket from '../hooks/useWebSocket';
 
-const NotificationCenter = () => {
+const NotificationCenter = ({ userId }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { notifications, clearNotifications, connected } = useWebSocket();
+  const { notifications, clearNotifications, connected, removeNotification } = useWebSocket(userId);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,10 +33,10 @@ const NotificationCenter = () => {
 
       {/* Connection Status */}
       <Chip 
-        icon={<span style={{ color: connected ? 'green' : 'red' }}>●</span>}
-        label={connected ? 'Live' : 'Offline'}
+        icon={<span style={{ color: connected ? '#4CAF50' : '#f44336' }}>●</span>}
+        label={connected ? 'En direct' : 'Hors ligne'}
         size="small"
-        sx={{ ml: 1 }}
+        sx={{ ml: 1, fontWeight: 600 }}
       />
 
       {/* Notification Popover */}
@@ -50,29 +53,45 @@ const NotificationCenter = () => {
           horizontal: 'right',
         }}
       >
-        <Box sx={{ width: 400, maxHeight: 500, overflow: 'auto' }}>
-          <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">Notifications</Typography>
+        <Box sx={{ width: 450, maxHeight: 500, overflow: 'auto', backgroundColor: '#fafafa' }}>
+          <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', borderBottom: '1px solid #e0e0e0' }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              🔔 Notifications en Temps Réel
+            </Typography>
             {notifications.length > 0 && (
               <Button startIcon={<ClearIcon />} onClick={clearNotifications} size="small">
-                Clear All
+                Effacer tout
               </Button>
             )}
           </Box>
 
           {notifications.length === 0 ? (
-            <Typography sx={{ p: 2, textAlign: 'center', color: '#999' }}>
-              No notifications
+            <Typography sx={{ p: 3, textAlign: 'center', color: '#999', fontSize: '13px' }}>
+              ✨ Aucune notification
             </Typography>
           ) : (
-            <List>
-              {notifications.map((notif, idx) => (
-                <ListItem key={idx} sx={{ borderBottom: '1px solid #eee' }}>
+            <List sx={{ p: 0 }}>
+              {notifications.map((notif) => (
+                <ListItem 
+                  key={notif.id} 
+                  sx={{ 
+                    borderBottom: '1px solid #e0e0e0',
+                    backgroundColor: '#fff',
+                    '&:hover': { backgroundColor: '#f5f5f5' }
+                  }}
+                >
                   <ListItemText
                     primary={
-                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        <Chip label={notif.type} size="small" />
-                        <span>{notif.message}</span>
+                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+                        <span style={{ fontSize: '18px', minWidth: '24px' }}>{notif.icon}</span>
+                        <Box sx={{ flex: 1 }}>
+                          <div style={{ fontWeight: 600, fontSize: '13px', color: '#212121', marginBottom: '4px' }}>
+                            {notif.title}
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#666' }}>
+                            {notif.message}
+                          </div>
+                        </Box>
                       </Box>
                     }
                   />
