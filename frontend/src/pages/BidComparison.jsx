@@ -36,6 +36,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TableSkeleton } from '../components/Common/SkeletonLoader';
 import { procurementAPI } from '../api';
 import { setPageTitle } from '../utils/pageTitle';
+import { getScoreTier, formatScore } from '../utils/evaluationCriteria';
 
 export default function BidComparison() {
   const theme = institutionalTheme;

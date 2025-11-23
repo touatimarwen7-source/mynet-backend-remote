@@ -33,6 +33,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { TableSkeleton } from '../components/Common/SkeletonLoader';
 import { procurementAPI } from '../api';
 import { setPageTitle } from '../utils/pageTitle';
+import { getScoreTier, formatScore } from '../utils/evaluationCriteria';
 
 export default function TenderAwarding() {
   const theme = institutionalTheme;

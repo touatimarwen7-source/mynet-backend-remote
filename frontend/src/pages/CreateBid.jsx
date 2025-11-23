@@ -37,6 +37,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { procurementAPI } from '../api';
 import { setPageTitle } from '../utils/pageTitle';
+import { autosaveDraft, recoverDraft, clearDraft } from '../utils/draftStorageHelper';
 
 // ============ Configuration ============
 const STAGES = [
@@ -679,18 +680,21 @@ export default function CreateBid() {
   useEffect(() => {
     setPageTitle('Soumettre une Offre');
     loadTender();
-    // Load draft from localStorage
-    const saved = localStorage.getItem(`bidDraft_${tenderId}`);
-    if (saved) {
-      try {
-        const savedData = JSON.parse(saved);
-        setFormData(savedData);
-        setCurrentStep(0);
-      } catch (e) {
-        // Ignore corrupted draft
-      }
+    // Load draft using helper
+    const draft = recoverDraft(`bid_draft_${tenderId}`);
+    if (draft) {
+      setFormData(draft);
     }
   }, [tenderId]);
+
+  // Auto-save draft every 30 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      autosaveDraft(`bid_draft_${tenderId}`, formData);
+    }, 30000);
+    
+    return () => clearInterval(timer);
+  }, [formData, tenderId]);
 
   const loadTender = async () => {
     try {
@@ -736,7 +740,7 @@ export default function CreateBid() {
   const handleNext = () => {
     if (validateStep()) {
       // Auto-save draft
-      localStorage.setItem(`bidDraft_${tenderId}`, JSON.stringify(formData));
+      autosaveDraft(`bid_draft_${tenderId}`, formData);
       setCurrentStep((prev) => prev + 1);
     }
   };
@@ -805,7 +809,7 @@ export default function CreateBid() {
       });
 
       const response = await procurementAPI.createOffer(submitData);
-      localStorage.removeItem(`bidDraft_${tenderId}`);
+      clearDraft(`bid_draft_${tenderId}`);
       setSuccessDialog(true);
       setTimeout(() => {
         navigate(`/tender/${tenderId}`);

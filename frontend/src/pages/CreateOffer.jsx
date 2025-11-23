@@ -43,6 +43,7 @@ import { FormSkeleton } from '../components/Common/SkeletonLoader';
 import { procurementAPI } from '../api';
 import { useToast } from '../contexts/AppContext';
 import { setPageTitle } from '../utils/pageTitle';
+import { autosaveDraft, recoverDraft, clearDraft } from '../utils/draftStorageHelper';
 
 export default function CreateOffer() {
   const theme = institutionalTheme;
@@ -79,7 +80,21 @@ export default function CreateOffer() {
 
   useEffect(() => {
     fetchTender();
+    // Recover draft
+    const draft = recoverDraft(`offer_draft_${tenderId}`);
+    if (draft) {
+      setOfferData(draft);
+    }
   }, [tenderId]);
+
+  // Auto-save draft every 30 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      autosaveDraft(`offer_draft_${tenderId}`, offerData);
+    }, 30000);
+    
+    return () => clearInterval(timer);
+  }, [offerData, tenderId]);
 
   const fetchTender = async () => {
     try {
@@ -248,6 +263,7 @@ export default function CreateOffer() {
       });
 
       await procurementAPI.createOffer(formData);
+      clearDraft(`offer_draft_${tenderId}`);
       setSuccess(true);
       addToast('✅ Votre offre a été envoyée avec succès!', 'success', 2000);
       

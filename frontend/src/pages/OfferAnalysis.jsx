@@ -35,6 +35,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TableSkeleton, CardSkeleton } from '../components/Common/SkeletonLoader';
 import { procurementAPI } from '../api';
 import { setPageTitle } from '../utils/pageTitle';
+import { getScoreTier, formatScore } from '../utils/evaluationCriteria';
 
 export default function OfferAnalysis() {
   const theme = institutionalTheme;

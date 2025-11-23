@@ -37,6 +37,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { setPageTitle } from '../utils/pageTitle';
 import { procurementAPI } from '../api';
 import { validateLots, validateBudget, handleAPIError } from '../utils/validationHelpers';
+import { autosaveDraft, recoverDraft, clearDraft } from '../utils/draftStorageHelper';
 
 // ============ Configuration ============
 const STAGES = [
@@ -1333,16 +1334,21 @@ export default function CreateTender() {
   useEffect(() => {
     setPageTitle('Créer un Appel d\'Offres');
     
-    // Load draft
-    const draft = localStorage.getItem('tenderDraft');
+    // Load draft using helper
+    const draft = recoverDraft('tender_draft');
     if (draft) {
-      try {
-        setFormData(JSON.parse(draft));
-      } catch (e) {
-        console.error('Failed to load draft');
-      }
+      setFormData(draft);
     }
   }, []);
+
+  // Auto-save draft every 30 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      autosaveDraft('tender_draft', formData);
+    }, 30000);
+    
+    return () => clearInterval(timer);
+  }, [formData]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -1364,9 +1370,7 @@ export default function CreateTender() {
           },
         };
         // Auto-save after update
-        setTimeout(() => {
-          localStorage.setItem('tenderDraft', JSON.stringify(updated));
-        }, 100);
+        autosaveDraft('tender_draft', updated);
         return updated;
       });
     } else {
@@ -1376,9 +1380,7 @@ export default function CreateTender() {
           [name]: finalValue,
         };
         // Auto-save after update
-        setTimeout(() => {
-          localStorage.setItem('tenderDraft', JSON.stringify(updated));
-        }, 100);
+        autosaveDraft('tender_draft', updated);
         return updated;
       });
     }
@@ -1484,7 +1486,7 @@ export default function CreateTender() {
         budget_max: parseFloat(formData.budget_max),
       });
 
-      localStorage.removeItem('tenderDraft');
+      clearDraft('tender_draft');
       navigate(`/tender/${response.data.tender.id}`);
     } catch (err) {
       const errorMsg = err.response?.data?.error || err.response?.data?.message || err.message;
