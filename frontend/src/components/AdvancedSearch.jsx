@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import institutionalTheme from '../theme/theme';
 import { useNavigate } from 'react-router-dom';
-import institutionalTheme from '../theme/theme';
 import {
   Box,
   Paper,
@@ -18,7 +17,6 @@ import {
   Grid,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import institutionalTheme from '../theme/theme';
 
 export default function AdvancedSearch() {
   const theme = institutionalTheme;

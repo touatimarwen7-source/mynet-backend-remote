@@ -61,6 +61,62 @@ const STEPS = [
   { label: 'Révision', icon: '✔️' }
 ];
 
+// Grouped stages for better UX
+const STAGES = [
+  {
+    name: 'Informations Générales',
+    icon: '📋',
+    steps: [0, 1, 2], // Steps 1-3
+    description: 'Détails de base, classification et budget'
+  },
+  {
+    name: 'Contenu & Articles',
+    icon: '📦',
+    steps: [3, 8], // Steps 4 & 9
+    description: 'Lots, articles et spécifications techniques'
+  },
+  {
+    name: 'Conditions & Exigences',
+    icon: '🔑',
+    steps: [4, 9], // Steps 5 & 10
+    description: 'Conditions de participation et exigences'
+  },
+  {
+    name: 'Modalités de Soumission',
+    icon: '📤',
+    steps: [5, 6, 7], // Steps 6-8
+    description: 'Méthode, calendrier et contacts'
+  },
+  {
+    name: 'Évaluation',
+    icon: '📊',
+    steps: [10], // Step 11
+    description: 'Critères d\'évaluation'
+  },
+  {
+    name: 'Finalisation',
+    icon: '✔️',
+    steps: [11, 12], // Steps 12-13
+    description: 'Pièces jointes et révision finale'
+  }
+];
+
+const getStageInfo = (stepIndex) => {
+  for (let i = 0; i < STAGES.length; i++) {
+    if (STAGES[i].steps.includes(stepIndex)) {
+      const stepInStage = STAGES[i].steps.indexOf(stepIndex) + 1;
+      return {
+        stage: i + 1,
+        totalStages: STAGES.length,
+        stepInStage,
+        totalStepsInStage: STAGES[i].steps.length,
+        stageName: STAGES[i].name
+      };
+    }
+  }
+  return { stage: 1, totalStages: STAGES.length, stepInStage: 1, totalStepsInStage: 1, stageName: 'Début' };
+};
+
 // Helper component to memoize step content
 const StepContent = ({ type, formData, handleChange, loading, newRequirement, setNewRequirement, addRequirement, removeRequirement, removeAttachment, handleFileUpload, selectedFiles, handleCriteriaChange, totalCriteria, requirementType, setRequirementType, requirementPriority, setRequirementPriority, editRequirement, editingIndex, setEditingIndex, newLot, setNewLot, addLot, removeLot, editLot, editingLotIndex, setEditingLotIndex }) => {
   const theme = institutionalTheme;
@@ -1099,42 +1155,100 @@ export default function CreateTender() {
       <Container maxWidth="md">
         <Card sx={{ border: '1px solid #e0e0e0', borderRadius: '4px', boxShadow: 'none' }}>
           <CardContent sx={{ padding: '40px' }}>
-            <Typography 
-              variant="h2" 
-              sx={{ 
-                fontSize: '28px', 
-                fontWeight: 500, 
-                color: theme.palette.primary.main, 
-                marginBottom: '8px' 
-              }}
-            >
-              {STEPS[activeStep].icon} {STEPS[activeStep].label}
-            </Typography>
-            <Typography 
-              sx={{ 
-                color: '#616161', 
-                marginBottom: '32px',
-                fontSize: '14px'
-              }}
-            >
-              Étape {activeStep + 1} sur {STEPS.length}
-            </Typography>
+            {(() => {
+              const stageInfo = getStageInfo(activeStep);
+              return (
+                <>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                    <Typography 
+                      sx={{ 
+                        color: '#999999', 
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        letterSpacing: '0.5px',
+                        textTransform: 'uppercase'
+                      }}
+                    >
+                      Étape {stageInfo.stage} sur {stageInfo.totalStages}
+                    </Typography>
+                    <Typography 
+                      sx={{ 
+                        color: '#0056B3', 
+                        fontSize: '12px',
+                        fontWeight: 500
+                      }}
+                    >
+                      {activeStep + 1}/{STEPS.length} détails
+                    </Typography>
+                  </Box>
+                  <Typography 
+                    variant="h2" 
+                    sx={{ 
+                      fontSize: '28px', 
+                      fontWeight: 500, 
+                      color: theme.palette.primary.main, 
+                      marginBottom: '8px' 
+                    }}
+                  >
+                    {stageInfo.stageName}
+                  </Typography>
+                  <Typography 
+                    sx={{ 
+                      color: '#616161', 
+                      marginBottom: '32px',
+                      fontSize: '14px'
+                    }}
+                  >
+                    {stageInfo.description}
+                  </Typography>
+                </>
+              );
+            })()}
 
-            {/* Progress Bar */}
-            <LinearProgress 
-              variant="determinate" 
-              value={(activeStep / (STEPS.length - 1)) * 100}
-              sx={{ marginBottom: '24px', height: '4px' }}
-            />
 
-            {/* Stepper */}
-            <Stepper activeStep={activeStep} sx={{ marginBottom: '32px', display: { xs: 'none', sm: 'flex' } }}>
-              {STEPS.map((step, index) => (
-                <Step key={index} completed={stepsCompleted[index] || false}>
-                  <StepLabel>{step.label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+            {/* Stage Progress Bar */}
+            {(() => {
+              const stageInfo = getStageInfo(activeStep);
+              const stageProgress = ((stageInfo.stage - 1) / stageInfo.totalStages) * 100;
+              return (
+                <Box sx={{ marginBottom: '32px' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    {STAGES.map((stage, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          flex: 1,
+                          marginRight: index < STAGES.length - 1 ? '8px' : '0',
+                          borderRadius: '4px',
+                          height: '4px',
+                          backgroundColor: index < stageInfo.stage ? '#0056B3' : index === stageInfo.stage - 1 ? '#64B5F6' : '#E0E0E0',
+                          transition: 'all 0.3s ease'
+                        }}
+                      />
+                    ))}
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '8px', marginTop: '12px', display: { xs: 'none', md: 'flex' } }}>
+                    {STAGES.map((stage, index) => (
+                      <Typography
+                        key={index}
+                        sx={{
+                          flex: 1,
+                          fontSize: '11px',
+                          fontWeight: index < stageInfo.stage ? 600 : 400,
+                          color: index < stageInfo.stage ? '#0056B3' : index === stageInfo.stage - 1 ? '#0056B3' : '#999999',
+                          textAlign: 'center',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {stage.icon} {stage.name}
+                      </Typography>
+                    ))}
+                  </Box>
+                </Box>
+              );
+            })()}
 
             {/* Error Alert */}
             {error && (

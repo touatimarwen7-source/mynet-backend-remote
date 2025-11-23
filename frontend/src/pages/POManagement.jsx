@@ -26,7 +26,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { TableSkeleton } from '../components/SkeletonLoader';
-import { StatusBadge } from '../components/StatusBadge';
+import StatusBadge from '../components/StatusBadge';
 import Pagination from '../components/Pagination';
 
 const ITEMS_PER_PAGE = 10;

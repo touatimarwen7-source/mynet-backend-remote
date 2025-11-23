@@ -36,7 +36,7 @@ export default function MySupplyRequests() {
   const [filterStatus, setFilterStatus] = useState('');
 
   useEffect(() => {
-    setPageTitle('Demandes d'Achat Direct');
+    setPageTitle('Demandes d\'Achat Direct');
     fetchRequests();
   }, []);
 

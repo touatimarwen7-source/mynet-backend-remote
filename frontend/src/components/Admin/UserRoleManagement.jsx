@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import institutionalTheme from '../theme/theme';
+import institutionalTheme from '../../theme/theme';
 import {
   Box,
   Button,
@@ -23,23 +23,14 @@ import {
   CircularProgress
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import institutionalTheme from '../theme/theme';
 import BlockIcon from '@mui/icons-material/Block';
-import institutionalTheme from '../theme/theme';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import institutionalTheme from '../theme/theme';
 import LockResetIcon from '@mui/icons-material/LockReset';
-import institutionalTheme from '../theme/theme';
 import EditIcon from '@mui/icons-material/Edit';
-import institutionalTheme from '../theme/theme';
 import LoadingSpinner from '../LoadingSpinner';
-import institutionalTheme from '../theme/theme';
 import Pagination from '../Pagination';
-import institutionalTheme from '../theme/theme';
 import adminAPI from '../../services/adminAPI';
-import institutionalTheme from '../theme/theme';
 import { errorHandler } from '../../utils/errorHandler';
-import institutionalTheme from '../theme/theme';
 
 const ITEMS_PER_PAGE = 10;
 

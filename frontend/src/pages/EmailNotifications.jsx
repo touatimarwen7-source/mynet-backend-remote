@@ -24,7 +24,7 @@ import {
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TableSkeleton } from '../components/SkeletonLoader';
-import { StatusBadge } from '../components/StatusBadge';
+import StatusBadge from '../components/StatusBadge';
 import Pagination from '../components/Pagination';
 
 const ITEMS_PER_PAGE = 10;

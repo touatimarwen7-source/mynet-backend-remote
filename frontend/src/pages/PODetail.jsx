@@ -20,7 +20,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import PrintIcon from '@mui/icons-material/Print';
-import { StatusBadge } from '../components/StatusBadge';
+import StatusBadge from '../components/StatusBadge';
 
 export default function PODetail() {
   const theme = institutionalTheme;
