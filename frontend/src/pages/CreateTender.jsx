@@ -275,67 +275,157 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step2':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <FormControl fullWidth disabled={loading}>
-            <InputLabel>Catégorie *</InputLabel>
-            <Select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              label="Catégorie *"
-            >
-              <MenuItem value="technology">Technologie & Informatique</MenuItem>
-              <MenuItem value="supplies">Fournitures & Matériaux</MenuItem>
-              <MenuItem value="construction">Construction & Travaux</MenuItem>
-              <MenuItem value="services">Services</MenuItem>
-              <MenuItem value="consulting">Consulting & Expertise</MenuItem>
-              <MenuItem value="maintenance">Maintenance & Support</MenuItem>
-              <MenuItem value="training">Formation & Coaching</MenuItem>
-            </Select>
-          </FormControl>
-          <Typography sx={{ color: '#616161', fontSize: '13px', marginTop: '8px' }}>
-            La classification aide à diriger votre appel d'offres vers les fournisseurs pertinents via le système UNSPSC.
-          </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              🏷️ Classification
+            </Typography>
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Sélectionnez la catégorie qui correspond le mieux à votre appel d'offres. Cela aide à diriger votre demande vers les fournisseurs pertinents.
+            </Typography>
+          </Box>
+
+          <Box>
+            <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '12px' }}>
+              Catégorie *
+            </Typography>
+            <FormControl fullWidth disabled={loading}>
+              <Select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                sx={{ 
+                  backgroundColor: '#FAFAFA',
+                  borderRadius: '4px',
+                  '&:hover': { backgroundColor: '#F5F5F5' },
+                  '&.Mui-focused': { backgroundColor: '#FFFFFF' }
+                }}
+              >
+                <MenuItem value="technology">💻 Technologie & Informatique</MenuItem>
+                <MenuItem value="supplies">📦 Fournitures & Matériaux</MenuItem>
+                <MenuItem value="construction">🏗️ Construction & Travaux</MenuItem>
+                <MenuItem value="services">🛠️ Services</MenuItem>
+                <MenuItem value="consulting">🎯 Consulting & Expertise</MenuItem>
+                <MenuItem value="maintenance">⚙️ Maintenance & Support</MenuItem>
+                <MenuItem value="training">📚 Formation & Coaching</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Paper sx={{ p: '16px', backgroundColor: '#E3F2FD', border: '1px solid #BBDEFB', borderRadius: '4px' }}>
+            <Box sx={{ display: 'flex', gap: '12px' }}>
+              <Typography sx={{ fontSize: '24px' }}>📊</Typography>
+              <Box>
+                <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#0056B3', mb: '4px' }}>
+                  Classification UNSPSC
+                </Typography>
+                <Typography sx={{ fontSize: '12px', color: '#01579B', lineHeight: 1.6 }}>
+                  Votre catégorie sera alignée avec la norme UNSPSC internationale pour une meilleure visibilité auprès des fournisseurs qualifiés.
+                </Typography>
+              </Box>
+            </Box>
+          </Paper>
         </Box>
       );
     case 'step3':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '16px' }}>
-            <TextField
-              fullWidth
-              label="Budget Minimum (TND) *"
-              name="budget_min"
-              type="number"
-              inputProps={{ step: '0.01', min: '0' }}
-              value={formData.budget_min}
-              onChange={handleChange}
-              disabled={loading}
-            />
-            <TextField
-              fullWidth
-              label="Budget Maximum (TND) *"
-              name="budget_max"
-              type="number"
-              inputProps={{ step: '0.01', min: '0' }}
-              value={formData.budget_max}
-              onChange={handleChange}
-              disabled={loading}
-            />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              💰 Budget & Devise
+            </Typography>
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Définissez l'enveloppe budgétaire de votre appel d'offres. Le budget minimum et maximum aident à filtrer les offres appropriées.
+            </Typography>
           </Box>
-          <FormControl fullWidth disabled={loading}>
-            <InputLabel>Devise</InputLabel>
-            <Select
-              name="currency"
-              value={formData.currency}
-              onChange={handleChange}
-              label="Devise"
-            >
-              <MenuItem value="TND">Dinar Tunisien (TND)</MenuItem>
-              <MenuItem value="USD">Dollar Américain (USD)</MenuItem>
-              <MenuItem value="EUR">Euro (EUR)</MenuItem>
-            </Select>
-          </FormControl>
+
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '16px' }}>
+            <Box>
+              <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '8px' }}>
+                Budget Minimum (TND) *
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Ex: 5000"
+                name="budget_min"
+                type="number"
+                inputProps={{ step: '0.01', min: '0' }}
+                value={formData.budget_min}
+                onChange={handleChange}
+                disabled={loading}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '4px',
+                    backgroundColor: '#FAFAFA',
+                    '&:hover': { backgroundColor: '#F5F5F5' },
+                    '&.Mui-focused': { backgroundColor: '#FFFFFF' }
+                  }
+                }}
+              />
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '8px' }}>
+                Budget Maximum (TND) *
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Ex: 50000"
+                name="budget_max"
+                type="number"
+                inputProps={{ step: '0.01', min: '0' }}
+                value={formData.budget_max}
+                onChange={handleChange}
+                disabled={loading}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '4px',
+                    backgroundColor: '#FAFAFA',
+                    '&:hover': { backgroundColor: '#F5F5F5' },
+                    '&.Mui-focused': { backgroundColor: '#FFFFFF' }
+                  }
+                }}
+              />
+            </Box>
+          </Box>
+
+          <Box>
+            <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '8px' }}>
+              Devise *
+            </Typography>
+            <FormControl fullWidth disabled={loading}>
+              <Select
+                name="currency"
+                value={formData.currency}
+                onChange={handleChange}
+                sx={{
+                  backgroundColor: '#FAFAFA',
+                  borderRadius: '4px',
+                  '&:hover': { backgroundColor: '#F5F5F5' },
+                  '&.Mui-focused': { backgroundColor: '#FFFFFF' }
+                }}
+              >
+                <MenuItem value="TND">🇹🇳 Dinar Tunisien (TND)</MenuItem>
+                <MenuItem value="USD">🇺🇸 Dollar Américain (USD)</MenuItem>
+                <MenuItem value="EUR">🇪🇺 Euro (EUR)</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Paper sx={{ p: '16px', backgroundColor: '#FFF3E0', border: '1px solid #FFE0B2', borderRadius: '4px' }}>
+            <Box sx={{ display: 'flex', gap: '12px' }}>
+              <Typography sx={{ fontSize: '24px' }}>⚠️</Typography>
+              <Box>
+                <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#E65100', mb: '4px' }}>
+                  Conseils sur le Budget
+                </Typography>
+                <Typography sx={{ fontSize: '12px', color: '#BF360C', lineHeight: 1.6 }}>
+                  • L'écart entre min et max ne doit pas dépasser 10x<br/>
+                  • Incluez une marge pour les variations<br/>
+                  • Soyez réaliste pour attirer les meilleurs fournisseurs
+                </Typography>
+              </Box>
+            </Box>
+          </Paper>
         </Box>
       );
     case 'step4':
@@ -446,18 +536,37 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step7':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <TextField
-            fullWidth
-            label="Date de Fermeture (Submission Deadline) *"
-            name="deadline"
-            type="datetime-local"
-            value={formData.deadline}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
-            disabled={loading}
-            helperText="Date limite pour soumettre les offres"
-          />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              📅 Calendrier & Jalons
+            </Typography>
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Définissez les dates clés de votre appel d'offres pour assurer une gestion efficace du processus.
+            </Typography>
+          </Box>
+          
+          <Box>
+            <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '8px' }}>
+              Date de Fermeture (Submission Deadline) *
+            </Typography>
+            <TextField
+              fullWidth
+              name="deadline"
+              type="datetime-local"
+              value={formData.deadline}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              disabled={loading}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '4px',
+                  backgroundColor: '#FAFAFA',
+                  '&:hover': { backgroundColor: '#F5F5F5' },
+                  '&.Mui-focused': { backgroundColor: '#FFFFFF' }
+                }
+              }}
+            />
           <TextField
             fullWidth
             label="Date d'Ouverture (Decryption Date)"
@@ -520,27 +629,38 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step5':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Box sx={{ pb: 2, borderBottom: '1px solid #e0e0e0' }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: theme.palette.primary.main }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
               🔑 Conditions de Participation
             </Typography>
-            <Typography sx={{ fontSize: '13px', color: '#666666', mb: 2 }}>
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
               Définissez les critères d'éligibilité et les documents requis pour participer à cet appel d'offres.
             </Typography>
           </Box>
           
-          <TextField
-            fullWidth
-            label="Critères d'Éligibilité *"
-            name="participation_eligibility"
-            value={formData.participation_eligibility}
-            onChange={handleChange}
-            placeholder="Ex: Les fournisseurs doivent être enregistrés depuis au moins 2 ans, disposer d'une certification ISO 9001..."
-            multiline
-            rows={4}
-            disabled={loading}
-          />
+          <Box>
+            <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#212121', mb: '8px' }}>
+              Critères d'Éligibilité *
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="Ex: Enregistrement depuis 2+ ans, certification ISO 9001, expérience prouvée..."
+              name="participation_eligibility"
+              value={formData.participation_eligibility}
+              onChange={handleChange}
+              multiline
+              rows={5}
+              disabled={loading}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '4px',
+                  backgroundColor: '#FAFAFA',
+                  '&:hover': { backgroundColor: '#F5F5F5' },
+                  '&.Mui-focused': { backgroundColor: '#FFFFFF' }
+                }
+              }}
+            />
 
           <Box>
             <Typography sx={{ fontSize: '14px', fontWeight: 600, mb: 1, color: theme.palette.text.primary }}>
@@ -586,13 +706,13 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step6':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Box sx={{ pb: 2, borderBottom: '1px solid #e0e0e0' }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: theme.palette.primary.main }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
               📤 Méthode de Soumission
             </Typography>
-            <Typography sx={{ fontSize: '13px', color: '#666666', mb: 2 }}>
-              Spécifiez comment les soumissionnaires doivent soumettre leurs offres.
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Spécifiez le mode de présentation des offres selon votre processus procédural.
             </Typography>
           </Box>
 
@@ -643,13 +763,13 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step8':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Box sx={{ pb: 2, borderBottom: '1px solid #e0e0e0' }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: theme.palette.primary.main }}>
-              📞 Contacts et Clarifications
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              📞 Contacts & Clarifications
             </Typography>
-            <Typography sx={{ fontSize: '13px', color: '#666666', mb: 2 }}>
-              Fournissez les coordonnées pour que les soumissionnaires puissent poser des questions.
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Fournissez les coordonnées pour que les soumissionnaires puissent poser des questions et obtenir des clarifications.
             </Typography>
           </Box>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '16px' }}>
@@ -661,13 +781,13 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step9':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Box sx={{ pb: 2, borderBottom: '1px solid #e0e0e0' }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: theme.palette.primary.main }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
               ⚙️ Spécifications Techniques
             </Typography>
-            <Typography sx={{ fontSize: '13px', color: '#666666', mb: 2 }}>
-              Décrivez les spécifications techniques détaillées, normes, et standards requis.
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Décrivez précisément les spécifications, normes ISO, standards et performances minimales requises.
             </Typography>
           </Box>
           <TextField fullWidth label="Spécifications Techniques *" name="technical_specifications" value={formData.technical_specifications} onChange={(e) => setFormData(prev => ({ ...prev, technical_specifications: e.target.value }))} multiline rows={6} disabled={loading} placeholder="ISO 9001, certifications, performances minimales..." />
@@ -675,10 +795,19 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step10':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <Box sx={{ backgroundColor: '#f5f5f5', padding: '16px', borderRadius: '4px' }}>
-            <Typography sx={{ fontSize: '14px', fontWeight: 600, marginBottom: '12px', color: theme.palette.text.primary }}>
-              {editingIndex !== null ? 'Modifier l\'Exigence' : 'Ajouter une Exigence'}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              ✅ Exigences & Critères
+            </Typography>
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Définissez les exigences techniques, commerciales et administratives que les fournisseurs doivent respecter.
+            </Typography>
+          </Box>
+
+          <Box sx={{ backgroundColor: '#E8F5E9', padding: '16px', borderRadius: '4px', border: '1px solid #C8E6C9' }}>
+            <Typography sx={{ fontSize: '14px', fontWeight: 600, marginBottom: '12px', color: '#2E7D32' }}>
+              {editingIndex !== null ? '✏️ Modifier l\'Exigence' : '➕ Ajouter une Exigence'}
             </Typography>
             
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -839,9 +968,18 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step11':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Typography sx={{ color: '#616161', fontSize: '13px' }}>
-            Réglez le poids de chaque critère d'évaluation (total: {totalCriteria}%)
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              📊 Critères d'Évaluation
+            </Typography>
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Définissez le poids de chaque critère d'évaluation pour évaluer objectivement les offres reçues.
+            </Typography>
+          </Box>
+
+          <Typography sx={{ color: '#0056B3', fontSize: '13px', fontWeight: 600 }}>
+            Total: <span style={{ fontSize: '16px', fontWeight: 700, color: totalCriteria === 100 ? '#4CAF50' : '#FF9800' }}>{totalCriteria}%</span>
           </Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '16px' }}>
             {Object.entries(formData.evaluation_criteria).map(([key, value]) => (
@@ -865,15 +1003,32 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step12':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              📎 Pièces Jointes
+            </Typography>
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Attachez tous les documents pertinents pour votre appel d'offres (cahier des charges, spécifications, plans, etc.).
+            </Typography>
+          </Box>
+
           <Button
-            variant="outlined"
+            variant="contained"
             component="label"
             startIcon={<UploadIcon />}
             disabled={loading}
-            sx={{ color: theme.palette.primary.main, borderColor: '#0056B3' }}
+            sx={{ 
+              backgroundColor: '#0056B3', 
+              color: '#ffffff',
+              textTransform: 'none',
+              fontWeight: 600,
+              padding: '12px 24px',
+              borderRadius: '4px',
+              '&:hover': { backgroundColor: '#003D82' }
+            }}
           >
-            Télécharger des fichiers
+            📤 Télécharger des fichiers
             <input
               type="file"
               multiple
@@ -916,12 +1071,22 @@ const StepContent = ({ type, formData, handleChange, loading, newRequirement, se
       );
     case 'step13':
       return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Alert severity="info" sx={{ backgroundColor: '#e3f2fd', color: '#01579b' }}>
-            Veuillez vérifier tous les détails avant de soumettre votre appel d'offres.
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ pb: '20px', borderBottom: '2px solid #E3F2FD' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0056B3', mb: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              ✔️ Révision Finale
+            </Typography>
+            <Typography sx={{ fontSize: '14px', color: '#666666', lineHeight: 1.5 }}>
+              Vérifiez tous les détails de votre appel d'offres avant la soumission finale.
+            </Typography>
+          </Box>
+
+          <Alert severity="success" sx={{ backgroundColor: '#E8F5E9', color: '#2E7D32', border: '1px solid #C8E6C9' }}>
+            ✅ <strong>Prêt pour soumission</strong> - Vérifiez le résumé ci-dessous et confirmez l'envoi de votre appel d'offres.
           </Alert>
-          <Paper sx={{ padding: '16px', backgroundColor: '#f5f5f5' }}>
-            <Typography variant="h6" sx={{ color: theme.palette.primary.main, marginBottom: '12px' }}>Résumé</Typography>
+
+          <Paper sx={{ padding: '24px', backgroundColor: '#F5F5F5', border: '1px solid #E0E0E0', borderRadius: '4px' }}>
+            <Typography variant="h6" sx={{ color: '#0056B3', marginBottom: '16px', fontWeight: 700 }}>📋 Résumé de l'Appel d'Offres</Typography>
             <Stack spacing={1} sx={{ fontSize: '13px' }}>
               <Box><strong>Titre:</strong> {formData.title}</Box>
               <Box><strong>Catégorie:</strong> {formData.category}</Box>
