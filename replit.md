@@ -53,6 +53,56 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
 - **Email Services**: SendGrid/Resend/Gmail (integrated notification system).
 - **Testing**: Jest 29.7.0 with coverage reporting.
 - **Monitoring**: Error tracking service, performance middleware, request logging, Swagger UI.
+## Lots & Articles Structure - November 23, 2025
+
+### 🎯 Implementation Complete
+
+✅ **Lots as Article Collections**
+- Each Lot contains multiple Articles (products/services)
+- Each Article has: name, quantity, unit (unité, kg, litre, m, m², boîte)
+- Lot structure: numero, objet (description), articles array
+
+✅ **Flexible Award Levels (ترسية)**
+- **Par Lot**: Entire lot awarded to one supplier
+- **Par Article**: Each article can go to different supplier
+- **Global**: Entire tender to one supplier
+- Award level displayed in summary and sent with tender creation
+
+✅ **UI/UX Implementation**
+- Step 3 (Lots): Create Lots with nested article management
+- Award Level selector with color-coded options
+- Real-time article list in each lot
+- Step 7 (Preview): Shows award level + detailed lots with articles
+- Validation: Minimum 1 lot required, each lot must have articles
+
+✅ **Example Structure**
+```
+Lot 1: Informatique
+  - Article 1: 5 imprimante laser
+  - Article 2: 3 scanner HP
+
+Lot 2: Fournitures de Bureau
+  - Article 1: 20 stylo bleu
+  - Article 2: 5 stylo rouge
+```
+
+✅ **Data Model**
+```javascript
+{
+  awardLevel: 'lot', // or 'article', 'tender'
+  lots: [
+    {
+      numero: '1',
+      objet: 'Informatique',
+      articles: [
+        { name: 'Imprimante Laser', quantity: '5', unit: 'unité' },
+        { name: 'Scanner', quantity: '3', unit: 'unité' }
+      ]
+    }
+  ]
+}
+```
+
 ## Backup & Recovery Testing - November 23, 2025
 
 ### 🎯 Implementation Complete
