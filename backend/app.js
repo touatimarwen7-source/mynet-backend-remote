@@ -178,3 +178,14 @@ app.use('/api/email', emailRoutes);
 
 // Initialize email service
 initializeEmailService();
+
+// Logging middleware (#9)
+const { logger } = require('./utils/logger');
+app.use(logger.requestMiddleware());
+
+// Log startup
+logger.info('MyNet.tn Backend Started', {
+  nodeVersion: process.version,
+  environment: process.env.NODE_ENV,
+  port: process.env.PORT || 3000,
+});

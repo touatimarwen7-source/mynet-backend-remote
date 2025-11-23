@@ -544,3 +544,15 @@ const globalBoxStyles = {
     }
   }
 };
+
+// Initialize logging and analytics
+import { logger } from './utils/logger';
+import { analytics } from './utils/analytics';
+
+logger.info('MyNet Frontend Started');
+analytics.trackPageView();
+
+// Track page changes
+window.addEventListener('popstate', () => {
+  analytics.trackPageView();
+});
