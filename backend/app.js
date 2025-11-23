@@ -106,9 +106,8 @@ app.use(requestIdMiddleware);
 // ENHANCEMENT: Add performance monitoring
 app.use(performanceMiddleware);
 
-// 🚀 CACHING: Add cache middleware and headers
-app.use(cacheMiddleware(300)); // 5 minute default TTL
-app.use(cacheControlHeaders(300));
+// 🚀 CACHING: Add cache middleware
+app.use(cacheMiddleware({ ttl: 300 })); // 5 minute default TTL
 
 // ENHANCEMENT: Add API version headers
 app.use(versionMiddleware);

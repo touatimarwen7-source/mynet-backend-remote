@@ -2,11 +2,11 @@
 const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
 const QueryOptimizer = require('../utils/queryOptimizer');
-const { cacheMiddleware } = require('../middleware/cacheMiddleware');
+const cacheMiddleware = require('../middleware/cacheMiddleware');
 const router = express.Router();
 
 // Get dashboard statistics for buyers (optimized + cached)
-router.get('/dashboard/buyer', authMiddleware, cacheMiddleware(600), async (req, res) => {
+router.get('/dashboard/buyer', authMiddleware, cacheMiddleware({ ttl: 600 }), async (req, res) => {
   try {
     const db = req.app.get('db');
     const userId = req.user.id;
@@ -19,7 +19,7 @@ router.get('/dashboard/buyer', authMiddleware, cacheMiddleware(600), async (req,
 });
 
 // Get dashboard statistics for suppliers (optimized + cached)
-router.get('/dashboard/supplier', authMiddleware, cacheMiddleware(600), async (req, res) => {
+router.get('/dashboard/supplier', authMiddleware, cacheMiddleware({ ttl: 600 }), async (req, res) => {
   try {
     const db = req.app.get('db');
     const userId = req.user.id;
