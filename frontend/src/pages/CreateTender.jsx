@@ -1366,12 +1366,7 @@ export default function CreateTender() {
         setError(budgetCheck.error);
         return false;
       }
-      
-      const deadlineCheck = validateDeadline(formData.deadline);
-      if (!deadlineCheck.valid) {
-        setError(deadlineCheck.error);
-        return false;
-      }
+      // Deadline validation will be done at submission only
     }
 
     if (currentStep === 2) {
@@ -1420,6 +1415,13 @@ export default function CreateTender() {
     const budgetCheck = validateBudget(formData.budget_min, formData.budget_max);
     if (!budgetCheck.valid) {
       setError(budgetCheck.error);
+      return;
+    }
+
+    // Validate deadline at submission
+    const deadlineCheck = validateDeadline(formData.deadline);
+    if (!deadlineCheck.valid) {
+      setError(deadlineCheck.error);
       return;
     }
 
