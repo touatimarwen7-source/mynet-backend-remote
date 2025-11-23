@@ -56,7 +56,13 @@ export const procurementAPI = {
   getInvoice: (id) => axiosInstance.get(`/procurement/invoices/${id}`),
   createInvoice: (data) => axiosInstance.post('/procurement/invoices', data),
   updateInvoice: (id, data) => axiosInstance.put(`/procurement/invoices/${id}`, data),
-  getMyInvoices: () => axiosInstance.get('/procurement/my-invoices')
+  getMyInvoices: () => axiosInstance.get('/procurement/my-invoices'),
+  approveInvoice: (id, data) => axiosInstance.post(`/procurement/invoices/${id}/approve`, data),
+
+  // Purchase Orders endpoints
+  getPurchaseOrders: (filters) => axiosInstance.get('/procurement/purchase-orders', { params: filters }),
+  getPurchaseOrder: (id) => axiosInstance.get(`/procurement/purchase-orders/${id}`),
+  getMyPurchaseOrders: () => axiosInstance.get('/procurement/my-purchase-orders')
 };
 
 export const searchAPI = {

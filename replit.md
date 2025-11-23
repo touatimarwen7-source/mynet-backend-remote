@@ -104,6 +104,106 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
 - Cause: `const theme = institutionalTheme;` was in function signature instead of body
 - Fix: Moved theme declaration inside function body
 
+## Invoice Management System - Complete Implementation (November 23, 2025)
+
+### What is Invoice Generation in Buyer's Account?
+
+The invoice generation system provides a complete workflow for managing invoices in the B2B procurement platform:
+
+#### For **SUPPLIERS** (`/supplier-invoices`):
+1. **View Purchase Orders (Supply Requests)**
+   - Lists all POs assigned to the supplier from buyer's tenders
+   - Shows PO number, associated tender, amount, and status
+   - Each PO can be linked to one or more invoices
+
+2. **Create Invoices**
+   - Suppliers MUST create invoices linked to their purchase orders
+   - Click "Create" button next to PO to generate invoice
+   - Multi-step invoice form (8 steps):
+     - Invoice Information (number, dates, PO reference)
+     - Line Items (delivered articles)
+     - Financial Details (subtotal, amounts)
+     - Taxes & Deductions
+     - Payment Conditions (terms, method)
+     - Attachments (original invoices, documents)
+     - Bank Information (for payment)
+     - Review & Submit
+
+3. **Manage Invoices**
+   - View all created invoices
+   - Status tracking: Draft → Sent → Approved → Paid
+   - Download original invoice PDF
+   - Track payment status
+
+#### For **BUYERS** (`/invoice-generation`):
+1. **Dashboard Summary**
+   - Total purchase orders
+   - Total invoices received
+   - Invoices pending approval
+   - Invoices already paid
+
+2. **View Purchase Orders**
+   - See all POs issued to suppliers
+   - Track which POs have invoices
+   - Status of each PO (pending → approved → completed)
+
+3. **Manage Supplier Invoices**
+   - Receive invoices from suppliers (must be linked to PO)
+   - Download original invoice PDF
+   - Approve invoices (with optional notes)
+   - Track payment status (sent → approved → paid)
+
+### Key Features
+
+**Mandatory Links**:
+- Each invoice MUST be linked to a purchase order (supply request)
+- Suppliers cannot create invoices without an active PO
+- Buyers can only see invoices from their own POs
+
+**Document Management**:
+- Suppliers can upload original invoice documents
+- Attachment storage during invoice creation
+- PDF download functionality for both parties
+- Full audit trail of invoice changes
+
+**Workflow**:
+1. Buyer creates tender → Supplier wins → PO created
+2. Supplier views PO in `/supplier-invoices`
+3. Supplier creates invoice linked to PO
+4. Supplier uploads original invoice document
+5. Buyer receives notification of new invoice
+6. Buyer downloads and reviews invoice
+7. Buyer approves invoice (with optional remarks)
+8. Invoice status changes to approved
+9. Payment is processed (via payment module)
+10. Status updates to paid
+
+**Status Progression**:
+- Draft (initial)
+- Sent (supplier submits to buyer)
+- Approved (buyer approves)
+- Paid (payment confirmed)
+- Overdue (if due date passed)
+
+### Technical Implementation
+
+**Frontend Pages**:
+- `SupplierInvoices.jsx` - Supplier's PO and invoice management
+- `InvoiceGeneration.jsx` - Buyer's invoice review and approval
+- `CreateInvoice.jsx` - Multi-step invoice creation form
+
+**API Endpoints**:
+- `GET /procurement/invoices` - Get invoices (with filters)
+- `GET /procurement/my-invoices` - Supplier's invoices
+- `POST /procurement/invoices` - Create invoice
+- `POST /procurement/invoices/{id}/approve` - Buyer approves invoice
+- `GET /procurement/purchase-orders` - Get POs for linking
+
+**Database Structure**:
+- `invoices` table: id, purchase_order_id, supplier_id, invoice_number, amount, tax, total, issue_date, due_date, status, notes
+- Links to `purchase_orders` (mandatory foreign key)
+- Links to `users` (supplier_id identifies supplier)
+
 ### Build Status
 - ✅ Frontend builds cleanly with VITE v7.2.4
 - ✅ All 1242 modules transformed successfully  
@@ -112,8 +212,10 @@ The platform utilizes a React frontend (Vite) and a Node.js backend with a Postg
 - ✅ 100% French language support maintained
 - ✅ Material-UI theming via theme.js only
 - ✅ Production-ready state achieved
+- ✅ Complete invoice management system implemented
 
 ### Workflow Status
 - ✅ Frontend: Running cleanly, ready in ~220ms
 - ✅ Backend: Running, handling requests successfully
 - ✅ All routes functional and tested
+- ✅ Invoice endpoints ready for use
