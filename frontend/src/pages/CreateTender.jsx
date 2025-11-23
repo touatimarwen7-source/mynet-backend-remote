@@ -1375,6 +1375,20 @@ export default function CreateTender() {
       }
     }
 
+    if (currentStep === 2) {
+      if (!formData.lots || formData.lots.length === 0) {
+        setError('Au moins un lot est requis');
+        return false;
+      }
+      const hasValidArticles = formData.lots.every(
+        (lot) => lot.articles && lot.articles.length > 0
+      );
+      if (!hasValidArticles) {
+        setError('Chaque lot doit contenir au moins un article');
+        return false;
+      }
+    }
+
     return true;
   };
 
