@@ -467,26 +467,29 @@ const StepThree = ({ formData, setFormData, loading }) => {
       </Box>
 
       {/* Lot Input */}
-      <Box sx={{ p: '16px', backgroundColor: '#E3F2FD', borderRadius: '4px' }}>
+      <Box sx={{ p: '16px', backgroundColor: '#E3F2FD', borderRadius: '4px', borderLeft: '4px solid #0056B3' }}>
         <Typography sx={{ fontSize: '13px', fontWeight: 600, color: '#0056B3', mb: '16px' }}>
-          ➕ Ajouter un Lot
+          ➕ Créer un Nouveau Lot
         </Typography>
 
         <Stack spacing={2}>
+          {/* Lot Number */}
           <TextField
             fullWidth
-            label="Numéro du Lot"
-            placeholder="Ex: Lot 1, Lot 2..."
+            label="Numéro du Lot *"
+            placeholder="Ex: 1, 2, 3..."
             value={newLot.numero}
             onChange={(e) => setNewLot({ ...newLot, numero: e.target.value })}
             disabled={loading}
             size="small"
+            helperText="Exemple: Lot 1: Informatique"
           />
 
+          {/* Lot Object/Description */}
           <TextField
             fullWidth
-            label="Objet du Lot"
-            placeholder="Ex: Informatique, Fournitures de Bureau..."
+            label="Objet du Lot (Description) *"
+            placeholder="Ex: Informatique, Fournitures de Bureau, Services..."
             value={newLot.objet}
             onChange={(e) => setNewLot({ ...newLot, objet: e.target.value })}
             disabled={loading}
@@ -495,10 +498,28 @@ const StepThree = ({ formData, setFormData, loading }) => {
             rows={2}
           />
 
-          {/* Articles Section */}
-          <Box sx={{ p: '12px', backgroundColor: '#fff', borderRadius: '4px', border: '1px dashed #0056B3' }}>
-            <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#0056B3', mb: '12px' }}>
-              📦 Articles du Lot
+          {/* Articles Section - Hierarchical */}
+          <Box sx={{ p: '14px', backgroundColor: '#FFFFFF', borderRadius: '4px', border: '2px dashed #0056B3' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', mb: '14px' }}>
+              <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#0056B3' }}>
+                📦 Articles du Lot {newLot.numero || '?'}
+              </Typography>
+              <Box
+                sx={{
+                  fontSize: '10px',
+                  color: '#fff',
+                  backgroundColor: '#0056B3',
+                  px: '6px',
+                  py: '2px',
+                  borderRadius: '12px',
+                }}
+              >
+                {(newLot.articles || []).length}
+              </Box>
+            </Box>
+
+            <Typography sx={{ fontSize: '11px', color: '#666666', mb: '12px', fontStyle: 'italic' }}>
+              📌 Les articles ci-dessous appartiennent au Lot ci-dessus
             </Typography>
 
             {/* Article Input */}
@@ -685,25 +706,41 @@ const StepThree = ({ formData, setFormData, loading }) => {
                   </Box>
                 </Box>
 
-                {/* Articles Display */}
+                {/* Articles Display - Hierarchical */}
                 {(lot.articles || []).length > 0 && (
-                  <Stack spacing={1} sx={{ mt: '8px' }}>
-                    {lot.articles.map((article, aIdx) => (
-                      <Box
-                        key={aIdx}
-                        sx={{
-                          p: '8px 12px',
-                          backgroundColor: '#fff',
-                          borderLeft: '2px solid #4CAF50',
-                          borderRadius: '2px',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '11px', color: '#212121' }}>
-                          • {article.name} : <strong>{article.quantity} {article.unit}</strong>
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Stack>
+                  <Box sx={{ mt: '12px', ml: '16px', pl: '12px', borderLeft: '3px dashed #0056B3' }}>
+                    <Typography sx={{ fontSize: '11px', fontWeight: 600, color: '#0056B3', mb: '8px' }}>
+                      📌 Articles :
+                    </Typography>
+                    <Stack spacing={1}>
+                      {lot.articles.map((article, aIdx) => (
+                        <Box
+                          key={aIdx}
+                          sx={{
+                            p: '8px 10px',
+                            backgroundColor: '#FAFAFA',
+                            borderLeft: '3px solid #4CAF50',
+                            borderRadius: '3px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                          }}
+                        >
+                          <Typography sx={{ fontSize: '11px', color: '#4CAF50', fontWeight: 600 }}>
+                            ├─
+                          </Typography>
+                          <Box sx={{ flex: 1 }}>
+                            <Typography sx={{ fontSize: '11px', fontWeight: 500, color: '#212121' }}>
+                              {article.name}
+                            </Typography>
+                            <Typography sx={{ fontSize: '10px', color: '#999999' }}>
+                              Quantité: <strong>{article.quantity} {article.unit}</strong>
+                            </Typography>
+                          </Box>
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Box>
                 )}
               </Paper>
             ))}
