@@ -149,9 +149,9 @@ export default function SuperAdminDashboard() {
         {/* Footer Info */}
         <Box sx={{ marginTop: '32px', padding: '16px', backgroundColor: '#FFFFFF', borderRadius: '8px', border: '1px solid #E0E0E0' }}>
           <Typography sx={{ fontSize: '12px', color: '#999999', lineHeight: '1.6' }}>
-            <strong>ملاحظة هامة:</strong> Super Admin يملك صلاحيات شاملة لإدارة المنصة بالكامل. 
-            Super Admin لا يتدخل في دورة المناقصة (Tender Cycle) - وهي خاصة بـ Buyers و Suppliers فقط.
-            Admin هي حسابات يفويضها Super Admin بصلاحيات محدودة.
+            <strong>Note Importante:</strong> Super Admin possède des permissions complètes pour gérer l'ensemble de la plateforme. 
+            Super Admin n'intervient pas dans le cycle d'appel d'offres (Tender Cycle) - c'est réservé aux Acheteurs et Fournisseurs uniquement.
+            Admin est un compte délégué par Super Admin avec des permissions limitées.
           </Typography>
         </Box>
       </Container>

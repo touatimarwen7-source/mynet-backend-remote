@@ -23,17 +23,26 @@ export default function ContentManager() {
     {
       label: 'Fichiers',
       icon: <StorageIcon />,
-      component: <Box sx={{ p: 2 }}><Typography sx={{ color: '#616161' }}>En développement...</Typography></Box>
+      component: <Box sx={{ p: 2, textAlign: 'center' }}>
+        <StorageIcon sx={{ fontSize: 48, color: '#D9D9D9', mb: 1 }} />
+        <Typography sx={{ color: '#999999', fontSize: '14px' }}>Gestion des fichiers - Disponible bientôt</Typography>
+      </Box>
     },
     {
       label: 'Images',
       icon: <ImageIcon />,
-      component: <Box sx={{ p: 2 }}><Typography sx={{ color: '#616161' }}>En développement...</Typography></Box>
+      component: <Box sx={{ p: 2, textAlign: 'center' }}>
+        <ImageIcon sx={{ fontSize: 48, color: '#D9D9D9', mb: 1 }} />
+        <Typography sx={{ color: '#999999', fontSize: '14px' }}>Galerie d\'images - Disponible bientôt</Typography>
+      </Box>
     },
     {
       label: 'Documents',
       icon: <DescriptionIcon />,
-      component: <Box sx={{ p: 2 }}><Typography sx={{ color: '#616161' }}>En développement...</Typography></Box>
+      component: <Box sx={{ p: 2, textAlign: 'center' }}>
+        <DescriptionIcon sx={{ fontSize: 48, color: '#D9D9D9', mb: 1 }} />
+        <Typography sx={{ color: '#999999', fontSize: '14px' }}>Gestion des documents - Disponible bientôt</Typography>
+      </Box>
     }
   ];
 

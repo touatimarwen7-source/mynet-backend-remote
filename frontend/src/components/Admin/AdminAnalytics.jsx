@@ -96,9 +96,14 @@ export default function AdminAnalytics() {
     <Box>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#0056B3' }}>
-        Statistiques Principales
-      </Typography>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#0056B3' }}>
+          📊 Statistiques Principales
+        </Typography>
+        <Typography sx={{ fontSize: '12px', color: '#666666' }}>
+          Aperçu des métriques clés de la plateforme
+        </Typography>
+      </Box>
 
       <Grid container spacing={2} sx={{ mb: 4 }}>
         {displayStats.map((stat, idx) => (

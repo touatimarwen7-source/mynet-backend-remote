@@ -33,6 +33,30 @@ import { errorHandler } from '../../utils/errorHandler';
 
 const ITEMS_PER_PAGE = 10;
 
+// Role labels en français
+const roleLabels = {
+  'buyer': 'Acheteur',
+  'supplier': 'Fournisseur',
+  'admin': 'Administrateur',
+  'super_admin': 'Super Admin'
+};
+
+// Status labels en français
+const statusLabels = {
+  'active': 'Actif',
+  'blocked': 'Bloqué',
+  'inactive': 'Inactif',
+  'pending': 'En attente'
+};
+
+// Role colors
+const roleColors = {
+  'buyer': '#0056B3',
+  'supplier': '#2E7D32',
+  'admin': '#F57C00',
+  'super_admin': '#7B1FA2'
+};
+
 export default function UserRoleManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -279,21 +303,23 @@ export default function UserRoleManagement() {
                       <TableCell sx={{ fontSize: '13px' }}>{user.company}</TableCell>
                       <TableCell>
                         <Chip
-                          label={getRoleLabel(user.role)}
+                          label={roleLabels[user.role] || user.role}
                           size="small"
                           sx={{
-                            backgroundColor: user.role === 'buyer' ? '#E3F2FD' : user.role === 'supplier' ? '#F3E5F5' : '#E8F5E9',
-                            color: user.role === 'buyer' ? '#0056B3' : user.role === 'supplier' ? '#7B1FA2' : '#2E7D32'
+                            backgroundColor: roleColors[user.role] ? `${roleColors[user.role]}20` : '#E0E0E0',
+                            color: roleColors[user.role] || '#616161',
+                            fontWeight: 500
                           }}
                         />
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={getStatusLabel(user.status)}
+                          label={statusLabels[user.status] || user.status}
                           size="small"
                           sx={{
                             backgroundColor: user.status === 'active' ? '#E8F5E9' : '#FFEBEE',
-                            color: user.status === 'active' ? '#2E7D32' : '#C62828'
+                            color: user.status === 'active' ? '#2E7D32' : '#C62828',
+                            fontWeight: 500
                           }}
                         />
                       </TableCell>
