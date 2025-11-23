@@ -3,6 +3,19 @@ const router = express.Router();
 const superAdminController = require('../controllers/superAdminController');
 const authMiddleware = require('../middleware/authMiddleware');
 
+// File upload middleware
+let upload;
+try {
+  const multer = require('multer');
+  upload = multer({ 
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 50 * 1024 * 1024 } // 50MB max
+  }).single('file');
+} catch (e) {
+  console.warn('Multer not installed, file upload disabled');
+  upload = (req, res, next) => next();
+}
+
 /**
  * 🔐 SUPER ADMIN ROUTES
  * All routes require authentication and super_admin role
@@ -21,7 +34,7 @@ router.delete('/pages/:id', superAdminController.deletePage);
 
 // ===== 2. FILE MANAGEMENT =====
 router.get('/files', superAdminController.listFiles);
-router.post('/files', superAdminController.uploadFile);
+router.post('/files', upload, superAdminController.uploadFile);
 router.delete('/files/:id', superAdminController.deleteFile);
 
 // ===== 3. DOCUMENT MANAGEMENT =====

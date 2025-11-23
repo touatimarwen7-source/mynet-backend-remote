@@ -92,6 +92,7 @@ const POManagement = lazy(() => import('./pages/POManagement'));
 const PODetail = lazy(() => import('./pages/PODetail'));
 const ReviewsList = lazy(() => import('./pages/ReviewsList'));
 const SuperAdminCRUD = lazy(() => import('./pages/SuperAdminCRUD'));
+const FileManagement = lazy(() => import('./pages/FileManagement'));
 const EmailNotifications = lazy(() => import('./pages/EmailNotifications'));
 const BuyerAnalytics = lazy(() => import('./pages/BuyerAnalytics'));
 const SupplierAnalytics = lazy(() => import('./pages/SupplierAnalytics'));
@@ -487,6 +488,10 @@ function App() {
               <Route 
               path="/super-admin/users" 
               element={user?.role === 'super_admin' ? <UserManagement /> : <Navigate to="/tenders" />} 
+            />
+              <Route 
+              path="/super-admin/files" 
+              element={user?.role === 'super_admin' ? <FileManagement /> : <Navigate to="/tenders" />} 
             />
               
               {/* Admin Only Routes */}

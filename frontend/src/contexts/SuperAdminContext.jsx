@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback } from 'react';
+import { createContext, useState, useCallback, useContext } from 'react';
 import superAdminService from '../services/superAdminService';
 
 /**
@@ -22,6 +22,11 @@ export function SuperAdminProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  
+  // Separate loading states for files
+  const [loadingFiles, setLoadingFiles] = useState(false);
+  const [errorFiles, setErrorFiles] = useState(null);
+  const [successFiles, setSuccessFiles] = useState(null);
 
   // ===== PAGES =====
   const fetchPages = useCallback(async (params = {}) => {
@@ -92,51 +97,51 @@ export function SuperAdminProvider({ children }) {
 
   // ===== FILES =====
   const fetchFiles = useCallback(async (params = {}) => {
-    setLoading(true);
-    setError(null);
+    setLoadingFiles(true);
+    setErrorFiles(null);
     try {
       const response = await superAdminService.files.list(params);
       setFiles(response.data?.data || []);
       return response.data;
     } catch (err) {
-      setError(err.response?.data?.error || err.message);
+      setErrorFiles(err.response?.data?.error || err.message);
       return null;
     } finally {
-      setLoading(false);
+      setLoadingFiles(false);
     }
   }, []);
 
   const uploadFile = useCallback(async (data) => {
-    setLoading(true);
-    setError(null);
+    setLoadingFiles(true);
+    setErrorFiles(null);
     try {
       const response = await superAdminService.files.upload(data);
       setFiles([...files, response.data.data]);
-      setSuccess('File uploaded successfully');
-      setTimeout(() => setSuccess(null), 3000);
+      setSuccessFiles('تم رفع الملف بنجاح');
+      setTimeout(() => setSuccessFiles(null), 3000);
       return response.data;
     } catch (err) {
-      setError(err.response?.data?.error || err.message);
+      setErrorFiles(err.response?.data?.error || err.message);
       return null;
     } finally {
-      setLoading(false);
+      setLoadingFiles(false);
     }
   }, [files]);
 
   const deleteFile = useCallback(async (id) => {
-    setLoading(true);
-    setError(null);
+    setLoadingFiles(true);
+    setErrorFiles(null);
     try {
       await superAdminService.files.delete(id);
       setFiles(files.filter(f => f.id !== id));
-      setSuccess('File deleted successfully');
-      setTimeout(() => setSuccess(null), 3000);
+      setSuccessFiles('تم حذف الملف بنجاح');
+      setTimeout(() => setSuccessFiles(null), 3000);
       return true;
     } catch (err) {
-      setError(err.response?.data?.error || err.message);
+      setErrorFiles(err.response?.data?.error || err.message);
       return false;
     } finally {
-      setLoading(false);
+      setLoadingFiles(false);
     }
   }, [files]);
 
@@ -469,6 +474,9 @@ export function SuperAdminProvider({ children }) {
     loading,
     error,
     success,
+    loadingFiles,
+    errorFiles,
+    successFiles,
 
     // Pages
     fetchPages,
@@ -520,4 +528,12 @@ export function SuperAdminProvider({ children }) {
       {children}
     </SuperAdminContext.Provider>
   );
+}
+
+export function useSuperAdmin() {
+  const context = useContext(SuperAdminContext);
+  if (!context) {
+    throw new Error('useSuperAdmin must be used within SuperAdminProvider');
+  }
+  return context;
 }

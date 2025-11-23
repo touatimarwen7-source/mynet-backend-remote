@@ -211,28 +211,34 @@ exports.listFiles = async (req, res) => {
 
 /**
  * POST /api/super-admin/files
- * Upload new file (mock - actual file storage handled by frontend)
+ * Upload new file from multipart/form-data
  */
 exports.uploadFile = async (req, res) => {
   try {
-    const { name, size_bytes, mime_type, url } = req.body;
-
-    if (!name) {
-      return res.status(400).json({ success: false, error: 'File name required' });
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'File required' });
     }
+
+    const { originalname, size, mimetype } = req.file;
+    const fileName = originalname || 'unnamed_file';
+    
+    // In production, save file to cloud storage (S3, GCS, etc.)
+    // For now, store metadata in database with placeholder URL
+    const fileUrl = `/files/${Date.now()}_${fileName}`;
 
     const result = await db.query(
       `INSERT INTO media_files (name, file_type, size_bytes, mime_type, url, created_at)
        VALUES ($1, $2, $3, $4, $5, NOW())
        RETURNING *`,
-      [name, 'document', size_bytes || 0, mime_type || 'application/octet-stream', url || '#']
+      [fileName, 'document', size || 0, mimetype || 'application/octet-stream', fileUrl]
     );
 
     // Log audit
-    await logAuditAction(req.user.id, 'UPLOAD_FILE', `Uploaded: ${name}`, 'success');
+    await logAuditAction(req.user.id, 'UPLOAD_FILE', `Uploaded: ${fileName}`, 'success');
 
     return res.status(201).json({ success: true, data: result.rows[0] });
   } catch (error) {
+    console.error('Upload error:', error);
     return res.status(500).json({ success: false, error: error.message });
   }
 };

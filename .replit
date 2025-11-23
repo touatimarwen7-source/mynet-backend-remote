@@ -7,7 +7,7 @@ requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["tree"]
+packages = ["tree", "nodejs"]
 
 [deployment]
 run = ["node", "index.js"]
