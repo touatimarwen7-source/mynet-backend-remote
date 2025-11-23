@@ -126,14 +126,19 @@ export default function PageEditor() {
     }
   };
 
+  const [openBackDialog, setOpenBackDialog] = useState(false);
+
   const handleBack = () => {
     if (JSON.stringify(formData) !== JSON.stringify(originalData)) {
-      if (window.confirm('Vous avez des modifications non sauvegardées. Quitter sans sauvegarder?')) {
-        navigate('/super-admin');
-      }
+      setOpenBackDialog(true);
     } else {
       navigate('/super-admin');
     }
+  };
+
+  const confirmBack = () => {
+    setOpenBackDialog(false);
+    navigate('/super-admin');
   };
 
   const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
@@ -158,6 +163,7 @@ export default function PageEditor() {
               startIcon={<ArrowBackIcon />}
               onClick={handleBack}
               sx={{ color: '#0056B3' }}
+              disabled={saving}
             >
               Retour
             </Button>
@@ -412,6 +418,30 @@ export default function PageEditor() {
         <DialogActions sx={{ padding: '16px' }}>
           <Button onClick={() => setOpenPreview(false)} sx={{ color: '#666' }}>
             Fermer
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Back Confirmation Dialog */}
+      <Dialog open={openBackDialog} onClose={() => setOpenBackDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ fontWeight: 600, color: '#ff9800' }}>
+          Modifications Non Sauvegardées
+        </DialogTitle>
+        <DialogContent sx={{ paddingTop: '20px' }}>
+          <Typography>
+            Vous avez des modifications non sauvegardées. Voulez-vous quitter sans sauvegarder?
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ padding: '16px' }}>
+          <Button onClick={() => setOpenBackDialog(false)} sx={{ color: '#666' }}>
+            Continuer
+          </Button>
+          <Button
+            variant="contained"
+            onClick={confirmBack}
+            sx={{ backgroundColor: '#ff9800' }}
+          >
+            Quitter sans Sauvegarder
           </Button>
         </DialogActions>
       </Dialog>
