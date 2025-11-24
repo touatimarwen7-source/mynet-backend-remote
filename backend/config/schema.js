@@ -451,6 +451,75 @@ const schemaQueries = [
     `CREATE INDEX IF NOT EXISTS idx_opening_reports_opened_at ON opening_reports(opened_at DESC);`,
     `CREATE INDEX IF NOT EXISTS idx_opening_reports_status ON opening_reports(status);`,
 
+    // Tender Inquiries Table
+    `CREATE TABLE IF NOT EXISTS tender_inquiries (
+        id SERIAL PRIMARY KEY,
+        tender_id INTEGER NOT NULL REFERENCES tenders(id) ON DELETE CASCADE,
+        supplier_id INTEGER NOT NULL REFERENCES users(id),
+        subject VARCHAR(255) NOT NULL,
+        inquiry_text TEXT NOT NULL,
+        attachments JSONB DEFAULT '[]',
+        status VARCHAR(20) DEFAULT 'pending',
+        submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        is_deleted BOOLEAN DEFAULT FALSE
+    );`,
+
+    // Inquiry Responses Table
+    `CREATE TABLE IF NOT EXISTS inquiry_responses (
+        id SERIAL PRIMARY KEY,
+        inquiry_id INTEGER NOT NULL REFERENCES tender_inquiries(id) ON DELETE CASCADE,
+        tender_id INTEGER NOT NULL REFERENCES tenders(id) ON DELETE CASCADE,
+        response_text TEXT NOT NULL,
+        attachments JSONB DEFAULT '[]',
+        answered_by INTEGER REFERENCES users(id),
+        answered_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        is_public BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        is_deleted BOOLEAN DEFAULT FALSE
+    );`,
+
+    // Addenda Table (ملحق)
+    `CREATE TABLE IF NOT EXISTS addenda (
+        id SERIAL PRIMARY KEY,
+        tender_id INTEGER NOT NULL REFERENCES tenders(id) ON DELETE CASCADE,
+        addendum_number VARCHAR(50) UNIQUE NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        content TEXT NOT NULL,
+        inquiry_responses JSONB DEFAULT '[]',
+        published_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        published_by INTEGER REFERENCES users(id),
+        document_url VARCHAR(500),
+        version INTEGER DEFAULT 1,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        is_deleted BOOLEAN DEFAULT FALSE
+    );`,
+
+    // Addendum Notifications Table
+    `CREATE TABLE IF NOT EXISTS addendum_notifications (
+        id SERIAL PRIMARY KEY,
+        addendum_id INTEGER NOT NULL REFERENCES addenda(id) ON DELETE CASCADE,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        sent_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        read_at TIMESTAMP WITH TIME ZONE,
+        notification_method VARCHAR(50) DEFAULT 'email',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );`,
+
+    // Indexes for inquiry and addenda tables
+    `CREATE INDEX IF NOT EXISTS idx_tender_inquiries_tender ON tender_inquiries(tender_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_tender_inquiries_supplier ON tender_inquiries(supplier_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_tender_inquiries_status ON tender_inquiries(status);`,
+    `CREATE INDEX IF NOT EXISTS idx_inquiry_responses_inquiry ON inquiry_responses(inquiry_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_inquiry_responses_tender ON inquiry_responses(tender_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_addenda_tender ON addenda(tender_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_addenda_number ON addenda(addendum_number);`,
+    `CREATE INDEX IF NOT EXISTS idx_addendum_notifications_addendum ON addendum_notifications(addendum_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_addendum_notifications_user ON addendum_notifications(user_id);`,
+
 ];
 
 async function initializeSchema(pool) {

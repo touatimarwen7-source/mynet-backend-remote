@@ -1,67 +1,134 @@
-import { useEffect } from 'react';
-import institutionalTheme from '../theme/theme';
+import React, { useState, useEffect } from 'react';
 import {
-  Container,
   Box,
   Card,
   CardContent,
-  CardHeader,
   Typography,
   List,
   ListItem,
   ListItemText,
-  ListItemIcon,
+  Badge,
   Button,
-  Divider
+  Chip,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import WarningIcon from '@mui/icons-material/Warning';
-import InfoIcon from '@mui/icons-material/Info';
-import { setPageTitle } from '../utils/pageTitle';
+import axios from 'axios';
+import { theme } from '../theme/theme';
 
 export default function NotificationCenter() {
-  const theme = institutionalTheme;
-  const notifications = [
-    { id: 1, type: 'success', icon: <CheckCircleIcon sx={{ color: '#4caf50' }} />, title: 'Offre acceptée', message: 'Votre offre sur l\'appel d\'offres #1 a été acceptée', time: 'Il y a 1 heure' },
-    { id: 2, type: 'warning', icon: <WarningIcon sx={{ color: '#ff9800' }} />, title: 'En attente de validation', message: 'Votre offre est en cours d\'examen', time: 'Il y a 2 heures' },
-    { id: 3, type: 'info', icon: <InfoIcon sx={{ color: '#2196f3' }} />, title: 'Nouvel appel d\'offres', message: 'Un nouvel appel d\'offres est disponible', time: 'Il y a 1 jour' }
-  ];
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    setPageTitle('Centre de notifications');
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000); // Refresh every 30 seconds
+    return () => clearInterval(interval);
   }, []);
 
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/my-notifications');
+      setNotifications(response.data.notifications || []);
+      setUnreadCount(response.data.notifications?.filter(n => !n.read_at).length || 0);
+    } catch (err) {
+      console.error('فشل في تحميل الإشعارات:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const markAsRead = async (notificationId) => {
+    try {
+      await axios.post(`/api/notifications/${notificationId}/read`);
+      fetchNotifications();
+    } catch (err) {
+      console.error('فشل في تحديث الإشعار:', err);
+    }
+  };
+
   return (
-    <Box sx={{ backgroundColor: theme.palette.background.default, paddingY: '40px', minHeight: '80vh' }}>
-      <Container maxWidth="md">
-        <Typography variant="h2" sx={{ fontSize: '32px', fontWeight: 600, color: theme.palette.primary.main, mb: 3 }}>
-          Centre de notifications
-        </Typography>
-        <Card sx={{ border: '1px solid #E0E0E0' }}>
-          <CardContent>
-            <List>
-              {notifications.map((notif, idx) => (
-                <Box key={notif.id}>
-                  <ListItem>
-                    <ListItemIcon>{notif.icon}</ListItemIcon>
+    <Box sx={{ p: 3, direction: 'rtl' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+        <Badge badgeContent={unreadCount} color="error">
+          <Typography variant="h5" sx={{ color: theme.palette.primary.main, fontWeight: 'bold' }}>
+            🔔 مركز الإشعارات
+          </Typography>
+        </Badge>
+      </Box>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <List>
+          {notifications.length === 0 ? (
+            <Typography variant="body2" sx={{ color: '#999', textAlign: 'center', py: 4 }}>
+              لا توجد إشعارات جديدة
+            </Typography>
+          ) : (
+            notifications.map((notification) => (
+              <Card
+                key={notification.id}
+                sx={{
+                  mb: 2,
+                  backgroundColor: notification.read_at ? '#fff' : '#f0f7ff',
+                  borderLeft: `4px solid ${theme.palette.primary.main}`,
+                }}
+              >
+                <CardContent>
+                  <ListItem sx={{ p: 0 }}>
                     <ListItemText
-                      primary={notif.title}
+                      primary={
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            {notification.title || `ملحق جديد: ${notification.addendum_number}`}
+                          </Typography>
+                          {!notification.read_at && (
+                            <Chip label="جديد" size="small" color="primary" />
+                          )}
+                        </Box>
+                      }
                       secondary={
-                        <Box>
-                          <Typography variant="body2" sx={{ color: '#616161' }}>{notif.message}</Typography>
-                          <Typography variant="caption" sx={{ color: '#999' }}>{notif.time}</Typography>
+                        <Box sx={{ mt: 1 }}>
+                          <Typography variant="body2">
+                            {notification.tender_title}
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: '#666', my: 1 }}>
+                            {notification.tender_number}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: '#999' }}>
+                            {new Date(notification.sent_at).toLocaleDateString('ar-TN')}
+                          </Typography>
                         </Box>
                       }
                     />
-                    <Button size="small" sx={{ color: theme.palette.primary.main }}>Supprimer</Button>
                   </ListItem>
-                  {idx < notifications.length - 1 && <Divider />}
-                </Box>
-              ))}
-            </List>
-          </CardContent>
-        </Card>
-      </Container>
+                  {!notification.read_at && (
+                    <Button
+                      size="small"
+                      onClick={() => markAsRead(notification.id)}
+                      sx={{ mt: 1, color: theme.palette.primary.main }}
+                    >
+                      تحديد كمقروء
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </List>
+      )}
     </Box>
   );
 }

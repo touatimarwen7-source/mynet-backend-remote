@@ -29,6 +29,7 @@ const bidComparisonRoutes = require('./routes/bidComparisonRoutes');
 const performanceTrackingRoutes = require('./routes/performanceTrackingRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const emailRoutes = require('./routes/emailRoutes');
+const inquiryRoutes = require('./routes/inquiryRoutes');
 const superAdminRoutes = require('./routes/superAdminRoutes');
 const backupRoutes = require('./routes/backupRoutes');
 const passwordResetRoutes = require('./routes/passwordResetRoutes');
@@ -253,6 +254,9 @@ app.use('/api/backups', backupRoutes);
 
 // 🔐 PASSWORD RESET & EMAIL VERIFICATION ROUTES
 app.use('/api/auth/password-reset', passwordResetRoutes);
+
+// 📋 TENDER INQUIRIES & ADDENDA ROUTES
+app.use('/api', inquiryRoutes);
 
 // Initialize email service
 initializeEmailService();
