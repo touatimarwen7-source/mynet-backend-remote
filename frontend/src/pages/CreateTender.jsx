@@ -36,7 +36,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { setPageTitle } from '../utils/pageTitle';
 import { procurementAPI } from '../api';
-import { validateLots, validateBudget, handleAPIError } from '../utils/validationHelpers';
+import { validateLots, validateBudget, handleAPIError, validateDeadline } from '../utils/validationHelpers';
 import { autosaveDraft, recoverDraft, clearDraft } from '../utils/draftStorageHelper';
 import { UNIT_OPTIONS } from '../utils/unitOptions';
 
@@ -1364,42 +1364,75 @@ export default function CreateTender() {
   };
 
   const handleSubmit = async () => {
-    // Validation using unified helpers
-    if (getTotalCriteria() !== 100) {
-      setError('Les critères d\'évaluation doivent totaliser exactement 100%');
-      return;
-    }
-
-    if (!formData.awardLevel) {
-      setError('Niveau de ترسية requis');
-      return;
-    }
-
-    const lotsCheck = validateLots(formData.lots, formData.awardLevel);
-    if (!lotsCheck.valid) {
-      setError(lotsCheck.error);
-      return;
-    }
-
-    // Validate deadline at submission
-    const deadlineCheck = validateDeadline(formData.deadline);
-    if (!deadlineCheck.valid) {
-      setError(deadlineCheck.error);
-      return;
-    }
-
-    setLoading(true);
     try {
-      const response = await procurementAPI.createTender({
-        ...formData,
-        budget_min: parseFloat(formData.budget_min),
-        budget_max: parseFloat(formData.budget_max),
+      // Validation using unified helpers
+      const criteria = getTotalCriteria();
+      if (criteria !== 100) {
+        setError(`Les critères d\'évaluation doivent totaliser 100% (actuellement: ${criteria}%)`);
+        console.warn('Criteria validation failed:', criteria);
+        return;
+      }
+
+      if (!formData.awardLevel) {
+        setError('Niveau d\'attribution requis');
+        console.warn('Award level missing');
+        return;
+      }
+
+      if (!formData.lots || formData.lots.length === 0) {
+        setError('Au moins un lot est requis');
+        console.warn('No lots defined');
+        return;
+      }
+
+      const lotsCheck = validateLots(formData.lots, formData.awardLevel);
+      if (!lotsCheck.valid) {
+        setError(lotsCheck.error);
+        console.warn('Lots validation failed:', lotsCheck.error);
+        return;
+      }
+
+      // Validate deadline at submission
+      const deadlineCheck = validateDeadline(formData.deadline);
+      if (!deadlineCheck.valid) {
+        setError(deadlineCheck.error);
+        console.warn('Deadline validation failed:', deadlineCheck.error);
+        return;
+      }
+
+      if (!formData.title || formData.title.trim() === '') {
+        setError('Le titre est requis');
+        console.warn('Title missing');
+        return;
+      }
+
+      if (!formData.description || formData.description.trim() === '') {
+        setError('La description est requise');
+        console.warn('Description missing');
+        return;
+      }
+
+      setLoading(true);
+      console.log('Submitting tender with data:', {
+        title: formData.title,
+        lots: formData.lots.length,
+        awardLevel: formData.awardLevel,
+        criteria: criteria,
       });
 
+      const response = await procurementAPI.createTender({
+        ...formData,
+        budget_min: formData.budget_min ? parseFloat(formData.budget_min) : 0,
+        budget_max: formData.budget_max ? parseFloat(formData.budget_max) : 0,
+      });
+
+      console.log('Tender created successfully:', response.data);
       clearDraft('tender_draft');
       navigate(`/tender/${response.data.tender.id}`);
     } catch (err) {
-      setError(handleAPIError(err));
+      const errorMsg = handleAPIError(err);
+      console.error('Submit error:', err, errorMsg);
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
