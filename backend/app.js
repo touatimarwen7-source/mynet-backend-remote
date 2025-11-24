@@ -33,6 +33,7 @@ const inquiryRoutes = require('./routes/inquiryRoutes');
 const superAdminRoutes = require('./routes/superAdminRoutes');
 const backupRoutes = require('./routes/backupRoutes');
 const passwordResetRoutes = require('./routes/passwordResetRoutes');
+const offerEvaluationRoutes = require('./routes/offerEvaluationRoutes');
 const { ipMiddleware } = require('./middleware/ipMiddleware');
 const { requestTimeout } = require('./middleware/timeoutMiddleware');
 const { perUserLimiter, apiLimiters } = require('./middleware/perUserRateLimiting');
@@ -257,6 +258,9 @@ app.use('/api/auth/password-reset', passwordResetRoutes);
 
 // 📋 TENDER INQUIRIES & ADDENDA ROUTES
 app.use('/api', inquiryRoutes);
+
+// 📊 OFFER OPENING & EVALUATION ROUTES
+app.use('/api/evaluation', offerEvaluationRoutes);
 
 // Initialize email service
 initializeEmailService();
