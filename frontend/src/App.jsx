@@ -103,6 +103,7 @@ const SupplierPerformanceTracking = lazy(() => import('./pages/SupplierPerforman
 const SubscriptionPlans = lazy(() => import('./pages/SubscriptionPlans'));
 const PageEditor = lazy(() => import('./pages/PageEditor'));
 const SuperAdminMenu = lazy(() => import('./pages/SuperAdminMenu'));
+const OpeningReport = lazy(() => import('./pages/OpeningReport'));
 
 const LoadingFallback = () => (
   <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
@@ -163,6 +164,10 @@ function AppContent() {
               <Route 
                 path="/tender/:tenderId/bid" 
                 element={user?.role === 'supplier' ? <CreateBid /> : <Navigate to="/tenders" />} 
+              />
+              <Route 
+                path="/tender/:tenderId/opening-report" 
+                element={user?.role === 'buyer' ? <OpeningReport /> : <Navigate to="/tenders" />} 
               />
               <Route 
                 path="/offer/:offerId/supply-request" 

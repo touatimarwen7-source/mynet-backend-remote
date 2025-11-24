@@ -373,6 +373,21 @@ const schemaQueries = [
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );`,
 
+    `CREATE TABLE IF NOT EXISTS opening_reports (
+        id SERIAL PRIMARY KEY,
+        tender_id INTEGER NOT NULL REFERENCES tenders(id) ON DELETE CASCADE,
+        opened_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        opened_by INTEGER REFERENCES users(id),
+        total_offers_received INTEGER DEFAULT 0,
+        total_valid_offers INTEGER DEFAULT 0,
+        total_invalid_offers INTEGER DEFAULT 0,
+        offers_data JSONB DEFAULT '[]',
+        status VARCHAR(20) DEFAULT 'open',
+        notes TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );`,
+
     `CREATE INDEX IF NOT EXISTS idx_feature_flags_enabled ON feature_flags(is_enabled);`,
     `CREATE INDEX IF NOT EXISTS idx_feature_flags_category ON feature_flags(category);`,
     `CREATE INDEX IF NOT EXISTS idx_feature_flag_audits_feature ON feature_flag_audits(feature_id);`,
@@ -432,6 +447,9 @@ const schemaQueries = [
     `CREATE INDEX IF NOT EXISTS idx_offers_archived ON offers(is_archived);`,
     `CREATE INDEX IF NOT EXISTS idx_po_archived ON purchase_orders(is_archived);`,
     `CREATE INDEX IF NOT EXISTS idx_invoices_archived ON invoices(is_archived);`,
+    `CREATE INDEX IF NOT EXISTS idx_opening_reports_tender ON opening_reports(tender_id);`,
+    `CREATE INDEX IF NOT EXISTS idx_opening_reports_opened_at ON opening_reports(opened_at DESC);`,
+    `CREATE INDEX IF NOT EXISTS idx_opening_reports_status ON opening_reports(status);`,
 
 ];
 

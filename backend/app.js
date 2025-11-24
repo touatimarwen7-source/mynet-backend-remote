@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoutes = require('./routes/authRoutes');
 const procurementRoutes = require('./routes/procurementRoutes');
+const openingReportRoutes = require('./routes/openingReportRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const messagingRoutes = require('./routes/messagingRoutes');
@@ -207,6 +208,7 @@ app.get('/api-spec.json', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/procurement', procurementRoutes);
+app.use('/api/opening-reports', openingReportRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/super-admin', superAdminRoutes);
 app.use('/api/admin/features', featureFlagRoutes);
@@ -341,3 +343,13 @@ app.delete('/api/admin/rate-limit-clear', (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// ============ Tender Auto-Close Job ============
+// Initialize on server startup (optional)
+try {
+  const TenderAutoCloseJob = require('./jobs/tenderAutoCloseJob');
+  TenderAutoCloseJob.scheduleJob();
+  console.log('✅ Tender auto-close job initialized');
+} catch (e) {
+  console.log('⚠️ Tender auto-close job optional:', e.message);
+}
