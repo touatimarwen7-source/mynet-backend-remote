@@ -12,26 +12,28 @@ import {
   Button,
   Chip,
   Typography,
-  Grid
+  Grid,
+  CircularProgress,
+  Alert
 } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { setPageTitle } from '../utils/pageTitle';
+import { useOptimizedFetch } from '../hooks/useOptimizedFetch';
 
 export default function InvoiceManagement() {
   const theme = institutionalTheme;
-  const invoices = [
-    { id: 'INV-001', amount: 50000, status: 'Payée', date: '2024-11-15', dueDate: '2024-11-20' },
-    { id: 'INV-002', amount: 75000, status: 'En attente', date: '2024-11-18', dueDate: '2024-11-25' },
-    { id: 'INV-003', amount: 35000, status: 'Expirée', date: '2024-11-10', dueDate: '2024-11-17' }
-  ];
+  const { data, loading, error, pagination, goToPage, fetchData } = useOptimizedFetch('/api/procurement/invoices');
 
   useEffect(() => {
     setPageTitle('Gestion des factures');
-  }, []);
+    fetchData('/api/procurement/invoices', { page: pagination.page, limit: 20 });
+  }, [pagination.page]);
+
+  const invoices = data?.invoices || [];
 
   const getStatusColor = (status) => {
-    const colors = { 'Payée': '#4caf50', 'En attente': '#ff9800', 'Expirée': '#f44336' };
+    const colors = { 'paid': '#4caf50', 'pending': '#ff9800', 'overdue': '#f44336' };
     return colors[status] || '#757575';
   };
 
@@ -42,11 +44,13 @@ export default function InvoiceManagement() {
           Gestion des factures
         </Typography>
 
+        {error && <Alert severity="error">{error}</Alert>}
+
         <Grid container spacing={2} sx={{ mb: 3 }}>
           {[
-            { label: 'Total des factures', value: '3' },
-            { label: 'Payées', value: '160 000 TND' },
-            { label: 'En attente', value: '75 000 TND' }
+            { label: 'إجمالي الفواتير', value: pagination?.total || '0' },
+            { label: 'حالة الدفع', value: invoices.length > 0 ? invoices.length : '0' },
+            { label: 'المبلغ الإجمالي', value: invoices.reduce((sum, inv) => sum + (inv.amount || 0), 0).toLocaleString() + ' TND' }
           ].map((stat, idx) => (
             <Grid item xs={12} sm={6} md={3} key={idx}>
               <Box sx={{ backgroundColor: '#FFF', p: 2, borderRadius: '8px', border: '1px solid #E0E0E0' }}>
