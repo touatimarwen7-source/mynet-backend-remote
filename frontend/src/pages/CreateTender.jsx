@@ -1139,7 +1139,7 @@ const StepSeven = ({ formData, handleChange, loading }) => {
           </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography sx={{ color: '#666666' }}>🎯 Niveau de ترسية:</Typography>
+            <Typography sx={{ color: '#666666' }}>🎯 Niveau d'Attribution:</Typography>
             <Typography sx={{ fontWeight: 600, color: '#0056B3' }}>
               {awardLevelLabel[formData.awardLevel] || 'Non défini'}
             </Typography>
@@ -1413,25 +1413,48 @@ export default function CreateTender() {
       }
 
       setLoading(true);
-      console.log('Submitting tender with data:', {
+      console.log('🔄 [CreateTender] Submitting tender with data:', {
         title: formData.title,
         lots: formData.lots.length,
         awardLevel: formData.awardLevel,
         criteria: criteria,
+        contact_person: formData.contact_person,
+        contact_email: formData.contact_email,
       });
 
-      const response = await procurementAPI.createTender({
+      // Create tender data with timeout protection
+      const tenderData = {
         ...formData,
         budget_min: formData.budget_min ? parseFloat(formData.budget_min) : 0,
         budget_max: formData.budget_max ? parseFloat(formData.budget_max) : 0,
-      });
+      };
 
-      console.log('Tender created successfully:', response.data);
+      console.log('📤 Sending API request to /procurement/tenders');
+      const response = await procurementAPI.createTender(tenderData);
+
+      console.log('✅ [CreateTender] Tender created successfully:', {
+        tender_id: response.data.tender?.id,
+        title: response.data.tender?.title,
+      });
+      
       clearDraft('tender_draft');
-      navigate(`/tender/${response.data.tender.id}`);
+      
+      // Navigate to tender detail page
+      if (response.data.tender?.id) {
+        navigate(`/tender/${response.data.tender.id}`);
+      } else {
+        setError('Erreur: ID du tender manquant dans la réponse');
+        console.error('Missing tender ID in response:', response.data);
+      }
     } catch (err) {
       const errorMsg = handleAPIError(err);
-      console.error('Submit error:', err, errorMsg);
+      console.error('❌ [CreateTender] Submit error:', {
+        error: err,
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        errorMsg: errorMsg,
+      });
       setError(errorMsg);
     } finally {
       setLoading(false);
