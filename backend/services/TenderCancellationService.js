@@ -1,6 +1,7 @@
 const { getPool } = require('../config/db');
 const { sendEmail } = require('../config/emailService');
 const AuditLogService = require('./AuditLogService');
+const { logger } = require('../utils/logger');
 
 class TenderCancellationService {
   static async cancelTender(tenderId, buyerId, cancellationReason) {
@@ -42,7 +43,7 @@ class TenderCancellationService {
         if (participant.email) {
           sendEmail(participant.email, `إخطار بإلغاء المناقصة - ${tender.tender_number}`, 
             `تم إلغاء المناقصة.\n\nالسبب: ${cancellationReason}`)
-            .catch(e => console.error('Email error:', e.message));
+            .catch(e => logger.error('Email notification failed', { email: participant.email, error: e.message }));
         }
       }
 

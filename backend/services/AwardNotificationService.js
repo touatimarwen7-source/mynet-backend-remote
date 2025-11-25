@@ -1,6 +1,7 @@
 const { getPool } = require('../config/db');
 const { sendEmail } = require('../config/emailService');
 const AuditLogService = require('./AuditLogService');
+const { logger } = require('../utils/logger');
 
 class AwardNotificationService {
   static async selectWinnersAndNotify(tenderId, winnersIds, buyerId) {
@@ -50,11 +51,11 @@ class AwardNotificationService {
           if (winnersIds.includes(participant.offer_id)) {
             sendEmail(participant.email, `إخطار بالترسية - ${tender.tender_number}`, 
               `تم اختيارك كفائز في المناقصة برقم عرض ${participant.offer_number}`)
-              .catch(e => console.error('Email error:', e.message));
+              .catch(e => logger.error('Winner notification failed', { email: participant.email, error: e.message }));
           } else {
             sendEmail(participant.email, `نتيجة المناقصة - ${tender.tender_number}`, 
               `للأسف لم يتم قبول عرضك في هذه المناقصة`)
-              .catch(e => console.error('Email error:', e.message));
+              .catch(e => logger.error('Rejection notification failed', { email: participant.email, error: e.message }));
           }
         }
       }
