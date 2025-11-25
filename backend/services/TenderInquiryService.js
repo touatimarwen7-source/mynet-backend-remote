@@ -1,6 +1,6 @@
 /**
  * Tender Inquiry Service
- * Handles tender inquiries and responses
+ * Handles tender inquiries, responses, and supplier Q&A
  */
 
 const { getPool } = require('../config/db');
@@ -9,7 +9,15 @@ const DataMapper = require('../helpers/DataMapper');
 
 class TenderInquiryService {
   /**
-   * Submit a tender inquiry
+   * Submit a tender inquiry from supplier
+   * @async
+   * @param {string} tenderId - ID of tender
+   * @param {string} supplierId - ID of supplier submitting inquiry
+   * @param {string} subject - Inquiry subject/title
+   * @param {string} inquiryText - Inquiry question/text
+   * @param {Array} [attachments=[]] - Optional attachment files
+   * @returns {Promise<Object>} Created inquiry record
+   * @throws {Error} When submission fails
    */
   static async submitInquiry(tenderId, supplierId, subject, inquiryText, attachments = []) {
     const pool = getPool();
@@ -30,7 +38,13 @@ class TenderInquiryService {
   }
 
   /**
-   * Get inquiries for a tender
+   * Get all inquiries for a tender with pagination
+   * @async
+   * @param {string} tenderId - ID of tender
+   * @param {number} [page=1] - Page number for pagination
+   * @param {number} [limit=10] - Items per page
+   * @returns {Promise<Array>} Array of inquiry records with supplier details
+   * @throws {Error} When query fails
    */
   static async getInquiriesByTender(tenderId, page = 1, limit = 10) {
     const pool = getPool();
@@ -54,7 +68,15 @@ class TenderInquiryService {
   }
 
   /**
-   * Respond to an inquiry
+   * Respond to an inquiry (Buyer/Admin only)
+   * Updates inquiry status to answered
+   * @async
+   * @param {string} inquiryId - ID of inquiry to respond to
+   * @param {string} responseText - Response text
+   * @param {Array} [attachments=[]] - Optional response attachments
+   * @param {string} userId - ID of user responding (buyer)
+   * @returns {Promise<Object>} Created response record
+   * @throws {Error} When inquiry not found or response fails
    */
   static async respondToInquiry(inquiryId, responseText, attachments = [], userId) {
     const pool = getPool();
@@ -94,7 +116,11 @@ class TenderInquiryService {
   }
 
   /**
-   * Get responses for an inquiry
+   * Get all responses for an inquiry
+   * @async
+   * @param {string} inquiryId - ID of inquiry
+   * @returns {Promise<Array>} Array of response records with responder details
+   * @throws {Error} When query fails
    */
   static async getInquiryResponses(inquiryId) {
     const pool = getPool();
@@ -116,7 +142,13 @@ class TenderInquiryService {
   }
 
   /**
-   * Get supplier's inquiries
+   * Get all inquiries submitted by a supplier
+   * @async
+   * @param {string} supplierId - ID of supplier
+   * @param {number} [page=1] - Page number for pagination
+   * @param {number} [limit=10] - Items per page
+   * @returns {Promise<Array>} Array of inquiries with tender details
+   * @throws {Error} When query fails
    */
   static async getMyInquiries(supplierId, page = 1, limit = 10) {
     const pool = getPool();

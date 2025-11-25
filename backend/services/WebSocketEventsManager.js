@@ -1,16 +1,23 @@
 /**
  * WebSocket Events Manager
- * Handles all real-time event broadcasting and user notifications
+ * Handles all real-time event broadcasting and user notifications via socket.io
  */
 
 class WebSocketEventsManager {
+  /**
+   * Initialize WebSocket event manager
+   * @param {Object} io - Socket.io instance
+   */
   constructor(io) {
     this.io = io;
     this.userConnections = new Map(); // Track user connections
   }
 
   /**
-   * Register user connection
+   * Register a new user socket connection
+   * @param {string} userId - ID of user connecting
+   * @param {string} socketId - Socket.io socket ID
+   * @returns {void}
    */
   registerUserConnection(userId, socketId) {
     if (!this.userConnections.has(userId)) {
@@ -20,7 +27,10 @@ class WebSocketEventsManager {
   }
 
   /**
-   * Remove user connection
+   * Remove user socket connection when disconnecting
+   * @param {string} userId - ID of user disconnecting
+   * @param {string} socketId - Socket.io socket ID to remove
+   * @returns {void}
    */
   removeUserConnection(userId, socketId) {
     if (this.userConnections.has(userId)) {
@@ -36,7 +46,10 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 📦 Emit: New Offer Created
+   * Broadcast new offer creation to all tender watchers
+   * @param {string} tenderId - ID of tender
+   * @param {Object} offerData - Offer details
+   * @returns {void}
    */
   emitOfferCreated(tenderId, offerData) {
     this.io.to(`tender-${tenderId}`).emit('offer-created', {
@@ -51,7 +64,11 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 🎯 Emit: Tender Status Changed
+   * Broadcast tender status change to all participants
+   * @param {string} tenderId - ID of tender
+   * @param {string} status - New tender status
+   * @param {string} changedBy - User ID who made the change
+   * @returns {void}
    */
   emitTenderStatusChanged(tenderId, status, changedBy) {
     this.io.to(`tender-${tenderId}`).emit('tender-status-changed', {
@@ -64,7 +81,10 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 💬 Emit: New Message
+   * Send new message notification to recipient
+   * @param {string} recipientId - ID of message recipient
+   * @param {Object} senderData - Sender information
+   * @returns {void}
    */
   emitNewMessage(recipientId, senderData) {
     this.io.to(`user-${recipientId}`).emit('message-received', {
@@ -77,7 +97,10 @@ class WebSocketEventsManager {
   }
 
   /**
-   * ⭐ Emit: Rating Received
+   * Send rating received notification to supplier
+   * @param {string} supplierId - ID of rated supplier
+   * @param {Object} ratingData - Rating details
+   * @returns {void}
    */
   emitRatingReceived(supplierId, ratingData) {
     this.io.to(`user-${supplierId}`).emit('rating-received', {
@@ -90,7 +113,10 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 📧 Emit: Email Notification Sent
+   * Send email notification confirmation to user
+   * @param {string} userId - ID of user
+   * @param {Object} emailData - Email details
+   * @returns {void}
    */
   emitEmailNotification(userId, emailData) {
     this.io.to(`user-${userId}`).emit('email-sent', {
@@ -102,7 +128,9 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 👥 Emit: User Online Status
+   * Broadcast user online status to all connected clients
+   * @param {string} userId - ID of user coming online
+   * @returns {void}
    */
   emitUserOnline(userId) {
     this.io.emit('user-online', {
@@ -113,7 +141,9 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 👥 Emit: User Offline Status
+   * Broadcast user offline status to all connected clients
+   * @param {string} userId - ID of user going offline
+   * @returns {void}
    */
   emitUserOffline(userId) {
     this.io.emit('user-offline', {
@@ -124,7 +154,10 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 🔔 Emit: Generic Notification
+   * Send generic notification to user
+   * @param {string} userId - ID of user to notify
+   * @param {Object} notification - Notification object with title and message
+   * @returns {void}
    */
   emitNotification(userId, notification) {
     this.io.to(`user-${userId}`).emit('notification', {
@@ -138,7 +171,10 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 🎯 Emit: Tender Update to All Watchers
+   * Broadcast tender update to all tender watchers
+   * @param {string} tenderId - ID of tender
+   * @param {Object} updateData - Update details including field and new value
+   * @returns {void}
    */
   emitTenderUpdated(tenderId, updateData) {
     this.io.to(`tender-${tenderId}`).emit('tender-updated', {
@@ -153,7 +189,10 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 📊 Emit: Statistics Update
+   * Send statistics update to user
+   * @param {string} userId - ID of user
+   * @param {Object} stats - Statistics object
+   * @returns {void}
    */
   emitStatisticsUpdate(userId, stats) {
     this.io.to(`user-${userId}`).emit('statistics-updated', {
@@ -164,7 +203,10 @@ class WebSocketEventsManager {
   }
 
   /**
-   * 🚨 Emit: Critical Alert
+   * Send critical alert to user
+   * @param {string} userId - ID of user
+   * @param {Object} alert - Alert object with level, title, and message
+   * @returns {void}
    */
   emitCriticalAlert(userId, alert) {
     this.io.to(`user-${userId}`).emit('critical-alert', {
@@ -178,21 +220,26 @@ class WebSocketEventsManager {
   }
 
   /**
-   * Get user connection count
+   * Get number of active connections for a user
+   * @param {string} userId - ID of user
+   * @returns {number} Number of active socket connections
    */
   getUserConnectionCount(userId) {
     return this.userConnections.get(userId)?.length || 0;
   }
 
   /**
-   * Check if user is online
+   * Check if user is currently online
+   * @param {string} userId - ID of user
+   * @returns {boolean} True if user has active connections
    */
   isUserOnline(userId) {
     return this.userConnections.has(userId);
   }
 
   /**
-   * Get all online users count
+   * Get total count of all currently online users
+   * @returns {number} Number of unique users with active connections
    */
   getOnlineUsersCount() {
     return this.userConnections.size;

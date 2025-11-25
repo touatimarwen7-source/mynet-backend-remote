@@ -4,6 +4,16 @@ const AuditLogService = require('./AuditLogService');
 const { logger } = require('../utils/logger');
 
 class TenderCancellationService {
+  /**
+   * Cancel tender and notify all participants
+   * Status transitions validated, emails sent to all offer participants
+   * @async
+   * @param {string} tenderId - ID of tender to cancel
+   * @param {string} buyerId - ID of buyer performing cancellation
+   * @param {string} cancellationReason - Human-readable reason for cancellation
+   * @returns {Promise<Object>} Result with tender number and notification count
+   * @throws {Error} When tender not found, invalid status, or operation fails
+   */
   static async cancelTender(tenderId, buyerId, cancellationReason) {
     const pool = getPool();
     try {
@@ -67,6 +77,13 @@ class TenderCancellationService {
     }
   }
 
+  /**
+   * Get cancellation status and reason for a tender
+   * @async
+   * @param {string} tenderId - ID of tender
+   * @returns {Promise<Object>} Tender record with cancellation details
+   * @throws {Error} When tender not found
+   */
   static async getCancellationStatus(tenderId) {
     const pool = getPool();
     const result = await pool.query(

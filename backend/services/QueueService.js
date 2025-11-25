@@ -2,6 +2,22 @@
 const { getPool } = require('../config/db');
 
 class QueueService {
+  /**
+   * Log tender history entry for audit trail
+   * Records state changes and user actions on tenders
+   * @async
+   * @param {Object} tenderHistoryData - History entry data
+   * @param {string} tenderHistoryData.tender_id - ID of tender
+   * @param {string} tenderHistoryData.user_id - ID of user making change
+   * @param {string} tenderHistoryData.action - Action performed (create, update, publish, etc)
+   * @param {Object} tenderHistoryData.previous_state - Previous tender state
+   * @param {Object} tenderHistoryData.new_state - New tender state
+   * @param {Object} [tenderHistoryData.metadata] - Additional context metadata
+   * @param {string} [tenderHistoryData.ip_address] - Client IP address
+   * @param {string} [tenderHistoryData.user_agent] - Client user agent
+   * @returns {Promise<void>}
+   * @throws {Error} When database insert fails
+   */
   async logTenderHistory(tenderHistoryData) {
     const pool = getPool();
     await pool.query(
@@ -21,6 +37,14 @@ class QueueService {
     );
   }
 
+  /**
+   * Get complete history for a tender
+   * Returns all state changes and actions in reverse chronological order
+   * @async
+   * @param {string} tenderId - ID of tender
+   * @returns {Promise<Array>} Array of history entries with user details
+   * @throws {Error} When query fails
+   */
   async getTenderHistory(tenderId) {
     const pool = getPool();
     const result = await pool.query(

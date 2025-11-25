@@ -1,6 +1,6 @@
 /**
  * Opening Report Service
- * Handles creation and retrieval of tender opening reports (procès-verbal)
+ * Handles creation, retrieval, and export of tender opening reports (procès-verbal)
  */
 
 const { queryWithRetry, getPool } = require('../config/db');
@@ -8,10 +8,13 @@ const { queryWithRetry, getPool } = require('../config/db');
 class OpeningReportService {
   /**
    * Create opening report when tender closes
-   * @param {number} tenderId - ID of the tender
-   * @param {Array} offers - Array of offer objects
-   * @param {number} userId - ID of the user creating the report
-   * @throws {Error} If tender ID or offers array is invalid
+   * Validates tender and offer data, records all submissions
+   * @async
+   * @param {string} tenderId - ID of the tender
+   * @param {Array} offers - Array of offer objects with metadata
+   * @param {string} userId - ID of the user creating the report (buyer)
+   * @returns {Promise<Object>} Created opening report record
+   * @throws {Error} If tender ID invalid or offers array empty
    */
   static async createOpeningReport(tenderId, offers, userId) {
     try {
@@ -64,9 +67,12 @@ class OpeningReportService {
   }
 
   /**
-   * Get opening report by tender ID
-   * @param {number} tenderId - ID of the tender
-   * @returns {Object|null} Opening report object or null if not found
+   * Get opening report for a specific tender
+   * Returns most recent report with tender and user details
+   * @async
+   * @param {string} tenderId - ID of the tender
+   * @returns {Promise<Object|null>} Opening report record or null if not found
+   * @throws {Error} If tender ID invalid or query fails
    */
   static async getOpeningReportByTenderId(tenderId) {
     try {
@@ -106,10 +112,13 @@ class OpeningReportService {
 
   /**
    * Get all opening reports for a buyer with pagination
-   * @param {number} buyerId - ID of the buyer
-   * @param {number} page - Page number (default: 1)
-   * @param {number} limit - Items per page (default: 10)
-   * @returns {Array} Array of opening reports
+   * Returns reports sorted by creation date, newest first
+   * @async
+   * @param {string} buyerId - ID of the buyer
+   * @param {number} [page=1] - Page number for pagination
+   * @param {number} [limit=10] - Items per page
+   * @returns {Promise<Array>} Array of opening reports for buyer
+   * @throws {Error} If buyer ID invalid or query fails
    */
   static async getOpeningReportsByBuyer(buyerId, page = 1, limit = 10) {
     try {
@@ -146,10 +155,12 @@ class OpeningReportService {
   }
 
   /**
-   * Export opening report (PDF/JSON)
-   * @param {number} reportId - ID of the report
-   * @param {string} format - Export format: 'json' or 'pdf'
-   * @returns {Object} Export data
+   * Export opening report in JSON or PDF format
+   * @async
+   * @param {string} reportId - ID of the report to export
+   * @param {string} [format='json'] - Export format (json or pdf)
+   * @returns {Promise<Object>} Export data with report and format metadata
+   * @throws {Error} If report not found or invalid format
    */
   static async exportOpeningReport(reportId, format = 'json') {
     try {

@@ -1,6 +1,6 @@
 /**
  * Offer Opening Service
- * Handles envelope opening and decryption of offers
+ * Handles envelope opening and decryption of offers at scheduled opening time
  */
 
 const { getPool } = require('../config/db');
@@ -9,7 +9,12 @@ const AuditLogService = require('./AuditLogService');
 
 class OfferOpeningService {
   /**
-   * Check if opening date has arrived
+   * Validate that opening time has arrived before decryption
+   * @private
+   * @param {Date} tenderDeadline - Tender submission deadline
+   * @param {Date} openingDate - Scheduled offer opening date/time
+   * @returns {boolean} True if time has arrived
+   * @throws {Error} When opening time not yet reached
    */
   static canOpenOffers(tenderDeadline, openingDate) {
     const now = new Date();
@@ -24,7 +29,13 @@ class OfferOpeningService {
   }
 
   /**
-   * Get all offers for tender with decryption
+   * Get all submitted offers for a tender with decryption
+   * Decrypts financial data using KeyManagementService
+   * @async
+   * @param {string} tenderId - ID of tender
+   * @param {string} buyerId - ID of buyer (for authorization)
+   * @returns {Promise<Array>} Array of offers with decrypted data
+   * @throws {Error} When tender not found, access denied, or opening time not reached
    */
   static async getOffersForOpening(tenderId, buyerId) {
     const pool = getPool();
@@ -96,7 +107,13 @@ class OfferOpeningService {
   }
 
   /**
-   * Generate opening report (محضر الفتح)
+   * Generate opening report (محضر الفتح) with offer summaries
+   * @async
+   * @param {string} tenderId - ID of tender
+   * @param {string} buyerId - ID of buyer
+   * @param {Array} offers - Array of decrypted offer objects
+   * @returns {Promise<Object>} Created opening report record
+   * @throws {Error} When report creation fails
    */
   static async generateOpeningReport(tenderId, buyerId, offers) {
     const pool = getPool();
@@ -139,7 +156,11 @@ class OfferOpeningService {
   }
 
   /**
-   * Get opening report
+   * Get opening report by ID
+   * @async
+   * @param {string} reportId - ID of opening report
+   * @returns {Promise<Object|null>} Opening report record or null
+   * @throws {Error} When database query fails
    */
   static async getOpeningReport(reportId) {
     const pool = getPool();

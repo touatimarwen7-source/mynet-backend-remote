@@ -12,6 +12,11 @@ class SimpleAuthService {
     };
   }
 
+  /**
+   * Load users from local JSON file
+   * @private
+   * @returns {Array} Array of user objects from file or empty array
+   */
   loadUsers() {
     try {
       if (fs.existsSync(this.usersFile)) {
@@ -23,6 +28,15 @@ class SimpleAuthService {
     return [];
   }
 
+  /**
+   * Authenticate user with email and password
+   * Generates JWT access and refresh tokens
+   * @async
+   * @param {string} email - User email address
+   * @param {string} password - User password
+   * @returns {Promise<Object>} User object and access/refresh tokens
+   * @throws {Error} When credentials are invalid
+   */
   async authenticate(email, password) {
     const users = this.loadUsers();
     const user = users.find(u => u.email === email);
@@ -60,6 +74,11 @@ class SimpleAuthService {
     };
   }
 
+  /**
+   * Get user by ID without password hash
+   * @param {string} userId - ID of user to retrieve
+   * @returns {Object|null} User object without password or null if not found
+   */
   getUserById(userId) {
     const users = this.loadUsers();
     const user = users.find(u => u.id === userId);
