@@ -12,9 +12,60 @@ class TenderService {
         return `TND-${timestamp}-${randomPart}`;
     }
 
+    // Map frontend field names to database column names
+    mapFrontendToDatabaseFields(tenderData) {
+        const mapped = {};
+        
+        // Database fields that directly exist
+        const directFields = [
+            'title', 'description', 'category', 'budget_min', 'budget_max',
+            'currency', 'status', 'deadline', 'opening_date', 'requirements',
+            'attachments', 'lots', 'participation_eligibility', 'mandatory_documents',
+            'disqualification_criteria', 'submission_method', 'sealed_envelope_requirements',
+            'contact_person', 'contact_email', 'contact_phone', 'technical_specifications',
+            'queries_start_date', 'queries_end_date', 'offer_validity_days', 'alert_type',
+            'is_public', 'evaluation_criteria'
+        ];
+        
+        // Copy direct fields
+        directFields.forEach(field => {
+            if (tenderData[field] !== undefined) {
+                mapped[field] = tenderData[field];
+            }
+        });
+        
+        // Map frontend-specific names to database columns
+        if (tenderData.publish_date !== undefined) {
+            mapped.publish_date = tenderData.publish_date;
+        } else if (tenderData.publication_date !== undefined) {
+            // Map publication_date to publish_date
+            mapped.publish_date = tenderData.publication_date;
+        }
+        
+        // Merge specification_documents into attachments
+        if (tenderData.specification_documents && Array.isArray(tenderData.specification_documents)) {
+            mapped.attachments = mapped.attachments || [];
+            mapped.attachments = [
+                ...mapped.attachments,
+                ...tenderData.specification_documents
+            ];
+        }
+        
+        // Fields to ignore (not in database schema):
+        // - consultation_number
+        // - quantity_required
+        // - unit
+        // - awardLevel (not stored in tender table)
+        
+        return mapped;
+    }
+
     async createTender(tenderData, userId) {
         const pool = getPool();
-        const tender = new Tender(tenderData);
+        
+        // Map frontend data to database schema
+        const mappedData = this.mapFrontendToDatabaseFields(tenderData);
+        const tender = new Tender(mappedData);
 
         try {
             const tenderNumber = this.generateTenderNumber();
