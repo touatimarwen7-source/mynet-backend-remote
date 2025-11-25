@@ -2,9 +2,13 @@
 const { getPool } = require('../config/db');
 const Invoice = require('../models/Invoice');
 const DataMapper = require('../helpers/DataMapper');
+const { validateSchema, createInvoiceSchema, markInvoiceAsPaidSchema } = require('../utils/validationSchemas');
 
 class InvoiceService {
   async createInvoice(invoiceData) {
+    // Validate input data type
+    const validatedData = validateSchema(invoiceData, createInvoiceSchema);
+    
     const pool = getPool();
     const client = await pool.connect();
     try {
@@ -13,7 +17,7 @@ class InvoiceService {
       // Verify purchase order exists and belongs to supplier
       const poCheck = await client.query(
         'SELECT * FROM purchase_orders WHERE id = $1 AND supplier_id = $2',
-        [invoiceData.purchase_order_id, invoiceData.supplier_id]
+        [validatedData.po_id, validatedData.supplier_id]
       );
 
       if (poCheck.rows.length === 0) {
@@ -37,9 +41,9 @@ class InvoiceService {
          issue_date, due_date, status, notes) 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
         RETURNING *`,
-        [invoice.id, invoice.purchase_order_id, invoice.supplier_id, 
-         invoice.invoice_number, invoice.amount, invoice.tax, invoice.total,
-         invoice.issue_date, invoice.due_date, invoice.status, invoice.notes]
+        [invoice.id, validatedData.po_id, validatedData.supplier_id, 
+         invoice.invoice_number, validatedData.amount, validatedData.tax || 0, invoice.total,
+         validatedData.invoice_date, validatedData.due_date, invoice.status, invoice.notes]
       );
 
       await client.query('COMMIT');
@@ -65,14 +69,17 @@ class InvoiceService {
     return result.rows;
   }
 
-  async markAsPaid(invoiceId, paymentDate) {
+  async markAsPaid(paymentData) {
+    // Validate input data type
+    const validatedData = validateSchema(paymentData, markInvoiceAsPaidSchema);
+    
     const pool = getPool();
     const result = await pool.query(
       `UPDATE invoices 
        SET status = 'paid', payment_date = $1, updated_at = CURRENT_TIMESTAMP 
        WHERE id = $2 
        RETURNING *`,
-      [paymentDate, invoiceId]
+      [validatedData.payment_date, validatedData.invoice_id]
     );
     return result.rows[0];
   }

@@ -4,6 +4,7 @@ const Tender = require('../models/Tender');
 const NotificationService = require('./NotificationService');
 const AuditLogService = require('./AuditLogService');
 const QueueService = require('./QueueService');
+const { validateSchema, createTenderSchema, updateTenderSchema } = require('../utils/validationSchemas');
 
 class TenderService {
     generateTenderNumber() {
@@ -61,10 +62,13 @@ class TenderService {
     }
 
     async createTender(tenderData, userId) {
+        // Validate input data type
+        const validatedData = validateSchema(tenderData, createTenderSchema);
+        
         const pool = getPool();
         
         // Map frontend data to database schema
-        const mappedData = this.mapFrontendToDatabaseFields(tenderData);
+        const mappedData = this.mapFrontendToDatabaseFields(validatedData);
 
         try {
             const tenderNumber = this.generateTenderNumber();

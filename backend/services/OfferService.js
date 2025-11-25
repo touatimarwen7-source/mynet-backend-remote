@@ -3,6 +3,7 @@ const Offer = require('../models/Offer');
 const crypto = require('crypto');
 const KeyManagementService = require('../security/KeyManagementService');
 const DataMapper = require('../helpers/DataMapper');
+const { validateSchema, createOfferSchema } = require('../utils/validationSchemas');
 
 class OfferService {
     // 🚀 PERFORMANCE: Batch processing queue
@@ -66,10 +67,13 @@ class OfferService {
     }
 
     async createOffer(offerData, userId) {
+        // Validate input data type
+        const validatedData = validateSchema(offerData, createOfferSchema);
+        
         const pool = getPool();
         
         // Map frontend data to database schema
-        const mappedData = DataMapper.mapOffer(offerData);
+        const mappedData = DataMapper.mapOffer(validatedData);
         const offer = new Offer(mappedData);
         
         try {

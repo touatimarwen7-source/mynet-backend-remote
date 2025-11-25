@@ -2,9 +2,11 @@ const { getPool } = require('../config/db');
 const KeyManagementService = require('../security/KeyManagementService');
 const User = require('../models/User');
 const DataMapper = require('../helpers/DataMapper');
+const { validateSchema, updateUserRoleSchema, blockUserSchema } = require('../utils/validationSchemas');
 
 class UserService {
     async createUser(userData) {
+        // Input validation is handled at controller level for password strength
         const pool = getPool();
         
         // Map frontend data to database schema
