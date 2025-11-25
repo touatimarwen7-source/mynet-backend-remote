@@ -65,10 +65,44 @@ class TenderService {
         
         // Map frontend data to database schema
         const mappedData = this.mapFrontendToDatabaseFields(tenderData);
-        const tender = new Tender(mappedData);
 
         try {
             const tenderNumber = this.generateTenderNumber();
+
+            // Prepare values directly without creating Tender model (to avoid inheritance issues)
+            const values = [
+                tenderNumber,
+                mappedData.title || '',
+                mappedData.description || '',
+                mappedData.category || 'technology',
+                mappedData.budget_min || 0,
+                mappedData.budget_max || 0,
+                mappedData.currency || 'TND',
+                mappedData.status || 'draft',
+                mappedData.publish_date || null,
+                mappedData.deadline || null,
+                mappedData.opening_date || null,
+                JSON.stringify(mappedData.requirements || []),
+                JSON.stringify(mappedData.attachments || []),
+                JSON.stringify(mappedData.lots || []),
+                mappedData.participation_eligibility || '',
+                JSON.stringify(mappedData.mandatory_documents || []),
+                mappedData.disqualification_criteria || '',
+                mappedData.submission_method || 'electronic',
+                mappedData.sealed_envelope_requirements || '',
+                mappedData.contact_person || '',
+                mappedData.contact_email || '',
+                mappedData.contact_phone || '',
+                mappedData.technical_specifications || '',
+                mappedData.queries_start_date || null,
+                mappedData.queries_end_date || null,
+                mappedData.offer_validity_days || 90,
+                mappedData.alert_type || 'before_48h',
+                userId,
+                mappedData.is_public !== undefined ? mappedData.is_public : true,
+                JSON.stringify(mappedData.evaluation_criteria || {}),
+                userId
+            ];
 
             const result = await pool.query(
                 `INSERT INTO tenders (tender_number, title, description, category, budget_min, budget_max,
@@ -79,14 +113,7 @@ class TenderService {
                  buyer_id, is_public, evaluation_criteria, created_by)
                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32)
                  RETURNING *`,
-                [tenderNumber, tender.title, tender.description, tender.category, tender.budget_min,
-                 tender.budget_max, tender.currency, tender.status, tender.publish_date, tender.deadline,
-                 tender.opening_date, JSON.stringify(tender.requirements), JSON.stringify(tender.attachments),
-                 JSON.stringify(tender.lots), tender.participation_eligibility, JSON.stringify(tender.mandatory_documents),
-                 tender.disqualification_criteria, tender.submission_method, tender.sealed_envelope_requirements,
-                 tender.contact_person, tender.contact_email, tender.contact_phone, tender.technical_specifications,
-                 tender.queries_start_date, tender.queries_end_date, tender.offer_validity_days, tender.alert_type,
-                 userId, tender.is_public, JSON.stringify(tender.evaluation_criteria), userId]
+                values
             );
 
             // Log the audit trail for tender creation
