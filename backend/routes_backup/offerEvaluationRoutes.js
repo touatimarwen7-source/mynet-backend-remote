@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { validateIdMiddleware, normalizeUserMiddleware } = require('../middleware/validateIdMiddleware');
 const OfferOpeningService = require('../services/OfferOpeningService');
 const EvaluationService = require('../services/EvaluationService');
 const DataFetchingOptimizer = require('../utils/dataFetchingOptimizer');

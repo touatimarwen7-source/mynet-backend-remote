@@ -3,7 +3,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 const { buildPaginationQuery } = require('../utils/paginationHelper');
 
 const router = express.Router();
-const { validateIdMiddleware, normalizeUserMiddleware } = require('../middleware/validateIdMiddleware');
 
 // Send a message - ISSUE FIX #3: Add input validation
 router.post('/', authMiddleware, async (req, res) => {

@@ -1,0 +1,72 @@
+/**
+ * ID Validation Middleware
+ * Validates all ID parameters (id, tenderId, userId, supplierId, etc.)
+ * Prevents undefined/null/invalid values from reaching handlers
+ */
+
+const validateIdMiddleware = (paramName = 'id') => {
+  return (req, res, next) => {
+    // Handle multiple parameter names
+    const params = Array.isArray(paramName) ? paramName : [paramName];
+    
+    for (const param of params) {
+      const value = req.params[param];
+      
+      // Check if parameter is missing or invalid
+      if (!value || value === 'undefined' || value === 'null' || value === '') {
+        return res.status(400).json({
+          error: `Invalid or missing ${param} parameter`,
+          received: value
+        });
+      }
+      
+      // Validate numeric IDs
+      if (param.includes('Id') && isNaN(parseInt(value))) {
+        return res.status(400).json({
+          error: `Parameter ${param} must be a valid number`,
+          received: value
+        });
+      }
+      
+      // Validate UUID format if applicable
+      if (param === 'id' && value.length === 36) {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(value)) {
+          return res.status(400).json({
+            error: `Parameter ${param} must be a valid UUID`,
+            received: value
+          });
+        }
+      }
+    }
+    
+    next();
+  };
+};
+
+/**
+ * Ensure req.user is properly set
+ * Normalize user object to always have both userId and id
+ */
+const normalizeUserMiddleware = (req, res, next) => {
+  if (req.user) {
+    // Ensure both properties exist for compatibility
+    if (!req.user.userId && req.user.id) {
+      req.user.userId = req.user.id;
+    } else if (req.user.userId && !req.user.id) {
+      req.user.id = req.user.userId;
+    }
+    
+    // Validate user has an ID
+    if (!req.user.userId && !req.user.id) {
+      return res.status(401).json({ error: 'User ID not found in token' });
+    }
+  }
+  
+  next();
+};
+
+module.exports = {
+  validateIdMiddleware,
+  normalizeUserMiddleware
+};

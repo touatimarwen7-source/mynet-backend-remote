@@ -1,7 +1,6 @@
 const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
-const { validateIdMiddleware, normalizeUserMiddleware } = require('../middleware/validateIdMiddleware');
 
 // Get tender history - ISSUE FIX #1: Add authentication
 router.get('/tender/:tenderId', authMiddleware, async (req, res) => {

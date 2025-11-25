@@ -3,7 +3,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 const { buildPaginationQuery } = require('../utils/paginationHelper');
 
 const router = express.Router();
-const { validateIdMiddleware, normalizeUserMiddleware } = require('../middleware/validateIdMiddleware');
 
 // Helper function: Check for duplicate review
 const checkDuplicateReview = async (db, reviewerId, reviewedUserId) => {

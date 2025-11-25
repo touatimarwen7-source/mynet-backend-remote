@@ -3,7 +3,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 const { buildPaginationQuery } = require('../utils/paginationHelper');
 
 const router = express.Router();
-const { validateIdMiddleware, normalizeUserMiddleware } = require('../middleware/validateIdMiddleware');
 
 // Get company profile (only own profile or any if admin)
 router.get('/supplier/:supplierId', authMiddleware, async (req, res) => {

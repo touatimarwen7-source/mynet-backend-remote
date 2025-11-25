@@ -4,7 +4,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 const QueryOptimizer = require('../utils/queryOptimizer');
 const { cacheMiddleware } = require('../middleware/cacheMiddleware');
 const router = express.Router();
-const { validateIdMiddleware, normalizeUserMiddleware } = require('../middleware/validateIdMiddleware');
 
 // Get supplier performance score (optimized + cached)
 router.get('/supplier/:supplierId', authMiddleware, cacheMiddleware(600), async (req, res) => {

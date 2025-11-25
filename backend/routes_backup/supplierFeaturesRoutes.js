@@ -2,7 +2,6 @@ const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
-const { validateIdMiddleware, normalizeUserMiddleware } = require('../middleware/validateIdMiddleware');
 
 // Get supplier features - ISSUE FIX #1: Add authentication
 router.get('/supplier/:supplierId', authMiddleware, async (req, res) => {

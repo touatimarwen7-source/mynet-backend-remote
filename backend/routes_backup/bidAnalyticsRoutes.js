@@ -4,7 +4,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 const QueryOptimizer = require('../utils/queryOptimizer');
 const { cacheMiddleware } = require('../middleware/cacheMiddleware');
 const router = express.Router();
-const { validateIdMiddleware, normalizeUserMiddleware } = require('../middleware/validateIdMiddleware');
 
 // Get bid statistics for a tender (optimized + cached)
 router.get('/tender/:tenderId', authMiddleware, cacheMiddleware(600), async (req, res) => {

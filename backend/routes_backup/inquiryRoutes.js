@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { validateIdMiddleware, normalizeUserMiddleware } = require('../middleware/validateIdMiddleware');
 const TenderInquiryService = require('../services/TenderInquiryService');
 const AddendumService = require('../services/AddendumService');
 
