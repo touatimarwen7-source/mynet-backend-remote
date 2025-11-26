@@ -1,5 +1,5 @@
 /**
- * 🔄 ENHANCED BACKUP SCHEDULER
+ * Enhanced Backup Scheduler
  * Improved automatic backup system with:
  * - Incremental backups support
  * - Backup verification
@@ -13,6 +13,10 @@ const fs = require('fs');
 const path = require('path');
 
 class EnhancedBackupScheduler {
+  /**
+   * Initialize enhanced backup scheduler with environment configuration
+   * @constructor
+   */
   constructor() {
     this.jobs = [];
     this.isRunning = false;
@@ -25,7 +29,9 @@ class EnhancedBackupScheduler {
   }
 
   /**
-   * Parse backup schedule from environment
+   * Parse backup schedule from BACKUP_SCHEDULE environment variable
+   * @private
+   * @returns {string} Valid cron pattern (5 fields)
    */
   parseSchedule() {
     const defaultSchedule = '0 2 * * *'; // 2 AM UTC daily
@@ -40,7 +46,10 @@ class EnhancedBackupScheduler {
   }
 
   /**
-   * Start backup scheduler
+   * Start enhanced backup scheduler
+   * Initializes backup directory and schedules jobs
+   * Does nothing if already running or disabled
+   * @returns {void}
    */
   start() {
     if (!this.isEnabled) {
@@ -62,18 +71,22 @@ class EnhancedBackupScheduler {
       this.isRunning = true;
 
     } catch (error) {
+      // Silently fail scheduler startup
     }
   }
 
   /**
-   * Run backup immediately
+   * Execute a backup operation immediately
+   * Creates backup, verifies integrity, records in history, and cleans old backups
+   * @async
+   * @private
+   * @returns {Promise<void>}
    */
   async runBackup() {
     try {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backupName = `backup-${timestamp}.json`;
       const backupPath = path.join(this.backupDir, backupName);
-
 
       // Run backup
       const result = await BackupService.createBackup(backupPath);
@@ -110,7 +123,11 @@ class EnhancedBackupScheduler {
   }
 
   /**
-   * Verify backup integrity
+   * Verify backup file integrity by checking structure
+   * @async
+   * @private
+   * @param {string} backupPath - Full path to backup file
+   * @returns {Promise<boolean>} True if backup contains required structure
    */
   async verifyBackup(backupPath) {
     try {
@@ -128,6 +145,10 @@ class EnhancedBackupScheduler {
 
   /**
    * Cleanup old backups based on retention policy
+   * Removes backups exceeding maxBackups count or retentionDays age
+   * @async
+   * @private
+   * @returns {Promise<void>}
    */
   async cleanupOldBackups() {
     try {
@@ -150,11 +171,15 @@ class EnhancedBackupScheduler {
         }
       }
     } catch (error) {
+      // Silently fail cleanup
     }
   }
 
   /**
-   * Ensure backup directory exists
+   * Ensure backup directory exists with proper permissions
+   * Creates directory recursively if needed
+   * @private
+   * @returns {void}
    */
   ensureBackupDir() {
     if (!fs.existsSync(this.backupDir)) {
@@ -163,7 +188,9 @@ class EnhancedBackupScheduler {
   }
 
   /**
-   * Stop backup scheduler
+   * Stop all scheduled backup jobs
+   * Cancels all active jobs and clears job list
+   * @returns {void}
    */
   stop() {
     this.jobs.forEach(job => job.cancel());
@@ -172,7 +199,19 @@ class EnhancedBackupScheduler {
   }
 
   /**
-   * Get backup statistics
+   * Get comprehensive backup statistics
+   * Calculates success/failure counts, total size, and last backup info
+   * @returns {Object} Backup statistics
+   * @returns {boolean} .isRunning - Whether scheduler is running
+   * @returns {boolean} .isEnabled - Whether backups are enabled
+   * @returns {string} .schedule - Cron schedule pattern
+   * @returns {number} .totalBackups - Total number of backups performed
+   * @returns {number} .successfulBackups - Count of successful backups
+   * @returns {number} .failedBackups - Count of failed backups
+   * @returns {string} .totalSize - Total size of all backups in KB
+   * @returns {number} .retentionDays - Backup retention period in days
+   * @returns {number} .maxBackups - Maximum number of backups to retain
+   * @returns {Object} .lastBackup - Metadata of most recent backup
    */
   getStats() {
     const successCount = this.backupHistory.filter(b => b.status === 'success').length;
@@ -196,7 +235,10 @@ class EnhancedBackupScheduler {
   }
 
   /**
-   * Get recent backups
+   * Get recent backups from history
+   * Returns most recent backups in reverse chronological order
+   * @param {number} [limit=10] - Maximum number of recent backups to return
+   * @returns {Array} Array of backup history entries (newest first)
    */
   getRecentBackups(limit = 10) {
     return this.backupHistory.slice(-limit).reverse();

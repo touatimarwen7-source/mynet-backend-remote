@@ -1,5 +1,5 @@
 /**
- * 🔄 DATABASE BACKUP SERVICE
+ * Database Backup Service
  * Manages automated backups, restores, and backup lifecycle
  * Environment variables: MAX_BACKUPS, BACKUP_DIR
  */
@@ -21,7 +21,10 @@ class BackupService {
   }
 
   /**
-   * Ensure backup directory exists
+   * Ensure backup directory exists with proper permissions
+   * Creates directory recursively if needed
+   * @private
+   * @returns {void}
    */
   ensureBackupDirectory() {
     if (!fs.existsSync(BACKUP_DIR)) {
@@ -30,7 +33,10 @@ class BackupService {
   }
 
   /**
-   * Generate backup filename with timestamp
+   * Generate backup filename with ISO timestamp
+   * Format: mynet_backup_YYYY-MM-DDTHH-mm-ss.sssZ.sql
+   * @private
+   * @returns {string} Generated filename with timestamp
    */
   generateBackupFilename() {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -38,14 +44,22 @@ class BackupService {
   }
 
   /**
-   * Create database backup using pg_dump
-   * Returns: { success: boolean, filename: string, size: number, timestamp: string }
+   * Create full database backup using pg_dump
+   * Automatically cleans old backups to maintain retention limit
+   * @async
+   * @returns {Promise<Object>} Backup result with success status and metadata
+   * @returns {Promise<Object>} .success - Whether backup succeeded
+   * @returns {Promise<Object>} .filename - Generated backup filename
+   * @returns {Promise<Object>} .filepath - Full path to backup file
+   * @returns {Promise<Object>} .size - Backup size in MB (formatted)
+   * @returns {Promise<Object>} .sizeBytes - Backup size in bytes (raw)
+   * @returns {Promise<Object>} .timestamp - ISO timestamp of backup creation
+   * @throws {Error} Captures and returns error in success:false response
    */
   async createBackup() {
     try {
       const filename = this.generateBackupFilename();
       const filepath = path.join(BACKUP_DIR, filename);
-
 
       // Use pg_dump to create backup
       const dumpCommand = `pg_dump "${process.env.DATABASE_URL}" > "${filepath}"`;
@@ -58,7 +72,6 @@ class BackupService {
       // Get file stats
       const stats = fs.statSync(filepath);
       const backupSize = (stats.size / 1024 / 1024).toFixed(2); // Size in MB
-
 
       // Clean old backups
       await this.cleanOldBackups();
@@ -81,7 +94,19 @@ class BackupService {
   }
 
   /**
-   * List all available backups
+   * List all available backups sorted by creation time (newest first)
+   * @returns {Object} Success status and list of backup metadata
+   * @returns {boolean} .success - Whether query succeeded
+   * @returns {number} .count - Total number of backups
+   * @returns {Array} .backups - Array of backup objects with metadata
+   * @returns {string} .backups[].filename - Backup filename
+   * @returns {string} .backups[].size - Size in MB (formatted)
+   * @returns {number} .backups[].sizeBytes - Size in bytes (raw)
+   * @returns {string} .backups[].timestamp - Extracted timestamp
+   * @returns {Date} .backups[].created - File creation time
+   * @returns {Date} .backups[].modified - File modification time
+   * @returns {number} .maxRetained - Maximum backups retained
+   * @returns {string} .backupDir - Backup directory path
    */
   listBackups() {
     try {
@@ -123,7 +148,11 @@ class BackupService {
   }
 
   /**
-   * Get backup file path
+   * Get validated backup file path with directory traversal protection
+   * @private
+   * @param {string} filename - Backup filename to validate
+   * @returns {string} Full validated filepath
+   * @throws {Error} When filename is invalid or file doesn't exist
    */
   getBackupPath(filename) {
     const filepath = path.join(BACKUP_DIR, filename);
@@ -141,7 +170,14 @@ class BackupService {
   }
 
   /**
-   * Download backup file content
+   * Download backup file content as string
+   * @param {string} filename - Backup filename to retrieve
+   * @returns {Object} Success status with file content
+   * @returns {boolean} .success - Whether retrieval succeeded
+   * @returns {string} .filename - Retrieved filename
+   * @returns {string} .content - Full SQL content of backup
+   * @returns {number} .size - Size of content in bytes
+   * @throws {Error} Captures and returns error in success:false response
    */
   getBackupContent(filename) {
     try {
@@ -162,13 +198,20 @@ class BackupService {
   }
 
   /**
-   * Restore database from backup
-   * WARNING: This will overwrite current database
+   * Restore database from backup file using psql
+   * WARNING: This completely overwrites the current database
+   * @async
+   * @param {string} filename - Backup filename to restore from
+   * @returns {Promise<Object>} Restore operation result
+   * @returns {Promise<Object>} .success - Whether restore succeeded
+   * @returns {Promise<Object>} .filename - Restored backup filename
+   * @returns {Promise<Object>} .timestamp - ISO timestamp of restore
+   * @returns {Promise<Object>} .message - Operation status message
+   * @throws {Error} Captures and returns error in success:false response
    */
   async restoreBackup(filename) {
     try {
       const filepath = this.getBackupPath(filename);
-
 
       // Safety: Ask for confirmation by requiring a flag
       const restoreCommand = `psql "${process.env.DATABASE_URL}" < "${filepath}"`;
@@ -177,7 +220,6 @@ class BackupService {
         timeout: 600000, // 10 minute timeout
         maxBuffer: 10 * 1024 * 1024
       });
-
 
       return {
         success: true,
@@ -195,7 +237,10 @@ class BackupService {
   }
 
   /**
-   * Delete old backups, keeping only recent ones
+   * Delete old backups, keeping only most recent ones up to MAX_BACKUPS limit
+   * @async
+   * @private
+   * @returns {Promise<void>}
    */
   async cleanOldBackups() {
     try {
@@ -213,11 +258,24 @@ class BackupService {
         }
       }
     } catch (error) {
+      // Silently fail backup cleanup to not interrupt main backup
     }
   }
 
   /**
-   * Get backup statistics
+   * Get comprehensive backup statistics
+   * Calculates total size, oldest/newest backup info
+   * @returns {Object} Backup statistics
+   * @returns {boolean} .success - Whether stats generation succeeded
+   * @returns {Object} .stats - Statistical data about backups
+   * @returns {number} .stats.totalBackups - Total number of backups
+   * @returns {string} .stats.totalSize - Total size in MB (formatted)
+   * @returns {number} .stats.totalSizeBytes - Total size in bytes (raw)
+   * @returns {Object} .stats.oldestBackup - Oldest backup metadata
+   * @returns {Object} .stats.newestBackup - Newest backup metadata
+   * @returns {number} .stats.maxBackupsRetained - Maximum retention count
+   * @returns {string} .stats.backupDirectory - Backup directory path
+   * @throws {Error} Captures and returns error in success:false response
    */
   getBackupStats() {
     try {
@@ -252,7 +310,11 @@ class BackupService {
   }
 
   /**
-   * Extract timestamp from filename
+   * Extract human-readable timestamp from backup filename
+   * Converts ISO format with dashes back to human-readable time
+   * @private
+   * @param {string} filename - Backup filename (format: mynet_backup_YYYY-MM-DDTHH-mm-ss.sssZ.sql)
+   * @returns {string} Human-readable timestamp
    */
   extractTimestampFromFilename(filename) {
     const match = filename.match(/mynet_backup_(.+)\.sql/);
@@ -264,7 +326,18 @@ class BackupService {
   }
 
   /**
-   * Verify backup integrity
+   * Verify backup file integrity by checking SQL structure
+   * @async
+   * @param {string} filename - Backup filename to verify
+   * @returns {Promise<Object>} Verification result
+   * @returns {Promise<Object>} .success - Whether backup is valid
+   * @returns {Promise<Object>} .integrity - Status (valid/invalid/unknown)
+   * @returns {Promise<Object>} .filename - Verified filename
+   * @returns {Promise<Object>} .size - Backup file size
+   * @returns {Promise<Object>} .hasStructure - Contains CREATE TABLE statements
+   * @returns {Promise<Object>} .hasTransaction - Contains BEGIN/COMMIT transaction boundaries
+   * @returns {Promise<Object>} .message - Verification status message
+   * @throws {Error} Captures and returns error in integrity:unknown response
    */
   async verifyBackup(filename) {
     try {
