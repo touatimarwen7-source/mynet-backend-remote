@@ -18,8 +18,22 @@ const corsOptions = {
       process.env.REPLIT_ORIGIN || 'http://127.0.0.1:5000'
     ];
 
+    // Add Replit domain if available
+    if (process.env.REPLIT_DOMAINS) {
+      const replitDomains = process.env.REPLIT_DOMAINS.split(',');
+      replitDomains.forEach(domain => {
+        allowedOrigins.push(`https://${domain.trim()}`);
+        allowedOrigins.push(`http://${domain.trim()}`);
+      });
+    }
+
     // Allow requests without origin (mobile apps, curl, etc)
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) {
+      callback(null, true);
+    } else if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else if (origin && origin.includes('.riker.replit.dev')) {
+      // Allow any Replit domain as fallback
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
