@@ -1,5 +1,5 @@
 /**
- * ID Validation Middleware
+ * 🔒 ID VALIDATION MIDDLEWARE
  * Validates all ID parameters (id, tenderId, userId, supplierId, etc.)
  * Prevents undefined/null/invalid values from reaching handlers
  */
@@ -48,19 +48,17 @@ const validateIdMiddleware = (paramName = 'id') => {
 
 /**
  * Ensure req.user is properly set
- * Normalize user object to always have both userId and id
+ * Standardize user object to use req.user.id
  */
 const normalizeUserMiddleware = (req, res, next) => {
   if (req.user) {
-    // Ensure both properties exist for compatibility
-    if (!req.user.id && req.user.id) {
-      req.user.id = req.user.id;
-    } else if (req.user.id && !req.user.id) {
-      req.user.id = req.user.id;
+    // Standardize to use req.user.id
+    if (!req.user.id && req.user.userId) {
+      req.user.id = req.user.userId;
     }
     
     // Validate user has an ID
-    if (!req.user.id && !req.user.id) {
+    if (!req.user.id) {
       return res.status(401).json({ error: 'User ID not found in token' });
     }
   }
