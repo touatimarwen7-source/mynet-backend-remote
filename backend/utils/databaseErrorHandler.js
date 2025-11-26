@@ -4,7 +4,7 @@
  */
 
 const { logger } = require('./logger');
-const ErrorResponseFormatter = require('./errorResponseFormatter');
+const ErrorResponseFormatter = require('./errorHandler');
 
 class DatabaseErrorHandler {
   /**

@@ -63,7 +63,7 @@ const { getCacheManager } = require('./utils/redisCache');
 const { errorTracker } = require('./services/ErrorTrackingService');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
-const ErrorResponseFormatter = require('./utils/errorResponseFormatter');
+const { ErrorResponseFormatter } = require('./utils/errorHandler');
 const ServiceValidator = require('./utils/serviceValidator');
 const DatabaseErrorHandler = require('./utils/databaseErrorHandler');
 
