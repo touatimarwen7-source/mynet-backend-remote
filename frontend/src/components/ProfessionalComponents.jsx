@@ -4,7 +4,7 @@
  */
 
 import { Avatar, Box, Card, CardContent, Stack, Tooltip, Typography, Chip, Skeleton } from '@mui/material';
-import { CheckCircleIcon, WarningIcon, InfoIcon } from '@mui/icons-material';
+import { CheckCircle, Warning, Info } from '@mui/icons-material';
 import institutionalTheme from '../theme/theme';
 
 const THEME = institutionalTheme;
@@ -65,25 +65,25 @@ export function ProfessionalAlert({ type = 'info', title, message, icon: IconCom
         backgroundColor: '#2e7d3215',
         borderColor: '#2e7d32',
         textColor: '#1b5e20',
-        icon: CheckCircleIcon
+        icon: CheckCircle
       },
       warning: {
         backgroundColor: '#f5760015',
         borderColor: '#f57c00',
         textColor: '#e65100',
-        icon: WarningIcon
+        icon: Warning
       },
       info: {
         backgroundColor: '#0288d115',
         borderColor: '#0288d1',
         textColor: '#01579b',
-        icon: InfoIcon
+        icon: Info
       },
       error: {
         backgroundColor: '#c6282815',
         borderColor: '#c62828',
         textColor: '#b71c1c',
-        icon: WarningIcon
+        icon: Warning
       }
     };
     return config[type] || config.info;
