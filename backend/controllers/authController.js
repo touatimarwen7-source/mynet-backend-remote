@@ -112,7 +112,12 @@ class AuthController {
             res.status(200).json({
                 success: true,
                 message: 'Login successful',
-                ...authData
+                accessToken: authData.accessToken,
+                refreshToken: authData.refreshToken,
+                refreshTokenId: authData.refreshToken,
+                expiresIn: authData.expiresIn || 900,
+                user: authData.user,
+                data: authData.user
             });
         } catch (error) {
             res.status(401).json({ 
