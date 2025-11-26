@@ -103,14 +103,6 @@ const enhancedRateLimiting = require('./middleware/enhancedRateLimiting');
 
 // Apply enhanced rate limiting
 app.use('/api/', enhancedRateLimiting.general);
-app.post('/api/auth/login', authLimiter, enhancedRateLimiting.login);
-app.post('/api/auth/register', authLimiter, enhancedRateLimiting.register);
-app.post('/api/auth/password-reset', authLimiter, enhancedRateLimiting.passwordReset);
-app.post('/api/procurement/tenders', enhancedRateLimiting.tenderCreation);
-app.post('/api/procurement/offers', enhancedRateLimiting.offerSubmission);
-app.post('/api/messaging', enhancedRateLimiting.messageSending);
-app.get('/api/search', enhancedRateLimiting.search);
-app.post('/api/export', enhancedRateLimiting.export);
 
 // Advanced rate limit middleware for tracking
 app.use(enhancedRateLimiting.advancedRateLimitMiddleware);
@@ -221,6 +213,9 @@ app.get('/api-spec.json', (req, res) => {
   res.send(swaggerSpec);
 });
 
+// 🔐 AUTH ROUTES with rate limiting
+app.use('/api/auth/login', authLimiter, enhancedRateLimiting.login);
+app.use('/api/auth/register', authLimiter, enhancedRateLimiting.register);
 app.use('/api/auth', authRoutes);
 app.use('/api/procurement', procurementRoutes);
 app.use('/api/opening-reports', openingReportRoutes);
