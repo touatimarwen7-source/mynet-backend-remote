@@ -7,7 +7,7 @@ const requestLogger = (req, res, next) => {
   const start = Date.now();
   const requestId = req.id || 'unknown';
 
-  // Log request
+  // Log request with proper body handling
   const logData = {
     id: requestId,
     method: req.method,
@@ -18,7 +18,7 @@ const requestLogger = (req, res, next) => {
     userAgent: req.get('user-agent'),
     userId: req.user?.id || req.user?.userId || undefined,
     timestamp: new Date().toISOString(),
-    body: req.body ? Object.keys(req.body) : undefined
+    body: req.body && Object.keys(req.body).length > 0 ? Object.keys(req.body) : undefined
   };
 
   // Track response
@@ -30,6 +30,16 @@ const requestLogger = (req, res, next) => {
     logData.responseTime = duration + 'ms';
     logData.cached = res.getHeader('X-Cache') || 'N/A';
     logData.isError = res.statusCode >= 400;
+
+    // Log formatted request
+    if (process.env.LOG_LEVEL !== 'silent') {
+      const eventType = logData.isError ? 'ERROR' : 'REQUEST';
+      console.log(`[${eventType}] ${logData.method} ${logData.path} - ${logData.statusCode} (${logData.responseTime})`, {
+        requestId: logData.id,
+        userId: logData.userId,
+        endpoint: logData.path
+      });
+    }
 
     return originalSend.call(this, data);
   };
